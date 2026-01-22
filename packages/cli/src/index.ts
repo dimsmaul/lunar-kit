@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { initProject } from './commands/init';
-import { addComponent } from './commands/add';
-import { generateComponent, generateScreen } from './commands/generate';
+import { initProject } from './commands/init.js';
+import { addComponent } from './commands/add.js';
+import { generateScreen, generateComponent, generateStore, generateHook } from './commands/generate.js';
 
 const program = new Command();
 
@@ -15,31 +15,51 @@ program
   .command('init')
   .description('Initialize Lunar Kit in your project')
   .action(async () => {
-    console.log('🌙 Initializing Lunar Kit...');
     await initProject();
   });
 
 program
   .command('add <component>')
-  .description('Add a component to your project')
+  .description('Add a UI component to your project')
   .action(async (component) => {
-    console.log(`🌙 Adding ${component}...`);
-     await addComponent(component);
+    await addComponent(component);
   });
 
-program
+const generate = program
   .command('generate')
   .alias('g')
-  .description('Generate screens or components')
-  .argument('<type>', 'screen or component')
-  .argument('<name>', 'name of the screen/component')
-  .action(async (type, name) => {
-    if (type === 'screen' || type === 's') {
-      await generateScreen(name);
-    } else if (type === 'component' || type === 'c') {
-      await generateComponent(name);
-    } else {
-      console.log('Invalid type. Use "screen" or "component"');
-    }
+  .description('Generate screens, components, stores, or hooks');
+
+generate
+  .command('screen <name>')
+  .alias('s')
+  .description('Generate a screen')
+  .action(async (name) => {
+    await generateScreen(name);
   });
+
+generate
+  .command('component <name>')
+  .alias('c')
+  .description('Generate a component')
+  .action(async (name) => {
+    await generateComponent(name);
+  });
+
+generate
+  .command('store <name>')
+  .alias('st')
+  .description('Generate a zustand store')
+  .action(async (name) => {
+    await generateStore(name);
+  });
+
+generate
+  .command('hook <name>')
+  .alias('h')
+  .description('Generate a custom hook')
+  .action(async (name) => {
+    await generateHook(name);
+  });
+
 program.parse();

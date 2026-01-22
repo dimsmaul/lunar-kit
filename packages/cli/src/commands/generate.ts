@@ -7,8 +7,12 @@ import prompts from 'prompts';
 interface LunarConfig {
   navigation: 'expo-router' | 'react-navigation' | 'none';
   features: string[];
+  srcDir: string;
   componentsDir: string;
+  screensDir: string;
   uiComponentsDir: string;
+  storesDir?: string;
+  hooksDir?: string;
 }
 
 async function loadConfig(): Promise<LunarConfig | null> {
@@ -65,12 +69,12 @@ export async function generateScreen(name: string) {
         break;
     }
 
-    // Determine path based on navigation type
+    // Use config paths
     let screenPath = '';
     if (config.navigation === 'expo-router') {
-      screenPath = path.join(process.cwd(), 'app', `${name.toLowerCase()}.tsx`);
+      screenPath = path.join(process.cwd(), config.screensDir, `${name.toLowerCase()}.tsx`);
     } else {
-      screenPath = path.join(process.cwd(), config.componentsDir, `${fileName}Screen.tsx`);
+      screenPath = path.join(process.cwd(), config.screensDir, `${fileName}Screen.tsx`);
     }
 
     await fs.ensureDir(path.dirname(screenPath));
@@ -87,6 +91,13 @@ export async function generateComponent(name: string) {
   const spinner = ora('Generating component...').start();
   
   try {
+    const config = await loadConfig();
+    
+    if (!config) {
+      spinner.fail('lunar-kit.config.json not found.');
+      return;
+    }
+
     const fileName = name.charAt(0).toUpperCase() + name.slice(1);
     const componentContent = `import { View, Text } from 'react-native';
 
@@ -102,7 +113,8 @@ export function ${fileName}({}: ${fileName}Props) {
   );
 }`;
 
-    const componentPath = path.join(process.cwd(), 'components', `${fileName}.tsx`);
+    // Use componentsDir from config
+    const componentPath = path.join(process.cwd(), config.componentsDir, `${fileName}.tsx`);
     await fs.ensureDir(path.dirname(componentPath));
     await fs.writeFile(componentPath, componentContent);
 
@@ -113,6 +125,84 @@ export function ${fileName}({}: ${fileName}Props) {
   }
 }
 
+export async function generateStore(name: string) {
+  const spinner = ora('Generating store...').start();
+  
+  try {
+    const config = await loadConfig();
+    
+    if (!config || !config.storesDir) {
+      spinner.fail('Stores not configured in this project.');
+      return;
+    }
+
+    const fileName = name.charAt(0).toLowerCase() + name.slice(1);
+    const storeName = name.charAt(0).toUpperCase() + name.slice(1);
+    
+    const storeContent = `import { create } from 'zustand';
+
+interface ${storeName}State {
+  // Add your state here
+  count: number;
+  increment: () => void;
+  decrement: () => void;
+}
+
+export const use${storeName}Store = create<${storeName}State>((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+  decrement: () => set((state) => ({ count: state.count - 1 })),
+}));`;
+
+    const storePath = path.join(process.cwd(), config.storesDir, `${fileName}.ts`);
+    await fs.ensureDir(path.dirname(storePath));
+    await fs.writeFile(storePath, storeContent);
+
+    spinner.succeed(chalk.green(`Store created: ${storePath}`));
+  } catch (error) {
+    spinner.fail('Failed to generate store');
+    console.error(error);
+  }
+}
+
+export async function generateHook(name: string) {
+  const spinner = ora('Generating hook...').start();
+  
+  try {
+    const config = await loadConfig();
+    
+    if (!config || !config.hooksDir) {
+      spinner.fail('Hooks directory not configured.');
+      return;
+    }
+
+    const hookName = name.startsWith('use') ? name : `use${name.charAt(0).toUpperCase() + name.slice(1)}`;
+    
+    const hookContent = `import { useState, useEffect } from 'react';
+
+export function ${hookName}() {
+  // Add your hook logic here
+  const [value, setValue] = useState(null);
+
+  useEffect(() => {
+    // Side effects here
+  }, []);
+
+  return { value, setValue };
+}`;
+
+    const hookPath = path.join(process.cwd(), config.hooksDir, `${hookName}.ts`);
+    await fs.ensureDir(path.dirname(hookPath));
+    await fs.writeFile(hookPath, hookContent);
+
+    spinner.succeed(chalk.green(`Hook created: ${hookPath}`));
+  } catch (error) {
+    spinner.fail('Failed to generate hook');
+    console.error(error);
+  }
+}
+
+// Template functions stay the same but use @/src imports
 function generateBasicScreen(name: string): string {
   return `import { View, Text } from 'react-native';
 
@@ -153,7 +243,7 @@ export default function ${name}Screen() {
 
 function generateFormScreen(name: string): string {
   return `import { View, Text, TextInput } from 'react-native';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/src/components/ui/button';
 import { useState } from 'react';
 
 export default function ${name}Screen() {
