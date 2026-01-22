@@ -1,0 +1,40 @@
+{
+  "name": "create-lunar-kit",
+  "version": "0.1.0",
+  "description": "Create a new React Native app with Lunar Kit and NativeWind pre-configured",
+  "author": "Your Name",
+  "license": "MIT",
+  "bin": {
+    "create-lunar-kit": "./dist/index.js"
+  },
+  "type": "module",
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "nativewind",
+    "create-app",
+    "starter"
+  ],
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^12.1.0",
+    "execa": "^9.6.1",
+    "fs-extra": "^11.2.0",
+    "ora": "^8.1.1",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/prompts": "^2.4.9",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.3"
+  }
+}

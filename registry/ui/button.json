@@ -1,0 +1,16 @@
+{
+  "name": "button",
+  "type": "registry:ui",
+  "description": "A customizable button component",
+  "files": [
+    {
+      "path": "components/ui/button.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": []
+}
