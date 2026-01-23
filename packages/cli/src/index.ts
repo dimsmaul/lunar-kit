@@ -122,39 +122,39 @@ generate
   program.configureHelp({
   formatHelp: () => {
     return `
-      ${chalk.bold('Usage:')} lunar <command> [options]
+${chalk.bold('Usage:')} lunar <command> [options]
 
-      ${chalk.bold('Commands:')}
-        ${chalk.green('init')}                                          Initialize Lunar Kit in your project
-        ${chalk.green('add')} <component>                               Add a UI component to your project
-        ${chalk.green('generate|g')} [options] <schematic> [path]        Generate a Lunar Kit element.
-          ${chalk.dim('Schematics available:')}
-            ┌───────────────┬─────────────┬──────────────────────────────────────────────┐
-            │ ${chalk.bold('name')}          │ ${chalk.bold('alias')}       │ ${chalk.bold('description')}                                  │
-            ├───────────────┼─────────────┼──────────────────────────────────────────────┤
-            │ ${chalk.cyan('Module')}        │             │                                              │
-            │ mod           │ mod         │ Generate a module                            │
-            │ tabs          │ tabs        │ Generate a tabs module                       │
-            ├───────────────┼─────────────┼──────────────────────────────────────────────┤
-            │ ${chalk.cyan('Module-Scoped')} │             │                                              │
-            │ mod:view      │ mod:vi      │ Generate a view in module                    │
-            │ mod:component │ mod:co      │ Generate a component in module               │
-            │ mod:store     │ mod:st      │ Generate a store in module                   │
-            │ mod:hook      │ mod:ho      │ Generate a hook in module                    │
-            ├───────────────┼─────────────┼──────────────────────────────────────────────┤
-            │ ${chalk.cyan('Global')}        │             │                                              │
-            │ component     │ co          │ Generate a global component                  │
-            │ hook          │ ho          │ Generate a global hook                       │
-            │ store         │ st          │ Generate a global store                      │
-            └───────────────┴─────────────┴──────────────────────────────────────────────┘
+${chalk.bold('Commands:')}
+  ${chalk.green('init')}                                          Initialize Lunar Kit in your project
+  ${chalk.green('add')} <component>                               Add a UI component to your project
+  ${chalk.green('generate|g')} [options] <schematic> [path]        Generate a Lunar Kit element.
+    ${chalk.dim('Schematics available:')}
+      ┌───────────────┬─────────────┬──────────────────────────────────────────────┐
+      │ ${chalk.bold('name')}          │ ${chalk.bold('alias')}       │ ${chalk.bold('description')}                                  │
+      ├───────────────┼─────────────┼──────────────────────────────────────────────┤
+      │ ${chalk.cyan('Module')}        │             │                                              │
+      │ mod           │ mod         │ Generate a module                            │
+      │ tabs          │ tabs        │ Generate a tabs module                       │
+      ├───────────────┼─────────────┼──────────────────────────────────────────────┤
+      │ ${chalk.cyan('Module-Scoped')} │             │                                              │
+      │ mod:view      │ mod:vi      │ Generate a view in module                    │
+      │ mod:component │ mod:co      │ Generate a component in module               │
+      │ mod:store     │ mod:st      │ Generate a store in module                   │
+      │ mod:hook      │ mod:ho      │ Generate a hook in module                    │
+      ├───────────────┼─────────────┼──────────────────────────────────────────────┤
+      │ ${chalk.cyan('Global')}        │             │                                              │
+      │ component     │ co          │ Generate a global component                  │
+      │ hook          │ ho          │ Generate a global hook                       │
+      │ store         │ st          │ Generate a global store                      │
+      └───────────────┴─────────────┴──────────────────────────────────────────────┘
 
-      ${chalk.bold('Examples:')}
-        ${chalk.dim('$ lunar init')}
-        ${chalk.dim('$ lunar add button')}
-        ${chalk.dim('$ lunar g mod auth/login')}
-        ${chalk.dim('$ lunar g mod:vi auth/login-screen')}
-        ${chalk.dim('$ lunar g tabs shop')}
-      `;
+${chalk.bold('Examples:')}
+  ${chalk.dim('$ lunar init')}
+  ${chalk.dim('$ lunar add button')}
+  ${chalk.dim('$ lunar g mod auth/login')}
+  ${chalk.dim('$ lunar g mod:vi auth/login-screen')}
+  ${chalk.dim('$ lunar g tabs shop')}
+`;
   }
 });
 
