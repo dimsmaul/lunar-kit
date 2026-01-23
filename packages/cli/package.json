@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "CLI for Lunar Kit",
   "bin": {
-    "lk": "./dist/index.js"
+    "lk": "./dist/index.js",
+    "lunar": "./dist/index.js"
   },
   "type": "module",
   "scripts": {
