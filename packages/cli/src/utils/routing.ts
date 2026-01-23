@@ -9,11 +9,9 @@ export async function addToRouting(config: any, modulePath: string, viewName: st
     await addToReactNavigation(config, modulePath, viewName);
   }
 }
-
 async function addToExpoRouter(config: any, modulePath: string, viewName: string, type: "module" | "view" = 'module') {
   const appDir = path.join(process.cwd(), 'app');
   
-  // FIX: Parse modulePath untuk dapat module name & file name
   const pathParts = modulePath.split('/');
   const routePath = modulePath.replace(/\\/g, '/');
   const routeDir = path.join(appDir, ...routePath.split('/').slice(0, -1));
@@ -29,6 +27,9 @@ async function addToExpoRouter(config: any, modulePath: string, viewName: string
   const routeFilePath = routePath.includes('/') 
     ? path.join(routeDir, `${fileName}.tsx`)
     : path.join(appDir, `${fileName}.tsx`);
+
+  // DONE: Ensure directory exists before writing file
+  await fs.ensureDir(path.dirname(routeFilePath));
 
   await fs.writeFile(routeFilePath, routeContent);
 }
