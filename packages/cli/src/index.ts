@@ -18,7 +18,7 @@ import {
 const program = new Command();
 
 program
-  .name('lk')
+  .name('lunar')
   .description('CLI for Lunar Kit - Universal React Native UI components')
   .version('0.1.0');
 

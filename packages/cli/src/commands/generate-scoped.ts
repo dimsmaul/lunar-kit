@@ -2,7 +2,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
 import ora from 'ora';
-import prompts from 'prompts';
+// import prompts from 'prompts';
 import { loadConfig, toSnakeCase, toPascalCase, toCamelCase } from '../utils/helpers.js';
 import { updateBarrelExport } from '../utils/barrel.js';
 import { addToRouting } from '../utils/routing.js';
@@ -28,8 +28,16 @@ export async function generateModuleView(modulePath: string, viewName: string) {
     const viewDir = path.join(moduleFullPath, 'view');
     await fs.ensureDir(viewDir);
 
-    const fileName = `${toSnakeCase(viewName)}.tsx`;
-    const componentName = toPascalCase(viewName);
+    const createViewName = toSnakeCase(viewName);
+    // /splash-6-view_view.tsx ini masih kelolosan
+    // intinya pastikan kalau user create dengan view, maka akan di remove "_view" dan ditambahkan, meminimalisir duplikasi _view_view
+    const existingViewSuffix = ['_view', 'View', '-view'].find(suffix => createViewName.endsWith(suffix));
+    const finalViewName = existingViewSuffix
+      ? createViewName.slice(0, -existingViewSuffix.length)
+      : createViewName;
+
+    const fileName = `${toSnakeCase(finalViewName)}_view.tsx`;
+    const componentName = toPascalCase(`${finalViewName}_view`);
     
     const viewContent = `import React from 'react';
 import { View, Text } from 'react-native';
@@ -49,11 +57,11 @@ export default function ${componentName}View() {
     // Update barrel export
     await updateBarrelExport(
       path.join(moduleFullPath, 'index.ts'),
-      `export { default as ${componentName}View } from './view/${toSnakeCase(viewName)}';`
+      `export { default as ${componentName}View } from './view/${toSnakeCase(finalViewName)}';`
     );
 
     // Add to routing
-    await addToRouting(config, `${modulePath}/${viewName}`, fileName);
+    await addToRouting(config, `${modulePath}/${finalViewName}`, fileName, 'view');
 
     spinner.succeed(chalk.green(`View ${viewName} created in module ${modulePath}`));
     console.log(chalk.cyan(`  ${config.modulesDir}/${modulePath}/view/${fileName}`));

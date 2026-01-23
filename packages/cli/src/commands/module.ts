@@ -63,6 +63,92 @@ export { default as ${toPascalCase(moduleName)}View } from './view/${viewName}';
   }
 }
 
+// export async function generateTabs(moduleName: string) {
+//   const spinner = ora('Generating tabs module...').start();
+
+//   try {
+//     const config = await loadConfig();
+//     if (!config) {
+//       spinner.fail('kit.config.json not found.');
+//       return;
+//     }
+
+//     spinner.stop();
+
+//     const response = await prompts([
+//       {
+//         type: 'confirm',
+//         name: 'generateTabs',
+//         message: 'Do you want to generate initial tabs?',
+//         initial: true,
+//       },
+//       {
+//         type: (prev) => (prev ? 'number' : null),
+//         name: 'tabCount',
+//         message: 'How many tabs?',
+//         initial: 3,
+//         min: 1,
+//         max: 10,
+//       },
+//       {
+//         type: (prev, values) => (values.generateTabs ? 'list' : null),
+//         name: 'tabNames',
+//         message: 'Tab names (comma-separated):',
+//         initial: 'home,profile,settings',
+//         separator: ',',
+//       },
+//     ]);
+
+//     spinner.start('Creating tabs module...');
+
+//     const modulePath = path.join(process.cwd(), config.modulesDir, moduleName);
+//     await fs.ensureDir(path.join(modulePath, 'tabs'));
+
+//     // Generate tabs layout
+//     const layoutContent = generateTabsLayoutTemplate(moduleName, response.tabNames || []);
+//     await fs.writeFile(path.join(modulePath, 'tabs_layout.tsx'), layoutContent);
+
+//     // Generate individual tab modules
+//     if (response.generateTabs && response.tabNames) {
+//       for (const tabName of response.tabNames) {
+//         const tabPath = path.join(modulePath, 'tabs', tabName);
+//         await generateTabModule(tabPath, tabName, config);
+//         spinner.text = `Generated tab: ${tabName}`;
+//       }
+//     }
+
+//     // Create barrel export
+//     const exports = response.tabNames?.map((tab: string) => 
+//       `export { default as ${toPascalCase(tab)}Tab } from './tabs/${tab}/view/${toSnakeCase(tab)}_view';`
+//     ).join('\n') || '';
+
+//     const barrelContent = `// Auto-generated exports for ${moduleName} tabs module
+// export { default as TabsLayout } from './tabs_layout';
+// ${exports}
+// `;
+//     await fs.writeFile(path.join(modulePath, 'index.ts'), barrelContent);
+
+//     // Add tabs layout to routing
+//     if (config.navigation === 'expo-router') {
+//       await createExpoRouterTabsLayout(config, moduleName, response.tabNames || []);
+//     }
+
+//     spinner.succeed(chalk.green(`Tabs module ${moduleName} created successfully!`));
+
+//     console.log(chalk.dim('\nGenerated:'));
+//     console.log(chalk.cyan(`  ${config.modulesDir}/${moduleName}/tabs_layout.tsx`));
+//     if (response.tabNames) {
+//       response.tabNames.forEach((tab: string) => {
+//         console.log(chalk.cyan(`  ${config.modulesDir}/${moduleName}/tabs/${tab}/`));
+//       });
+//     }
+
+//   } catch (error) {
+//     spinner.fail('Failed to generate tabs module');
+//     console.error(error);
+//   }
+// }
+
 export async function generateTabs(moduleName: string) {
   const spinner = ora('Generating tabs module...').start();
 
@@ -104,11 +190,15 @@ export async function generateTabs(moduleName: string) {
     const modulePath = path.join(process.cwd(), config.modulesDir, moduleName);
     await fs.ensureDir(path.join(modulePath, 'tabs'));
 
-    // Generate tabs layout
-    const layoutContent = generateTabsLayoutTemplate(moduleName, response.tabNames || []);
-    await fs.writeFile(path.join(modulePath, 'tabs_layout.tsx'), layoutContent);
+    // ========================================
+    // KONDISI: Generate tabs layout HANYA untuk React Navigation
+    // ========================================
+    if (config.navigation !== 'expo-router') {
+      const layoutContent = generateTabsLayoutTemplate(moduleName, response.tabNames || []);
+      await fs.writeFile(path.join(modulePath, 'tabs_layout.tsx'), layoutContent);
+    }
 
-    // Generate individual tab modules
+    // Generate individual tab modules (sama untuk semua navigation)
     if (response.generateTabs && response.tabNames) {
       for (const tabName of response.tabNames) {
         const tabPath = path.join(modulePath, 'tabs', tabName);
@@ -117,18 +207,27 @@ export async function generateTabs(moduleName: string) {
       }
     }
 
-    // Create barrel export
+    // ========================================
+    // KONDISI: Barrel export sesuai navigation type
+    // ========================================
     const exports = response.tabNames?.map((tab: string) => 
       `export { default as ${toPascalCase(tab)}Tab } from './tabs/${tab}/view/${toSnakeCase(tab)}_view';`
     ).join('\n') || '';
 
-    const barrelContent = `// Auto-generated exports for ${moduleName} tabs module
-export { default as TabsLayout } from './tabs_layout';
-${exports}
-`;
+    let barrelContent = `// Auto-generated exports for ${moduleName} tabs module\n`;
+    
+    // Hanya export TabsLayout untuk React Navigation
+    if (config.navigation !== 'expo-router') {
+      barrelContent += `export { default as TabsLayout } from './tabs_layout';\n`;
+    }
+    
+    barrelContent += exports + '\n';
+
     await fs.writeFile(path.join(modulePath, 'index.ts'), barrelContent);
 
-    // Add tabs layout to routing
+    // ========================================
+    // KONDISI: Create expo-router layout di app/
+    // ========================================
     if (config.navigation === 'expo-router') {
       await createExpoRouterTabsLayout(config, moduleName, response.tabNames || []);
     }
@@ -136,7 +235,14 @@ ${exports}
     spinner.succeed(chalk.green(`Tabs module ${moduleName} created successfully!`));
 
     console.log(chalk.dim('\nGenerated:'));
-    console.log(chalk.cyan(`  ${config.modulesDir}/${moduleName}/tabs_layout.tsx`));
+    
+    // Conditional logging
+    if (config.navigation !== 'expo-router') {
+      console.log(chalk.cyan(`  ${config.modulesDir}/${moduleName}/tabs_layout.tsx`));
+    } else {
+      console.log(chalk.cyan(`  app/(tabs)/_layout.tsx`));
+    }
+    
     if (response.tabNames) {
       response.tabNames.forEach((tab: string) => {
         console.log(chalk.cyan(`  ${config.modulesDir}/${moduleName}/tabs/${tab}/`));
@@ -148,6 +254,7 @@ ${exports}
     console.error(error);
   }
 }
+
 
 async function generateTabModule(tabPath: string, tabName: string, config: any) {
   const dirs = ['view', 'components', 'hooks', 'store'];
@@ -228,10 +335,11 @@ ${tabs.map(tab => `      <Tabs.Screen name="${tab}" options={{ title: '${toPasca
 
   // Create individual tab files
   for (const tab of tabs) {
-    const tabContent = `import ${toPascalCase(tab)}View from '@modules/${moduleName}/tabs/${tab}/view/${toSnakeCase(tab)}_view';
+    const tabContent = `export { default } from '@modules/${moduleName}/tabs/${tab}/view/${toSnakeCase(tab)}_view';`;
+//     const tabContent = `import ${toPascalCase(tab)}View from '@modules/${moduleName}/tabs/${tab}/view/${toSnakeCase(tab)}_view';
 
-export default ${toPascalCase(tab)}View;
-`;
+// export default ${toPascalCase(tab)}View;
+// `;
     await fs.writeFile(path.join(appDir, `${tab}.tsx`), tabContent);
   }
 }

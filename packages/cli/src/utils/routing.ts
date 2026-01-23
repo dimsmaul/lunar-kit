@@ -2,35 +2,35 @@ import fs from 'fs-extra';
 import path from 'path';
 import {  toPascalCase } from './helpers.js';
 
-export async function addToRouting(config: any, modulePath: string, viewName: string) {
+export async function addToRouting(config: any, modulePath: string, viewName: string, type: "module" | "view" = 'module') {
   if (config.navigation === 'expo-router') {
-    await addToExpoRouter(config, modulePath, viewName);
+    await addToExpoRouter(config, modulePath, viewName, type);
   } else if (config.navigation === 'react-navigation') {
     await addToReactNavigation(config, modulePath, viewName);
   }
 }
 
-async function addToExpoRouter(config: any, modulePath: string, viewName: string) {
+async function addToExpoRouter(config: any, modulePath: string, viewName: string, type: "module" | "view" = 'module') {
   const appDir = path.join(process.cwd(), 'app');
+  
+  // FIX: Parse modulePath untuk dapat module name & file name
+  const pathParts = modulePath.split('/');
   const routePath = modulePath.replace(/\\/g, '/');
   const routeDir = path.join(appDir, ...routePath.split('/').slice(0, -1));
-  const routeFile = path.basename(routePath);
+  const moduleName = pathParts[0]; // welcome
+  const fileName = pathParts[pathParts.length - 1]; // splash-2 (untuk view) atau welcome (untuk module)
   
-  await fs.ensureDir(routeDir);
-
-  const componentName = toPascalCase(path.basename(modulePath));
-  const importPath = `@modules/${modulePath}/view/${viewName.replace('.tsx', '')}`;
+  // FIX: Import path selalu ke module/view/
+  const importPath = `@modules/${moduleName}/view/${viewName.replace('.tsx', '')}`;
   
-  const routeContent = `import ${componentName}View from '${importPath}';
+  const routeContent = `export { default } from '${importPath}';`;
 
-export default ${componentName}View;
-`;
+  // File name di app/ pakai fileName yang terakhir
+  const routeFilePath = routePath.includes('/') 
+    ? path.join(routeDir, `${fileName}.tsx`)
+    : path.join(appDir, `${fileName}.tsx`);
 
-  const fileName = routePath.includes('/') 
-    ? path.join(routeDir, `${routeFile}.tsx`)
-    : path.join(appDir, `${routeFile}.tsx`);
-
-  await fs.writeFile(fileName, routeContent);
+  await fs.writeFile(routeFilePath, routeContent);
 }
 
 async function addToReactNavigation(config: any, modulePath: string, viewName: string) {
