@@ -131,7 +131,7 @@ export async function generateStore(name: string) {
   try {
     const config = await loadConfig();
     
-    if (!config || !config.storesDir) {
+    if (!config?.storesDir) {
       spinner.fail('Stores not configured in this project.');
       return;
     }
@@ -171,7 +171,7 @@ export async function generateHook(name: string) {
   try {
     const config = await loadConfig();
     
-    if (!config || !config.hooksDir) {
+    if (!config?.hooksDir) {
       spinner.fail('Hooks directory not configured.');
       return;
     }
