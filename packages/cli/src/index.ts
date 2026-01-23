@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
+import chalk from 'chalk';
 import { initProject } from './commands/init.js';
 import { addComponent } from './commands/add.js';
 import { generateModule, generateTabs } from './commands/module.js';
@@ -47,24 +48,24 @@ const generate = program
 // Module
 generate
   .command('mod <path>')
-  .description('Generate a new module')
+  .description('Generate a new module (e.g., auth/login)')
   .action(async (path) => {
     await generateModule(path);
   });
 
 // Tabs
 generate
-  .command('tabs <name>')
-  .description('Generate a tabs module with bottom navigation')
-  .action(async (name) => {
-    await generateTabs(name);
+  .command('tabs <path>')
+  .description('Generate a tabs module (e.g., shop/main)')
+  .action(async (path) => {
+    await generateTabs(path);
   });
 
-// Module-scoped (mod:view, mod:vi)
+// Module-scoped
 generate
   .command('mod:view <path>')
   .alias('mod:vi')
-  .description('Generate a view inside a module')
+  .description('Generate view in module (e.g., auth/login-screen)')
   .action(async (path) => {
     await generateModuleView(path);
   });
@@ -72,7 +73,7 @@ generate
 generate
   .command('mod:component <path>')
   .alias('mod:co')
-  .description('Generate a component inside a module')
+  .description('Generate component in module (e.g., auth/login-button)')
   .action(async (path) => {
     await generateModuleComponent(path);
   });
@@ -80,7 +81,7 @@ generate
 generate
   .command('mod:store <path>')
   .alias('mod:st')
-  .description('Generate a store inside a module')
+  .description('Generate store in module (e.g., auth/auth-store)')
   .action(async (path) => {
     await generateModuleStore(path);
   });
@@ -88,16 +89,16 @@ generate
 generate
   .command('mod:hook <path>')
   .alias('mod:ho')
-  .description('Generate a hook inside a module')
+  .description('Generate hook in module (e.g., auth/use-auth)')
   .action(async (path) => {
     await generateModuleHook(path);
   });
 
-// Global (component, co)
+// Global
 generate
   .command('component <name>')
   .alias('co')
-  .description('Generate a global component')
+  .description('Generate global component')
   .action(async (name) => {
     await generateGlobalComponent(name);
   });
@@ -105,7 +106,7 @@ generate
 generate
   .command('hook <name>')
   .alias('ho')
-  .description('Generate a global hook')
+  .description('Generate global hook')
   .action(async (name) => {
     await generateGlobalHook(name);
   });
@@ -113,9 +114,49 @@ generate
 generate
   .command('store <name>')
   .alias('st')
-  .description('Generate a global store')
+  .description('Generate global store')
   .action(async (name) => {
     await generateGlobalStore(name);
   });
+
+  program.configureHelp({
+  formatHelp: () => {
+    return `
+      ${chalk.bold('Usage:')} lunar <command> [options]
+
+      ${chalk.bold('Commands:')}
+        ${chalk.green('init')}                                          Initialize Lunar Kit in your project
+        ${chalk.green('add')} <component>                               Add a UI component to your project
+        ${chalk.green('generate|g')} [options] <schematic> [path]        Generate a Lunar Kit element.
+          ${chalk.dim('Schematics available:')}
+            ┌───────────────┬─────────────┬──────────────────────────────────────────────┐
+            │ ${chalk.bold('name')}          │ ${chalk.bold('alias')}       │ ${chalk.bold('description')}                                  │
+            ├───────────────┼─────────────┼──────────────────────────────────────────────┤
+            │ ${chalk.cyan('Module')}        │             │                                              │
+            │ mod           │ mod         │ Generate a module                            │
+            │ tabs          │ tabs        │ Generate a tabs module                       │
+            ├───────────────┼─────────────┼──────────────────────────────────────────────┤
+            │ ${chalk.cyan('Module-Scoped')} │             │                                              │
+            │ mod:view      │ mod:vi      │ Generate a view in module                    │
+            │ mod:component │ mod:co      │ Generate a component in module               │
+            │ mod:store     │ mod:st      │ Generate a store in module                   │
+            │ mod:hook      │ mod:ho      │ Generate a hook in module                    │
+            ├───────────────┼─────────────┼──────────────────────────────────────────────┤
+            │ ${chalk.cyan('Global')}        │             │                                              │
+            │ component     │ co          │ Generate a global component                  │
+            │ hook          │ ho          │ Generate a global hook                       │
+            │ store         │ st          │ Generate a global store                      │
+            └───────────────┴─────────────┴──────────────────────────────────────────────┘
+
+      ${chalk.bold('Examples:')}
+        ${chalk.dim('$ lunar init')}
+        ${chalk.dim('$ lunar add button')}
+        ${chalk.dim('$ lunar g mod auth/login')}
+        ${chalk.dim('$ lunar g mod:vi auth/login-screen')}
+        ${chalk.dim('$ lunar g tabs shop')}
+      `;
+  }
+});
+
 
 program.parse();
