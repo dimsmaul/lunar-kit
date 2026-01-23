@@ -15,11 +15,12 @@ async function addToExpoRouter(config: any, modulePath: string, viewName: string
   const pathParts = modulePath.split('/');
   const routePath = modulePath.replace(/\\/g, '/');
   const routeDir = path.join(appDir, ...routePath.split('/').slice(0, -1));
-  const moduleName = pathParts[0]; // welcome
-  const fileName = pathParts[pathParts.length - 1]; // splash-2 (untuk view) atau welcome (untuk module)
+  const fileName = pathParts[pathParts.length - 1]; // splash-2 atau testing-2-mod
   
-  // FIX: Import path selalu ke module/view/
-  const importPath = `@modules/${moduleName}/view/${viewName.replace('.tsx', '')}`;
+  // DONE: Import path pakai FULL modulePath (support nested)
+  const importPath = type === 'view'
+    ? `@modules/${pathParts.slice(0, -1).join('/')}/view/${viewName.replace('.tsx', '')}`
+    : `@modules/${modulePath}/view/${viewName.replace('.tsx', '')}`;
   
   const routeContent = `export { default } from '${importPath}';`;
 
@@ -28,7 +29,7 @@ async function addToExpoRouter(config: any, modulePath: string, viewName: string
     ? path.join(routeDir, `${fileName}.tsx`)
     : path.join(appDir, `${fileName}.tsx`);
 
-  // DONE: Ensure directory exists before writing file
+  // Ensure directory exists before writing file
   await fs.ensureDir(path.dirname(routeFilePath));
 
   await fs.writeFile(routeFilePath, routeContent);

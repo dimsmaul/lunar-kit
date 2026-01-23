@@ -62,35 +62,35 @@ generate
 
 // Module-scoped (mod:view, mod:vi)
 generate
-  .command('mod:view <module> <name>')
+  .command('mod:view <path>')
   .alias('mod:vi')
   .description('Generate a view inside a module')
-  .action(async (module, name) => {
-    await generateModuleView(module, name);
+  .action(async (path) => {
+    await generateModuleView(path);
   });
 
 generate
-  .command('mod:component <module> <name>')
+  .command('mod:component <path>')
   .alias('mod:co')
   .description('Generate a component inside a module')
-  .action(async (module, name) => {
-    await generateModuleComponent(module, name);
+  .action(async (path) => {
+    await generateModuleComponent(path);
   });
 
 generate
-  .command('mod:store <module> <name>')
+  .command('mod:store <path>')
   .alias('mod:st')
   .description('Generate a store inside a module')
-  .action(async (module, name) => {
-    await generateModuleStore(module, name);
+  .action(async (path) => {
+    await generateModuleStore(path);
   });
 
 generate
-  .command('mod:hook <module> <name>')
+  .command('mod:hook <path>')
   .alias('mod:ho')
   .description('Generate a hook inside a module')
-  .action(async (module, name) => {
-    await generateModuleHook(module, name);
+  .action(async (path) => {
+    await generateModuleHook(path);
   });
 
 // Global (component, co)
