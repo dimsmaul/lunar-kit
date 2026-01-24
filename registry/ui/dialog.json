@@ -1,10 +1,10 @@
 {
-  "name": "button",
+  "name": "dialog",
   "type": "registry:ui",
-  "description": "A customizable button component",
+  "description": "A customizable dialog component",
   "files": [
     {
-      "path": "/src/components/ui/button.tsx",
+      "path": "/src/components/ui/dialog.tsx",
       "type": "component"
     }
   ],

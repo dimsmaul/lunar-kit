@@ -1,0 +1,1 @@
+export { default } from '@modules/preview/view/avatar_view';

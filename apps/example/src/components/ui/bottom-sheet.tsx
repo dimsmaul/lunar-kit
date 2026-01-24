@@ -1,0 +1,549 @@
+
+/**
+ * FIXME: BottomSheet component with snap points and drag-to-resize functionality.
+ */
+
+
+/**
+ * BottomSheet component with snap points and drag-to-resize functionality.
+ * Features:
+ * - Multiple snap points support
+ * - Smooth drag gestures
+ * - Scrollable content area only (header & footer fixed)
+ * - Footer stays at bottom when content is short
+ */
+
+import * as React from 'react';
+import { Modal, View, Text, Pressable, Animated, Dimensions, PanResponder, LayoutAnimation, Platform, UIManager, ScrollView, ListRenderItem, FlatList } from 'react-native';
+import { cn } from '../../lib/utils';
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+
+const SNAP_THRESHOLD = 80;
+const VELOCITY_THRESHOLD = 0.5;
+const CLOSE_THRESHOLD = 0.4;
+
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+interface BottomSheetProps {
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    children: React.ReactNode;
+    snapPoints?: string[];
+    defaultSnapPoint?: number;
+}
+
+interface BottomSheetContentProps {
+    children: React.ReactNode;
+    className?: string;
+}
+
+interface BottomSheetHeaderProps {
+    children: React.ReactNode;
+    className?: string;
+}
+
+interface BottomSheetTitleProps {
+    children: React.ReactNode;
+    className?: string;
+}
+
+interface BottomSheetDescriptionProps {
+    children: React.ReactNode;
+    className?: string;
+}
+
+interface BottomSheetFooterProps {
+    children: React.ReactNode;
+    className?: string;
+}
+
+// DONE: Add BottomSheetBody for scrollable content
+interface BottomSheetBodyProps {
+    children: React.ReactNode;
+    className?: string;
+    scrollable?: boolean;
+}
+
+interface BottomSheetListProps<T> {
+    data: T[];
+    renderItem?: ListRenderItem<T>;
+    keyExtractor?: (item: T, index: number) => string;
+    variant?: 'list' | 'select' | 'multiple';
+    onSelect?: (selected: T | T[] | null) => void;
+    selectedValue?: any; // for single select
+    selectedValues?: any[]; // for multiple select
+    getItemValue?: (item: T) => any; // to extract value from item
+    className?: string;
+}
+
+interface BottomSheetListItemProps {
+    children: React.ReactNode;
+    className?: string;
+}
+
+
+const BottomSheetContext = React.createContext<{
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    snapPoints: string[];
+    currentSnapPoint: number;
+} | null>(null);
+
+function useBottomSheet() {
+    const context = React.useContext(BottomSheetContext);
+    if (!context) {
+        throw new Error('BottomSheet components must be used within BottomSheet');
+    }
+    return context;
+}
+
+export function BottomSheet({
+    open: controlledOpen,
+    onOpenChange: controlledOnOpenChange,
+    children,
+    snapPoints = ['50%'],
+    defaultSnapPoint = 0,
+}: BottomSheetProps) {
+    const [internalOpen, setInternalOpen] = React.useState(false);
+
+    const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+    const onOpenChange = controlledOnOpenChange || setInternalOpen;
+
+    return (
+        <BottomSheetContext.Provider value={{ open, onOpenChange, snapPoints, currentSnapPoint: defaultSnapPoint }}>
+            {children}
+        </BottomSheetContext.Provider>
+    );
+}
+
+export function BottomSheetTrigger({ children }: { children: React.ReactNode }) {
+    const { onOpenChange } = useBottomSheet();
+
+    if (React.isValidElement(children)) {
+        return React.cloneElement(children as React.ReactElement<any>, {
+            onPress: () => onOpenChange(true),
+        });
+    }
+
+    return (
+        <Pressable onPress={() => onOpenChange(true)}>
+            {children}
+        </Pressable>
+    );
+}
+
+export function BottomSheetContent({ children, className }: BottomSheetContentProps) {
+    const { open, onOpenChange, snapPoints, currentSnapPoint: defaultSnapPoint } = useBottomSheet();
+
+    const [visible, setVisible] = React.useState(false);
+    const [currentSnapIndex, setCurrentSnapIndex] = React.useState(defaultSnapPoint);
+
+    const snapHeights = React.useMemo(() => {
+        return snapPoints.map(point => {
+            const percentage = parseInt(point) / 100;
+            return SCREEN_HEIGHT * percentage;
+        });
+    }, [snapPoints]);
+
+    const currentHeight = snapHeights[currentSnapIndex];
+
+    const translateY = React.useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+    const backdropOpacity = React.useRef(new Animated.Value(0)).current;
+
+    const panResponder = React.useRef(
+        PanResponder.create({
+            onStartShouldSetPanResponder: () => true,
+            onMoveShouldSetPanResponder: (_, gestureState) => {
+                return Math.abs(gestureState.dy) > 5;
+            },
+            onPanResponderMove: (_, gestureState) => {
+                const { dy } = gestureState;
+
+                if (dy > 0) {
+                    translateY.setValue(dy);
+                } else {
+                    const clampedDy = Math.max(dy, -50);
+                    translateY.setValue(clampedDy);
+                }
+            },
+            onPanResponderRelease: (_, gestureState) => {
+                const { dy, vy } = gestureState;
+
+                if (currentSnapIndex === 0 && (dy > currentHeight * CLOSE_THRESHOLD || vy > VELOCITY_THRESHOLD)) {
+                    onOpenChange(false);
+                    return;
+                }
+
+                if (dy < -30 || vy < -VELOCITY_THRESHOLD) {
+                    if (currentSnapIndex < snapHeights.length - 1) {
+                        LayoutAnimation.configureNext(
+                            LayoutAnimation.create(
+                                300,
+                                LayoutAnimation.Types.easeInEaseOut,
+                                LayoutAnimation.Properties.scaleXY
+                            )
+                        );
+                        setCurrentSnapIndex(currentSnapIndex + 1);
+                    }
+
+                    Animated.spring(translateY, {
+                        toValue: 0,
+                        useNativeDriver: true,
+                        tension: 80,
+                        friction: 10,
+                    }).start();
+                }
+                else if (dy > SNAP_THRESHOLD || vy > VELOCITY_THRESHOLD) {
+                    if (currentSnapIndex > 0) {
+                        LayoutAnimation.configureNext(
+                            LayoutAnimation.create(
+                                300,
+                                LayoutAnimation.Types.easeInEaseOut,
+                                LayoutAnimation.Properties.scaleXY
+                            )
+                        );
+                        setCurrentSnapIndex(currentSnapIndex - 1);
+
+                        Animated.spring(translateY, {
+                            toValue: 0,
+                            useNativeDriver: true,
+                            tension: 80,
+                            friction: 10,
+                        }).start();
+                    } else {
+                        onOpenChange(false);
+                    }
+                }
+                else {
+                    Animated.spring(translateY, {
+                        toValue: 0,
+                        useNativeDriver: true,
+                        tension: 80,
+                        friction: 10,
+                    }).start();
+                }
+            },
+        })
+    ).current;
+
+    React.useEffect(() => {
+        if (open) {
+            setVisible(true);
+            setCurrentSnapIndex(defaultSnapPoint);
+
+            Animated.parallel([
+                Animated.spring(translateY, {
+                    toValue: 0,
+                    useNativeDriver: true,
+                    tension: 80,
+                    friction: 10,
+                }),
+                Animated.timing(backdropOpacity, {
+                    toValue: 1,
+                    duration: 250,
+                    useNativeDriver: true,
+                }),
+            ]).start();
+        } else {
+            Animated.parallel([
+                Animated.timing(translateY, {
+                    toValue: SCREEN_HEIGHT,
+                    duration: 250,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(backdropOpacity, {
+                    toValue: 0,
+                    duration: 250,
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                setVisible(false);
+            });
+        }
+    }, [open]);
+
+    if (!visible) return null;
+
+    return (
+        <Modal
+            visible={visible}
+            transparent
+            animationType="none"
+            onRequestClose={() => onOpenChange(false)}
+        >
+            <View style={{ flex: 1 }}>
+                <Animated.View
+                    style={{
+                        flex: 1,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        opacity: backdropOpacity,
+                    }}
+                >
+                    <Pressable
+                        onPress={() => onOpenChange(false)}
+                        style={{ flex: 1 }}
+                    />
+                </Animated.View>
+
+                <Animated.View
+                    style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: currentHeight,
+                        transform: [{ translateY }],
+                    }}
+                >
+                    {/* DONE: Flexbox layout untuk fixed header/footer */}
+                    <View
+                        className={cn(
+                            'bg-white rounded-t-3xl shadow-2xl h-full flex-col',
+                            className
+                        )}
+                    >
+                        {/* Drag Handle - Fixed */}
+                        <View className="items-center py-3" {...panResponder.panHandlers}>
+                            <View className="w-12 h-1 bg-slate-300 rounded-full" />
+                        </View>
+
+                        {/* DONE: Children akan di-render langsung (header, body, footer) */}
+                        {children}
+                    </View>
+                </Animated.View>
+            </View>
+        </Modal>
+    );
+}
+
+export function BottomSheetHeader({ children, className }: BottomSheetHeaderProps) {
+    return (
+        <View className={cn('px-4 pb-2', className)}>
+            {children}
+        </View>
+    );
+}
+
+export function BottomSheetTitle({ children, className }: BottomSheetTitleProps) {
+    return (
+        <Text className={cn('text-2xl font-semibold text-slate-900', className)}>
+            {children}
+        </Text>
+    );
+}
+
+export function BottomSheetDescription({ children, className }: BottomSheetDescriptionProps) {
+    return (
+        <Text className={cn('text-sm text-slate-500 mt-2', className)}>
+            {children}
+        </Text>
+    );
+}
+
+// DONE: New BottomSheetBody component for scrollable content
+export function BottomSheetBody({ children, className, scrollable }: BottomSheetBodyProps) {
+
+    if (!scrollable) {
+        return (
+            <View className={cn('flex-1 px-4', className)}>
+                {children}
+            </View>
+        );
+    }
+
+    return (
+        <ScrollView
+            className={cn('flex-1 px-4', className)}
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+        >
+            {children}
+        </ScrollView>
+    );
+}
+
+export function BottomSheetList<T>({
+    data,
+    renderItem,
+    keyExtractor,
+    variant = 'list',
+    onSelect,
+    selectedValue,
+    selectedValues = [],
+    getItemValue,
+    className,
+}: BottomSheetListProps<T>) {
+    const [internalSelectedValues, setInternalSelectedValues] = React.useState<any[]>(selectedValues);
+
+    // Default keyExtractor
+    const defaultKeyExtractor = (item: T, index: number) => {
+        if (typeof item === 'object' && item !== null && 'id' in item) {
+            return String((item as any).id);
+        }
+        return String(index);
+    };
+
+    // Default getItemValue
+    const defaultGetItemValue = (item: T) => {
+        if (typeof item === 'object' && item !== null && 'value' in item) {
+            return (item as any).value;
+        }
+        return item;
+    };
+
+    const finalKeyExtractor = keyExtractor || defaultKeyExtractor;
+    const finalGetItemValue = getItemValue || defaultGetItemValue;
+
+    // Handle selection
+    const handleSelect = (item: T) => {
+        const itemValue = finalGetItemValue(item);
+
+        if (variant === 'select') {
+            // Single select
+            onSelect?.(item);
+        } else if (variant === 'multiple') {
+            // Multiple select
+            const isSelected = internalSelectedValues.includes(itemValue);
+            let newSelected: any[];
+
+            if (isSelected) {
+                newSelected = internalSelectedValues.filter(v => v !== itemValue);
+            } else {
+                newSelected = [...internalSelectedValues, itemValue];
+            }
+
+            setInternalSelectedValues(newSelected);
+
+            // Return selected items
+            const selectedItems = data.filter(d => newSelected.includes(finalGetItemValue(d)));
+            onSelect?.(selectedItems as T[]);
+        } else {
+            // Plain list - just callback
+            onSelect?.(item);
+        }
+    };
+
+    // Check if item is selected
+    const isItemSelected = (item: T) => {
+        const itemValue = finalGetItemValue(item);
+
+        if (variant === 'select') {
+            return selectedValue === itemValue;
+        } else if (variant === 'multiple') {
+            return internalSelectedValues.includes(itemValue);
+        }
+        return false;
+    };
+
+    // Default render item
+    const defaultRenderItem: ListRenderItem<T> = ({ item }) => {
+        const isSelected = isItemSelected(item);
+        const itemValue = finalGetItemValue(item);
+        const itemLabel = typeof item === 'object' && item !== null && 'label' in item
+            ? (item as any).label
+            : String(item);
+
+        return (
+            <Pressable
+                onPress={() => handleSelect(item)}
+                className={cn(
+                    'flex-row items-center justify-between px-4 py-3 border-b border-slate-100',
+                    isSelected && 'bg-blue-50'
+                )}
+            >
+                <View className="flex-row items-center gap-3 flex-1">
+                    {/* Radio or Checkbox based on variant */}
+                    {variant === 'select' && (
+                        <View
+                            className={cn(
+                                'h-5 w-5 rounded-full border-2 items-center justify-center',
+                                isSelected ? 'border-blue-600' : 'border-slate-300'
+                            )}
+                        >
+                            {isSelected && (
+                                <View className="h-2.5 w-2.5 rounded-full bg-blue-600" />
+                            )}
+                        </View>
+                    )}
+
+                    {variant === 'multiple' && (
+                        <View
+                            className={cn(
+                                'h-5 w-5 rounded border-2 items-center justify-center',
+                                isSelected ? 'bg-blue-600 border-blue-600' : 'border-slate-300'
+                            )}
+                        >
+                            {isSelected && (
+                                <Text className="text-white text-xs font-bold">✓</Text>
+                            )}
+                        </View>
+                    )}
+
+                    {/* Label */}
+                    <Text
+                        className={cn(
+                            'text-base flex-1',
+                            isSelected ? 'text-blue-600 font-semibold' : 'text-slate-900'
+                        )}
+                    >
+                        {itemLabel}
+                    </Text>
+                </View>
+
+                {/* Checkmark for selected (except multiple, already has checkbox) */}
+                {variant === 'select' && isSelected && (
+                    <Text className="text-blue-600 font-bold">✓</Text>
+                )}
+            </Pressable>
+        );
+    };
+
+    const finalRenderItem = renderItem || defaultRenderItem;
+
+    return (
+        <FlatList
+            data={data}
+            renderItem={finalRenderItem}
+            keyExtractor={finalKeyExtractor}
+            className={cn('flex-1 px-0', className)}
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+        />
+    );
+}
+
+// DONE: BottomSheetListItem for custom rendering
+export function BottomSheetListItem({ children, className }: BottomSheetListItemProps) {
+    return (
+        <View className={cn('px-4 py-3 border-b border-slate-100', className)}>
+            {children}
+        </View>
+    );
+}
+
+export function BottomSheetFooter({ children, className }: BottomSheetFooterProps) {
+    return (
+        <View className={cn('px-4 pt-4 pb-4', className)}>
+            {children}
+        </View>
+    );
+}
+
+export function BottomSheetClose({ children }: { children: React.ReactNode }) {
+    const { onOpenChange } = useBottomSheet();
+
+    if (React.isValidElement(children)) {
+        return React.cloneElement(children as React.ReactElement<any>, {
+            onPress: () => onOpenChange(false),
+        });
+    }
+
+    return (
+        <Pressable onPress={() => onOpenChange(false)}>
+            {children}
+        </Pressable>
+    );
+}

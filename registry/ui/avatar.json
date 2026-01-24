@@ -1,0 +1,39 @@
+{
+  "name": "avatar",
+  "type": "registry:ui",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/avatar.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "tailwind": {
+    "config": {
+      "theme": {
+        "extend": {
+          "colors": {
+            "slate": {
+              "200": "#e2e8f0",
+              "300": "#cbd5e1",
+              "400": "#94a3b8",
+              "600": "#475569",
+              "700": "#334155"
+            },
+            "green": {
+              "500": "#22c55e"
+            },
+            "yellow": {
+              "500": "#eab308"
+            },
+            "red": {
+              "500": "#ef4444"
+            }
+          }
+        }
+      }
+    }
+  }
+}

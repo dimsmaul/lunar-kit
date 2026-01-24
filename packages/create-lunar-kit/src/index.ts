@@ -7,6 +7,7 @@ import { execa } from 'execa';
 import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { renderLogo } from './assets/logo';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,6 +19,7 @@ program
   .description('Create a new React Native app with Lunar Kit')
   .argument('[project-name]', 'Name of your project')
   .action(async (projectName?: string) => {
+    renderLogo();
     console.log(chalk.bold.cyan('\n🌙 Create Lunar Kit App\n'));
 
     const response = await prompts([
@@ -139,7 +141,7 @@ program
       await updatePackageJson(projectPath, navigation, features);
 
       // 8. Create lunar-kit.config.json
-      await createConfig(projectPath, navigation, features);
+      await createConfig(projectPath, navigation, features, packageManager); 
 
       // 9. Install dependencies
       spinner.text = `Installing dependencies with ${packageManager}...`;
@@ -928,7 +930,7 @@ async function updatePackageJson(projectPath: string, navigation: string, featur
   await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 }
 
-async function createConfig(projectPath: string, navigation: string, features: string[]) {
+async function createConfig(projectPath: string, navigation: string, features: string[], packageManager: string) {
   const config = {
     navigation,
     features,
@@ -939,6 +941,7 @@ async function createConfig(projectPath: string, navigation: string, features: s
     hooksDir: 'src/hooks',
     storesDir: 'src/stores',
     uiComponentsDir: 'src/components/ui',
+    packageManager, // DONE: Add this
     namingConvention: {
       files: 'snake_case',
       exports: 'PascalCase',
@@ -951,6 +954,7 @@ async function createConfig(projectPath: string, navigation: string, features: s
 
   await fs.writeJson(path.join(projectPath, 'kit.config.json'), config, { spaces: 2 });
 }
+
 
 
 program.parse();

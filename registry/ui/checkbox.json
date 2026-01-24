@@ -1,0 +1,23 @@
+{
+  "name": "checkbox",
+  "type": "registry:ui",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/ui/checkbox.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "description": "A customizable checkbox component with label support and disabled state.",
+    "features": [
+      "Controlled and uncontrolled modes",
+      "Optional label component",
+      "Disabled state support",
+      "Accessible with Pressable",
+      "Customizable styling"
+    ]
+  }
+}

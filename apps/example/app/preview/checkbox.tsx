@@ -1,0 +1,1 @@
+export { default } from '@modules/preview/view/checkbox_view';

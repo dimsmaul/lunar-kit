@@ -4,7 +4,8 @@
   "private": true,
   "description": "Universal React Native UI components",
   "scripts": {
-    "dev": "pnpm --filter showcase start",
+    "dev": "pnpm --filter example start",
+    "dev:showcase": "pnpm --filter showcase start",
     "dev:cli": "pnpm --filter lk dev",
     "build:cli": "pnpm --filter lk build"
   },

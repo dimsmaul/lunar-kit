@@ -1,0 +1,24 @@
+{
+  "navigation": "expo-router",
+  "features": [
+    "dark-mode",
+    "forms",
+    "state"
+  ],
+  "architecture": "modular",
+  "srcDir": "src",
+  "modulesDir": "src/modules",
+  "componentsDir": "src/components",
+  "hooksDir": "src/hooks",
+  "storesDir": "src/stores",
+  "uiComponentsDir": "src/components/test",
+  "namingConvention": {
+    "files": "snake_case",
+    "exports": "PascalCase",
+    "hooks": "camelCase"
+  },
+  "autoRouting": true,
+  "autoImport": true,
+  "autoBarrelExport": true,
+  "packageManager": "pnpm"
+}

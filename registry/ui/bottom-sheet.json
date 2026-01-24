@@ -1,0 +1,28 @@
+{
+  "name": "bottom-sheet",
+  "type": "registry:ui",
+  "description": "A draggable bottom sheet component with snap points",
+  "files": [
+    {
+      "path": "/src/components/ui/bottom-sheet.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "meta": {
+    "description": "A draggable bottom sheet component with snap points, smooth gestures, and list variants.",
+    "features": [
+      "Multiple snap points support",
+      "Smooth drag gestures with PanResponder",
+      "Scrollable body with fixed header and footer",
+      "List variants (plain, single-select, multi-select)",
+      "Auto-height animation with LayoutAnimation",
+      "Backdrop with opacity animation"
+    ]
+  }
+}
+

@@ -1,0 +1,30 @@
+{
+  "name": "calendar",
+  "type": "registry:ui",
+  "dependencies": [
+    "dayjs"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [
+    "dialog"
+  ],
+  "files": [
+    {
+      "path": "/src/components/ui/calendar.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "description": "A calendar picker component with date, month, and year variants and smart navigation.",
+    "features": [
+      "Three variants: date picker, month picker, year picker",
+      "Smart navigation between modes",
+      "Click month header to switch to month view",
+      "Click year header to switch to year view",
+      "Auto-select based on variant",
+      "Min/max date constraints",
+      "Native device locale support",
+      "Reuses Dialog component"
+    ]
+  }
+}
