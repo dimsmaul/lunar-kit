@@ -41,7 +41,11 @@ export function usePreview() {
     {
       path: '/preview/date-range-picker',
       name: 'Date Range Picker',
-    }
+    },
+    {
+      path: '/preview/tabs',
+      name: 'Tabs',
+    },
   ]
 
   const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));

@@ -11,3 +11,4 @@ export { default as CalendarView } from './view/calendar_view';
 export { usePreview } from './hooks/usePreview';
 export { default as DateRangePickerView } from './view/date-range-picker_view';
 export { default as DatePickerView } from './view/date-picker_view';
+export { default as TabsView } from './view/tabs_view';
