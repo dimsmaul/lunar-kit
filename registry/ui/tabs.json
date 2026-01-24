@@ -1,0 +1,27 @@
+{
+  "name": "tabs",
+  "type": "registry:ui",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "/src/components/ui/tabs.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "description": "A set of layered sections of content, known as tab panels, that are displayed one at a time. Supports two variants: pill with sliding background animation and underline with scale animation.",
+    "features": [
+      "Two variants: pill and underline",
+      "Pill variant: animated sliding white background indicator",
+      "Underline variant: animated scale underline indicator",
+      "Smooth spring animations (tension: 100, friction: 10)",
+      "Auto layout measurement for precise positioning",
+      "Disabled state support",
+      "Horizontal scrolling for many tabs",
+      "Context-based state management",
+      "Perfect for settings panels, dashboards, and navigation"
+    ]
+  }
+}
