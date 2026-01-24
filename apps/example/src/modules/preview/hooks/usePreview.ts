@@ -11,6 +11,10 @@ export function usePreview() {
       name: 'Dialog',
     },
     {
+      path: '/preview/accordion',
+      name: 'Accordion',
+    },
+    {
       path: '/preview/card',
       name: 'Card',
     },

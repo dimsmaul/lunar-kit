@@ -1,0 +1,28 @@
+{
+  "name": "accordion",
+  "type": "registry:ui",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "/src/components/ui/accordion.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "description": "A vertically stacked set of interactive headings that reveal or hide associated sections of content. Supports single and multiple expansion modes.",
+    "features": [
+      "Single mode: only one item can be open at a time",
+      "Multiple mode: multiple items can be open simultaneously",
+      "Collapsible option for single mode",
+      "Smooth animations with LayoutAnimation",
+      "Animated chevron rotation indicator",
+      "Disabled state support",
+      "Helper text components for common patterns",
+      "Custom content support",
+      "Accessible keyboard navigation",
+      "Perfect for FAQs, settings panels, and navigation menus"
+    ]
+  }
+}
