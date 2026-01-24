@@ -1,7 +1,7 @@
 // components/ui/avatar.tsx
 import * as React from 'react';
 import { View, Text, Image, ImageSourcePropType } from 'react-native';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 
 interface AvatarProps {
     source?: ImageSourcePropType;

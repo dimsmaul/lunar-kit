@@ -1,0 +1,31 @@
+{
+  "name": "date-range-picker",
+  "type": "registry:ui",
+  "dependencies": [
+    "dayjs"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [
+    "dialog",
+    "calendar"
+  ],
+  "files": [
+    {
+      "path": "/src/components/ui/date-range-picker.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "description": "A date range picker component for selecting start and end dates. Consumes Calendar component in range mode with visual highlighting.",
+    "features": [
+      "Start and end date selection",
+      "Visual range highlighting",
+      "Auto swap if end date is before start",
+      "Max days constraint",
+      "Min/max date constraints",
+      "Clear, Cancel, Apply actions",
+      "Shows selected range info with day count",
+      "Reuses Calendar and Dialog components"
+    ]
+  }
+}

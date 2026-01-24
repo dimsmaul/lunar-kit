@@ -1,0 +1,29 @@
+{
+  "name": "date-picker",
+  "type": "registry:ui",
+  "dependencies": [
+    "dayjs"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [
+    "dialog",
+    "calendar"
+  ],
+  "files": [
+    {
+      "path": "/src/components/ui/date-picker.tsx",
+      "type": "registry:ui"
+    }
+  ],
+  "meta": {
+    "description": "A date picker component with dialog interface. Consumes Calendar component for date selection with three variants: date, month, and year picker.",
+    "features": [
+      "Three variants: date picker, month picker, year picker",
+      "Dialog-based interface",
+      "Smart navigation between modes",
+      "Min/max date constraints",
+      "Custom date format display",
+      "Reuses Calendar and Dialog components"
+    ]
+  }
+}

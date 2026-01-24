@@ -8,3 +8,6 @@ export { default as CheckboxView } from './view/checkbox_view';
 export { default as AvatarView } from './view/avatar_view';
 export { default as SelectView } from './view/select_view';
 export { default as CalendarView } from './view/calendar_view';
+export { usePreview } from './hooks/usePreview';
+export { default as DateRangePickerView } from './view/date-range-picker_view';
+export { default as DatePickerView } from './view/date-picker_view';

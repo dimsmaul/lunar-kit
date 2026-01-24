@@ -15,7 +15,7 @@
 
 import * as React from 'react';
 import { Modal, View, Text, Pressable, Animated, Dimensions, PanResponder, LayoutAnimation, Platform, UIManager, ScrollView, ListRenderItem, FlatList } from 'react-native';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
