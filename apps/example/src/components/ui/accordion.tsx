@@ -184,11 +184,11 @@ export function AccordionContent({ children, className }: AccordionContentProps)
     }));
 
     const contentWrapperStyle = useAnimatedStyle(() => ({
-        // Fix text rewrap: use absolute positioning during animation
         position: measured && height.value > 0 && height.value < contentHeight ? 'absolute' : 'relative',
         top: 0,
         left: 0,
         right: 0,
+
     }));
 
     return (
@@ -204,11 +204,12 @@ export function AccordionContent({ children, className }: AccordionContentProps)
                         opacity.value = isOpen ? 1 : 0;
                     }
                 }}
-                className={cn('px-4 pb-4 bg-slate-50', className)}
             >
-                {children}
+                <View className={cn('px-4 pb-4 bg-slate-50', className)}>
+                    {children}
+                </View>
             </Animated.View>
-        </Animated.View>
+        </Animated.View >
     );
 }
 
