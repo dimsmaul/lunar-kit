@@ -335,7 +335,9 @@ function DateGrid({
                                         !isToday &&
                                         isCurrentMonth &&
                                         'bg-slate-50',
-                                        disabled && 'opacity-30'
+                                        disabled && 'opacity-30',
+                                        'web:min-w-10 web:min-h-10'
+
                                     )}
                                 >
                                     <Text
@@ -358,7 +360,7 @@ function DateGrid({
                                             !isEnd &&
                                             !isInRange &&
                                             !isCurrentMonth &&
-                                            'text-slate-400'
+                                            'text-slate-400',
                                         )}
                                     >
                                         {day.format('D')}

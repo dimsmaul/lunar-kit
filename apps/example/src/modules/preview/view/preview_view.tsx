@@ -8,21 +8,17 @@ export default function PreviewView() {
   const { sortedData } = usePreview()
 
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-2xl font-bold">Preview</Text>
-
+    <View className="flex-1 items-center justify-center bg-white ">
       <FlatList
         data={sortedData}
-        contentContainerClassName='flex flex-row flex-wrap gap-2 justify-center items-center'
+        contentContainerClassName='flex flex-flex text-start gap-2 justify-center items-center w-full divide-y divide-gray-200'
         renderItem={({ item }) => (
           <Link href={item.path}>
-            <Card>
-              <CardHeader>
-                <Text>
-                  {item.name}
-                </Text>
-              </CardHeader>
-            </Card>
+            <View className='w-full p-3 elevation-2xl border-b border-gray-200'>
+              <Text>
+                {item.name}
+              </Text>
+            </View>
           </Link>
         )} />
     </View>
