@@ -11,10 +11,10 @@ export default function PreviewView() {
     <View className="flex-1 items-center justify-center bg-white ">
       <FlatList
         data={sortedData}
-        contentContainerClassName='flex flex-flex text-start gap-2 justify-center items-center w-full divide-y divide-gray-200'
+        contentContainerClassName='flex flex-flex text-start justify-center items-center w-full divide-y divide-gray-200'
         renderItem={({ item }) => (
-          <Link href={item.path}>
-            <View className='w-full p-3 elevation-2xl border-b border-gray-200'>
+          <Link href={item.path} className=''>
+            <View className='w-full p-3 border-b border-gray-200'>
               <Text>
                 {item.name}
               </Text>

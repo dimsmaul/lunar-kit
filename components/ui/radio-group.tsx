@@ -1,7 +1,7 @@
 // components/ui/radio-group.tsx
 import * as React from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 interface RadioGroupProps {
   value?: string;

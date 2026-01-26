@@ -1,6 +1,6 @@
 import { BottomSheet, BottomSheetBody, BottomSheetClose, BottomSheetContent, BottomSheetDescription, BottomSheetFooter, BottomSheetHeader, BottomSheetList, BottomSheetTitle, BottomSheetTrigger } from '@/components/ui/bottom-sheet';
 import { Button } from '@/components/ui/button';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text } from 'react-native';
 
 
 const data = Array.from({ length: 50 }, (_, i) => ({
@@ -17,7 +17,7 @@ export default function BottomSheetView() {
 
   return (
     <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-2xl font-bold">BottomSheetView</Text>
+      <Text className="text-2xl font-bold">Bottom Sheet</Text>
       <View className='flex flex-col gap-2'>
         <BottomSheet snapPoints={['45%', '75%']} defaultSnapPoint={0}>
           <BottomSheetTrigger>
@@ -48,7 +48,7 @@ export default function BottomSheetView() {
           </BottomSheetContent>
         </BottomSheet>
 
-        <BottomSheet snapPoints={['50%', '75%']}>
+        <BottomSheet snapPoints={['50%', '90%']}>
           <BottomSheetTrigger>
             <Button>Bottom Sheet List</Button>
           </BottomSheetTrigger>
