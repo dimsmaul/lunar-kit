@@ -914,6 +914,9 @@ async function updatePackageJson(projectPath: string, navigation: string, featur
 
   if (features.includes('forms')) {
     pkg.dependencies['react-hook-form'] = '^7.54.2';
+    pkg.dependencies['@hookform/resolvers'] = '^5.2.2';
+    pkg.dependencies['zod'] = '^4.3.6';
+
   }
 
   if (features.includes('state')) {

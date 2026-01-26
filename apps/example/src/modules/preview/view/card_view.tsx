@@ -13,17 +13,17 @@ export default function CardView() {
             <CardDescription>
               This is a description of the card.
             </CardDescription>
-            <CardContent>
-              <Text>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam exercitationem repudiandae nesciunt placeat. Unde molestias adipisci natus vitae saepe fugit ad accusantium vero eligendi, enim amet! Nihil corrupti neque eos!
-              </Text>
-            </CardContent>
-            <CardFooter>
-              <Text>
-                Card Footer
-              </Text>
-            </CardFooter>
           </CardHeader>
+          <CardContent>
+            <Text>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nam exercitationem repudiandae nesciunt placeat. Unde molestias adipisci natus vitae saepe fugit ad accusantium vero eligendi, enim amet! Nihil corrupti neque eos!
+            </Text>
+          </CardContent>
+          <CardFooter>
+            <Text>
+              Card Footer
+            </Text>
+          </CardFooter>
         </Card>
       </View>
 

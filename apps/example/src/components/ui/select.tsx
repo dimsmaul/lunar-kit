@@ -18,8 +18,13 @@ interface SelectProps {
 
 interface SelectTriggerProps {
     className?: string;
+    containerClassName?: string;
     children?: React.ReactNode;
     size?: 'sm' | 'md' | 'lg';
+    variant?: 'outline' | 'underline';
+    prefix?: React.ReactNode;
+    suffix?: React.ReactNode;
+    error?: boolean;
 }
 
 interface SelectValueProps {
@@ -98,29 +103,74 @@ export function Select({ value, onValueChange, children, disabled = false }: Sel
     );
 }
 
-export function SelectTrigger({ className, children, size = 'md' }: SelectTriggerProps) {
-    const { setOpen, disabled } = useSelect();
+export function SelectTrigger({
+    className,
+    containerClassName,
+    children,
+    size = 'md',
+    variant = 'outline',
+    prefix,
+    suffix,
+    error = false,
+}: SelectTriggerProps) {
+    const { setOpen, disabled, value, options } = useSelect();
+    const [isFocused, setIsFocused] = React.useState(false);
+    const isOutline = variant === 'outline';
 
     const sizeStyles = {
-        sm: 'h-9 px-3 py-2',
-        md: 'h-10 px-4 py-3',
-        lg: 'h-12 px-4 py-3.5',
+        sm: 'h-9',
+        md: 'h-10',
+        lg: 'h-12',
     };
 
+    const displayValue = value ? options.get(value) : null;
+
     return (
-        <Pressable
-            onPress={() => setOpen(true)}
-            disabled={disabled}
-            className={cn(
-                'flex-row items-center justify-between gap-2 rounded-lg border border-slate-300 bg-white shadow-sm',
-                sizeStyles[size],
-                disabled && 'opacity-50',
-                className
+        <View className={cn('w-full', containerClassName)}>
+            <View
+                className={cn(
+                    'flex-row items-center',
+                    isOutline && `${sizeStyles[size]} border rounded-lg px-3`,
+                    !isOutline && `${sizeStyles[size]} border-b`,
+                    isOutline && !error && !isFocused && 'border-slate-300',
+                    isOutline && !error && isFocused && 'border-blue-600',
+                    isOutline && error && 'border-red-600',
+                    !isOutline && !error && !isFocused && 'border-slate-300',
+                    !isOutline && !error && isFocused && 'border-blue-600',
+                    !isOutline && error && 'border-red-600',
+                    disabled && 'opacity-50',
+                    className
+                )}
+            >
+                {prefix && <View className="mr-3">{prefix}</View>}
+
+                <Pressable
+                    onPress={() => {
+                        setIsFocused(true);
+                        setOpen(true);
+                    }}
+                    disabled={disabled}
+                    className="flex-1 flex-row items-center justify-between gap-2"
+                >
+                    <Text
+                        className={cn(
+                            'flex-1 text-base',
+                            displayValue ? 'text-slate-900' : 'text-slate-400'
+                        )}
+                    >
+                        {displayValue || children}
+                    </Text>
+
+                    <Text className="text-slate-500 text-sm ml-2">▼</Text>
+                </Pressable>
+
+                {suffix && <View className="ml-3">{suffix}</View>}
+            </View>
+
+            {error && (
+                <Text className="text-sm text-red-600 mt-2">{error}</Text>
             )}
-        >
-            {children}
-            <Text className="text-slate-500 text-xs">▼</Text>
-        </Pressable>
+        </View>
     );
 }
 
@@ -189,9 +239,7 @@ export function SelectItem({ value, label, className, disabled = false }: Select
                 {label}
             </Text>
 
-            {isSelected && (
-                <Text className="text-blue-600 font-bold text-sm ml-2">✓</Text>
-            )}
+            {isSelected && <Text className="text-blue-600 font-bold text-sm ml-2">✓</Text>}
         </Pressable>
     );
 }

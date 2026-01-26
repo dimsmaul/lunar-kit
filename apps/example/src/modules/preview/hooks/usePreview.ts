@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 
 export function usePreview() {
+
+  const [search, setSearch] = useState('');
+
   const data = [
     {
       path: '/preview/button',
@@ -50,9 +53,17 @@ export function usePreview() {
       path: '/preview/tabs',
       name: 'Tabs',
     },
+    {
+      path: '/preview/form',
+      name: 'Form',
+    },
   ]
 
   const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
 
-  return {  sortedData };
+  const filteredData = sortedData.filter(item => 
+    item.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return { filteredData, search, setSearch };
 }

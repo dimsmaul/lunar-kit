@@ -1,7 +1,6 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from '@/components/ui/select';
 import React from 'react';
 import { View, Text } from 'react-native';
-import * as SelectPrimitive from '@rn-primitives/select';
 
 export default function SelectView() {
   // const [value, setValue] = React.useState<SelectOption | undefined>();

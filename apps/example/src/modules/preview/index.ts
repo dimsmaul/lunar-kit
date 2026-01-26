@@ -13,3 +13,5 @@ export { default as DateRangePickerView } from './view/date-range-picker_view';
 export { default as DatePickerView } from './view/date-picker_view';
 export { default as AccordionView } from './view/accordion_view';
 export { default as TabsView } from './view/tabs_view';
+export { default as FormView } from './view/form_view';
+export { useForms } from './hooks/useForm';
