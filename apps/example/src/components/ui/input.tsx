@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 
 export interface InputProps extends TextInputProps {
     variant?: 'outline' | 'underline';
+    size?: 'sm' | 'md' | 'lg';
     prefix?: React.ReactNode;
     suffix?: React.ReactNode;
     error?: boolean;
@@ -16,6 +17,7 @@ export const Input = forwardRef<TextInput, InputProps>(
     (
         {
             variant = 'outline',
+            size = 'md',
             prefix,
             suffix,
             error = false,
@@ -28,6 +30,12 @@ export const Input = forwardRef<TextInput, InputProps>(
     ) => {
         const [isFocused, setIsFocused] = useState(false);
         const isOutline = variant === 'outline';
+
+        const sizeStyles = {
+            sm: 'web:h-9 h-10',
+            md: 'web:h-10 h-11',
+            lg: 'web:h-12 h-13',
+        };
 
         const handleFocus = (e: any) => {
             setIsFocused(true);
@@ -43,8 +51,9 @@ export const Input = forwardRef<TextInput, InputProps>(
             <View
                 className={cn(
                     'flex-row items-center',
-                    isOutline && 'h-12 border rounded-lg px-3',
-                    !isOutline && 'h-12 border-b',
+                    sizeStyles[size],
+                    isOutline && 'border rounded-lg px-3',
+                    !isOutline && 'border-b',
                     isOutline && !error && !isFocused && 'border-slate-300',
                     isOutline && !error && isFocused && 'border-blue-600',
                     isOutline && error && 'border-red-600',
@@ -80,7 +89,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                         },
                         style,
                     ]}
-                    className={cn('text-slate-900', inputClassName)}
+                    className={cn('text-slate-900 outline-none', inputClassName)}
                     placeholderTextColor="#cbd5e1"
                     onFocus={handleFocus}
                     onBlur={handleBlur}

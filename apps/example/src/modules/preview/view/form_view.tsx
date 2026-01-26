@@ -14,7 +14,7 @@ export default function FormView() {
   const { form, onSubmit, countryOptions } = useForms()
   return (
     <ScrollView className="flex-1 bg-white">
-      <View className="p-4">
+      <View className="p-4 web:max-w-[900px]">
         <Form {...form}>
           <View className="space-y-4">
             {/* Text Input */}
@@ -29,6 +29,7 @@ export default function FormView() {
                     value={field.value}
                     onChangeText={field.onChange}
                     onBlur={field.onBlur}
+                    size='sm'
                   />
                   <FormMessage />
                 </FormItem>
@@ -49,6 +50,7 @@ export default function FormView() {
                     value={field.value}
                     onChangeText={field.onChange}
                     onBlur={field.onBlur}
+                    size='sm'
                     prefix={
                       <Mail size={20} color="#6b7280" />
                     }
@@ -68,7 +70,7 @@ export default function FormView() {
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger
                       variant="outline"
-                      size="lg"
+                      size="sm"
                     >
                       <SelectValue placeholder="Select country" />
                     </SelectTrigger>

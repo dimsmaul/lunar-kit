@@ -150,7 +150,7 @@ export function DialogContent({ children, className }: DialogContentProps) {
           <Pressable
             onPress={(e) => e.stopPropagation()}
             className={cn(
-              'bg-white rounded-lg p-6 shadow-lg',
+              'bg-white rounded-lg p-6 shadow-lg web:min-w-[400px]',
               className
             )}
           >

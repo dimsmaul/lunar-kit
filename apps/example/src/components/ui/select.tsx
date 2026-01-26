@@ -118,9 +118,9 @@ export function SelectTrigger({
     const isOutline = variant === 'outline';
 
     const sizeStyles = {
-        sm: 'h-9',
-        md: 'h-10',
-        lg: 'h-12',
+        sm: 'web:h-9 h-10',
+        md: 'web:h-10 h-11',
+        lg: 'web:h-12 h-13',
     };
 
     const displayValue = value ? options.get(value) : null;
