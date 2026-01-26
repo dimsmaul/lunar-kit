@@ -4,22 +4,14 @@ import { usePreview } from '../hooks/usePreview';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react-native';
-import { useToolbar } from '@/hooks/useToolbar';
-import { Toolbar } from '@/components/ui/toolbar';
-import { ThemeButton } from '@/components/theme-button';
 
 export default function PreviewView() {
 
   const { filteredData, search, setSearch } = usePreview()
 
-  const toolbar = useToolbar({
-    title: 'Preview',
-    rightIcon: <ThemeButton />
-  })
 
   return (
     <>
-      <Toolbar {...toolbar} />
       <View className="bg-white flex-1">
         <ScrollView>
           <View className='gap-5 !w-full flex-1 p-5 flex flex-col'>
