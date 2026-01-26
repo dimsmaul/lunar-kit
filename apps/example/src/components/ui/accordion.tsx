@@ -8,6 +8,7 @@ import Animated, {
     Easing,
 } from 'react-native-reanimated';
 import { cn } from '@/lib/utils';
+import { ChevronDown } from 'lucide-react-native';
 
 type AccordionType = 'single' | 'multiple';
 
@@ -151,7 +152,9 @@ export function AccordionTrigger({ children, className }: AccordionTriggerProps)
             <View className="flex-1 pr-2">{children}</View>
 
             <Animated.View style={animatedStyle}>
-                <Text className="text-slate-500 text-sm">▼</Text>
+                <Text className="text-slate-500 text-sm">
+                    <ChevronDown />
+                </Text>
             </Animated.View>
         </Pressable>
     );
