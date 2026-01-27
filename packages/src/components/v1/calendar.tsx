@@ -1,12 +1,9 @@
 // components/ui/calendar.tsx
 import * as React from 'react';
-import { View, Pressable, ScrollView } from 'react-native';
+import { View, Text, Pressable, ScrollView } from 'react-native';
 import { cn } from '@/lib/utils';
-import { Text } from './text';
 import dayjs, { Dayjs } from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
-import { ChevronLeft, ChevronRight } from 'lucide-react-native';
-import { useThemeColors } from '@/hooks/useThemeColors';
 
 dayjs.extend(isBetween);
 
@@ -20,6 +17,7 @@ interface CalendarProps {
     minDate?: Date;
     maxDate?: Date;
     className?: string;
+    // DONE: Range mode props
     mode?: 'single' | 'range';
     startDate?: Date;
     endDate?: Date;
@@ -40,12 +38,12 @@ export function Calendar({
     onRangeChange,
     maxDays,
 }: CalendarProps) {
-    const { colors } = useThemeColors()
     const [currentDate, setCurrentDate] = React.useState<Dayjs>(() =>
         value || startDate ? dayjs(value || startDate) : dayjs()
     );
     const [calendarMode, setCalendarMode] = React.useState<CalendarMode>(variant);
 
+    // DONE: Range selection state
     const [tempStartDate, setTempStartDate] = React.useState<Dayjs | undefined>(
         startDate ? dayjs(startDate) : undefined
     );
@@ -59,6 +57,7 @@ export function Calendar({
 
     const handleDateSelect = (date: Dayjs) => {
         if (mode === 'range') {
+            // Range selection logic
             if (!tempStartDate || (tempStartDate && tempEndDate)) {
                 setTempStartDate(date);
                 setTempEndDate(undefined);
@@ -73,11 +72,13 @@ export function Calendar({
                     }
                     setTempEndDate(date);
                 }
+                // Call range change callback
                 const newStart = tempStartDate;
                 const newEnd = date.isBefore(tempStartDate) ? tempStartDate : date;
                 onRangeChange?.(newStart.toDate(), newEnd.toDate());
             }
         } else {
+            // Single selection logic
             onValueChange?.(date.toDate());
         }
     };
@@ -131,25 +132,23 @@ export function Calendar({
     };
 
     return (
-        <View className={cn('bg-card p-4 rounded-lg', className)}>
+        <View className={className}>
             {/* Header */}
             <View className="flex-row items-center justify-between mb-4">
                 <Pressable onPress={handlePrevious} className="p-2">
-                    <Text variant="title" size="lg" className="text-foreground">
-                        <ChevronLeft color={colors.foreground} />
-                    </Text>
+                    <Text className="text-lg font-semibold text-slate-700">←</Text>
                 </Pressable>
 
                 <View className="flex-row items-center gap-2">
                     {calendarMode === 'date' && (
                         <>
                             <Pressable onPress={() => setCalendarMode('month')}>
-                                <Text variant="title" size="sm">
+                                <Text className="text-base font-semibold text-slate-900">
                                     {currentDate.format('MMMM')}
                                 </Text>
                             </Pressable>
                             <Pressable onPress={() => setCalendarMode('year')}>
-                                <Text variant="title" size="sm">
+                                <Text className="text-base font-semibold text-slate-900">
                                     {currentDate.format('YYYY')}
                                 </Text>
                             </Pressable>
@@ -158,23 +157,21 @@ export function Calendar({
 
                     {calendarMode === 'month' && (
                         <Pressable onPress={() => setCalendarMode('year')}>
-                            <Text variant="title" size="sm">
+                            <Text className="text-base font-semibold text-slate-900">
                                 {currentDate.format('YYYY')}
                             </Text>
                         </Pressable>
                     )}
 
                     {calendarMode === 'year' && (
-                        <Text variant="title" size="sm">
+                        <Text className="text-base font-semibold text-slate-900">
                             {currentDate.year() - 6} - {currentDate.year() + 5}
                         </Text>
                     )}
                 </View>
 
                 <Pressable onPress={handleNext} className="p-2">
-                    <Text variant="title" size="lg" className="text-foreground">
-                        <ChevronRight color={colors.foreground} />
-                    </Text>
+                    <Text className="text-lg font-semibold text-slate-700">→</Text>
                 </Pressable>
             </View>
 
@@ -186,6 +183,7 @@ export function Calendar({
                     onSelect={handleDateSelect}
                     minDate={minDate}
                     maxDate={maxDate}
+                    // DONE: Pass range props
                     mode={mode}
                     startDate={tempStartDate}
                     endDate={tempEndDate}
@@ -216,7 +214,7 @@ export function Calendar({
     );
 }
 
-// Date Grid
+// Date Grid (updated with range support)
 function DateGrid({
     currentDate,
     selectedDate,
@@ -289,9 +287,7 @@ function DateGrid({
             <View className="flex-row">
                 {weekDays.map((day, index) => (
                     <View key={index} className="flex-1 items-center py-2">
-                        <Text variant="label" size="sm" className="text-muted-foreground">
-                            {day}
-                        </Text>
+                        <Text className="text-xs font-semibold text-slate-500">{day}</Text>
                     </View>
                 ))}
             </View>
@@ -303,6 +299,7 @@ function DateGrid({
                         const isToday = day.isSame(dayjs(), 'day');
                         const disabled = isDisabled(day);
 
+                        // Range mode checks
                         const isStart = mode === 'range' && startDate && day.isSame(startDate, 'day');
                         const isEnd = mode === 'range' && endDate && day.isSame(endDate, 'day');
                         const isInRange =
@@ -311,6 +308,7 @@ function DateGrid({
                             endDate &&
                             day.isBetween(startDate, endDate, 'day', '[]');
 
+                        // Single mode checks
                         const isSelected = mode === 'single' && selectedDate && day.isSame(selectedDate, 'day');
 
                         return (
@@ -320,48 +318,49 @@ function DateGrid({
                                     disabled={disabled}
                                     className={cn(
                                         'aspect-square items-center justify-center rounded-lg',
-                                        isSelected && 'bg-primary',
-                                        isStart && 'bg-primary',
-                                        isEnd && 'bg-primary',
-                                        isInRange && !isStart && !isEnd && 'bg-accent',
+                                        isSelected && 'bg-blue-600',
+                                        isStart && 'bg-blue-600',
+                                        isEnd && 'bg-blue-600',
+                                        isInRange && !isStart && !isEnd && 'bg-blue-100',
                                         !isSelected &&
                                         !isStart &&
                                         !isEnd &&
                                         !isInRange &&
                                         isToday &&
-                                        'border-2 border-primary',
+                                        'border border-blue-600',
                                         !isSelected &&
                                         !isStart &&
                                         !isEnd &&
                                         !isInRange &&
                                         !isToday &&
                                         isCurrentMonth &&
-                                        'bg-muted/30',
+                                        'bg-slate-50',
                                         disabled && 'opacity-30',
                                         'web:min-w-10 web:min-h-10'
+
                                     )}
                                 >
                                     <Text
-                                        size="sm"
                                         className={cn(
-                                            (isSelected || isStart || isEnd) && 'text-primary-foreground font-semibold',
+                                            'text-sm',
+                                            (isSelected || isStart || isEnd) && 'text-white font-semibold',
                                             !isSelected &&
                                             !isStart &&
                                             !isEnd &&
                                             isInRange &&
-                                            'text-primary font-medium',
+                                            'text-blue-600 font-medium',
                                             !isSelected &&
                                             !isStart &&
                                             !isEnd &&
                                             !isInRange &&
                                             isCurrentMonth &&
-                                            'text-foreground',
+                                            'text-slate-900',
                                             !isSelected &&
                                             !isStart &&
                                             !isEnd &&
                                             !isInRange &&
                                             !isCurrentMonth &&
-                                            'text-muted-foreground',
+                                            'text-slate-400',
                                         )}
                                     >
                                         {day.format('D')}
@@ -376,7 +375,7 @@ function DateGrid({
     );
 }
 
-// Month Grid
+// MonthGrid & YearGrid stay the same...
 function MonthGrid({
     currentDate,
     selectedDate,
@@ -415,17 +414,16 @@ function MonthGrid({
                             disabled={disabled}
                             className={cn(
                                 'py-4 items-center justify-center rounded-lg',
-                                isSelected && 'bg-primary',
-                                !isSelected && 'bg-muted/30',
+                                isSelected && 'bg-blue-600',
+                                !isSelected && 'bg-slate-50',
                                 disabled && 'opacity-30'
                             )}
                         >
                             <Text
-                                size="sm"
                                 className={cn(
-                                    'font-medium',
-                                    isSelected && 'text-primary-foreground',
-                                    !isSelected && 'text-foreground'
+                                    'text-sm font-medium',
+                                    isSelected && 'text-white',
+                                    !isSelected && 'text-slate-900'
                                 )}
                             >
                                 {dayjs().month(monthIndex).format('MMM')}
@@ -438,7 +436,6 @@ function MonthGrid({
     );
 }
 
-// Year Grid
 function YearGrid({
     currentDate,
     selectedDate,
@@ -477,17 +474,16 @@ function YearGrid({
                                 disabled={disabled}
                                 className={cn(
                                     'py-4 items-center justify-center rounded-lg',
-                                    isSelected && 'bg-primary',
-                                    !isSelected && 'bg-muted/30',
+                                    isSelected && 'bg-blue-600',
+                                    !isSelected && 'bg-slate-50',
                                     disabled && 'opacity-30'
                                 )}
                             >
                                 <Text
-                                    size="sm"
                                     className={cn(
-                                        'font-medium',
-                                        isSelected && 'text-primary-foreground',
-                                        !isSelected && 'text-foreground'
+                                        'text-sm font-medium',
+                                        isSelected && 'text-white',
+                                        !isSelected && 'text-slate-900'
                                     )}
                                 >
                                     {year}

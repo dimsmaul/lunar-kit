@@ -1,40 +1,12 @@
 // components/ui/date-range-picker.tsx
 import * as React from 'react';
-import { View, Pressable } from 'react-native';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { View, Text, Pressable } from 'react-native';
 import { cn } from '@/lib/utils';
-import { Text } from './text';
-import { Button } from './button';
 import { Dialog, DialogContent } from './dialog';
 import { Calendar } from './calendar';
-import { CalendarDays } from 'lucide-react-native';
-import { useThemeColors } from '@/hooks/useThemeColors';
 import dayjs from 'dayjs';
 
-// Date Range Picker Trigger Variants
-const dateRangePickerTriggerVariants = cva(
-    'flex-row items-center justify-between rounded-lg border',
-    {
-        variants: {
-            variant: {
-                default: 'border-input bg-background',
-                outline: 'border-input bg-transparent',
-                filled: 'border-transparent bg-muted',
-            },
-            size: {
-                sm: 'px-3 py-2',
-                md: 'px-4 py-3',
-                lg: 'px-5 py-4',
-            },
-        },
-        defaultVariants: {
-            variant: 'default',
-            size: 'md',
-        },
-    }
-);
-
-interface DateRangePickerProps extends VariantProps<typeof dateRangePickerTriggerVariants> {
+interface DateRangePickerProps {
     startDate?: Date;
     endDate?: Date;
     onRangeChange?: (startDate: Date | undefined, endDate: Date | undefined) => void;
@@ -62,8 +34,6 @@ const DateRangePickerContext = React.createContext<{
     minDate?: Date;
     maxDate?: Date;
     maxDays?: number;
-    variant: 'default' | 'outline' | 'filled';
-    size: 'sm' | 'md' | 'lg';
 } | null>(null);
 
 function useDateRangePicker() {
@@ -82,8 +52,6 @@ export function DateRangePicker({
     minDate,
     maxDate,
     maxDays,
-    variant = 'default',
-    size = 'md',
 }: DateRangePickerProps) {
     const [open, setOpen] = React.useState(false);
 
@@ -98,8 +66,6 @@ export function DateRangePicker({
                 minDate,
                 maxDate,
                 maxDays,
-                variant: variant ?? 'default',
-                size: size ?? 'md',
             }}
         >
             <Dialog open={open} onOpenChange={setOpen}>
@@ -110,13 +76,13 @@ export function DateRangePicker({
 }
 
 export function DateRangePickerTrigger({ className, children }: DateRangePickerTriggerProps) {
-    const { setOpen, variant, size } = useDateRangePicker();
+    const { setOpen } = useDateRangePicker();
 
     return (
         <Pressable
             onPress={() => setOpen(true)}
             className={cn(
-                dateRangePickerTriggerVariants({ variant, size }),
+                'flex-row items-center justify-between px-4 py-3 border border-slate-300 rounded-lg bg-white',
                 className
             )}
         >
@@ -157,7 +123,7 @@ export function DateRangePickerContent({ className }: DateRangePickerContentProp
     };
 
     return (
-        <DialogContent className={cn('p-0', className)}>
+        <DialogContent className={cn('p-4', className)}>
             <View>
                 {/* Calendar with range mode */}
                 <Calendar
@@ -172,14 +138,14 @@ export function DateRangePickerContent({ className }: DateRangePickerContentProp
 
                 {/* Selected Range Info */}
                 {tempStartDate && (
-                    <View className="mt-2 mx-4 p-3 bg-accent rounded-lg">
-                        <Text variant="body" size="sm" className="font-medium">
+                    <View className="mt-4 p-3 bg-blue-50 rounded-lg">
+                        <Text className="text-sm font-medium text-blue-900">
                             {tempEndDate
                                 ? `${dayjs(tempStartDate).format('MMM DD, YYYY')} - ${dayjs(tempEndDate).format('MMM DD, YYYY')}`
                                 : `Start: ${dayjs(tempStartDate).format('MMM DD, YYYY')} (Select end date)`}
                         </Text>
                         {tempStartDate && tempEndDate && (
-                            <Text variant="muted" size="sm" className="mt-1">
+                            <Text className="text-xs text-blue-700 mt-1">
                                 {dayjs(tempEndDate).diff(dayjs(tempStartDate), 'day') + 1} days
                             </Text>
                         )}
@@ -187,34 +153,38 @@ export function DateRangePickerContent({ className }: DateRangePickerContentProp
                 )}
 
                 {/* Action Buttons */}
-                <View className="flex-row gap-2 m-4">
-                    <Button
-                        variant="outline"
-                        size="sm"
+                <View className="flex-row gap-2 mt-4">
+                    <Pressable
                         onPress={handleClear}
-                        className="flex-1"
+                        className="flex-1 py-2.5 rounded-lg border border-slate-300 items-center"
                     >
-                        Clear
-                    </Button>
+                        <Text className="text-sm font-medium text-slate-700">Clear</Text>
+                    </Pressable>
 
-                    <Button
-                        variant="ghost"
-                        size="sm"
+                    <Pressable
                         onPress={handleCancel}
-                        className="flex-1"
+                        className="flex-1 py-2.5 rounded-lg border border-slate-300 items-center"
                     >
-                        Cancel
-                    </Button>
+                        <Text className="text-sm font-medium text-slate-700">Cancel</Text>
+                    </Pressable>
 
-                    <Button
-                        variant="default"
-                        size="sm"
+                    <Pressable
                         onPress={handleApply}
                         disabled={!tempStartDate || !tempEndDate}
-                        className="flex-1"
+                        className={cn(
+                            'flex-1 py-2.5 rounded-lg items-center',
+                            tempStartDate && tempEndDate ? 'bg-blue-600' : 'bg-slate-200'
+                        )}
                     >
-                        Apply
-                    </Button>
+                        <Text
+                            className={cn(
+                                'text-sm font-medium',
+                                tempStartDate && tempEndDate ? 'text-white' : 'text-slate-400'
+                            )}
+                        >
+                            Apply
+                        </Text>
+                    </Pressable>
                 </View>
             </View>
         </DialogContent>
@@ -225,38 +195,24 @@ export function DateRangePickerValue({
     placeholder = 'Select date range',
     format = 'MMM DD, YYYY',
     className,
-    showIcon = true,
 }: {
     placeholder?: string;
     format?: string;
     className?: string;
-    showIcon?: boolean;
 }) {
     const { startDate, endDate } = useDateRangePicker();
-    const { colors } = useThemeColors();
-
-    const hasValue = startDate && endDate;
 
     return (
-        <>
-            <Text
-                size="sm"
-                className={cn(
-                    'flex-1',
-                    hasValue ? 'text-foreground' : 'text-muted-foreground',
-                    className
-                )}
-            >
-                {hasValue
-                    ? `${dayjs(startDate).format(format)} - ${dayjs(endDate).format(format)}`
-                    : placeholder}
-            </Text>
-            {showIcon && (
-                <CalendarDays
-                    size={18}
-                    color={hasValue ? colors.foreground : colors.mutedForeground}
-                />
+        <Text
+            className={cn(
+                'flex-1 text-sm',
+                startDate && endDate ? 'text-slate-900' : 'text-slate-400',
+                className
             )}
-        </>
+        >
+            {startDate && endDate
+                ? `${dayjs(startDate).format(format)} - ${dayjs(endDate).format(format)}`
+                : placeholder}
+        </Text>
     );
 }

@@ -1,34 +1,109 @@
 // components/ui/checkbox.tsx
 import * as React from 'react';
-import { View, Text, Pressable } from 'react-native';
-import { cn } from '../../lib/utils';
+import { View, Pressable } from 'react-native';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+import { Text } from './text';
+import { Check, Minus } from 'lucide-react-native';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
-interface CheckboxProps {
+// Checkbox Variants
+const checkboxVariants = cva(
+    'flex-row items-center',
+    {
+        variants: {
+            size: {
+                sm: 'gap-2',
+                md: 'gap-3',
+                lg: 'gap-4',
+            },
+        },
+        defaultVariants: {
+            size: 'md',
+        },
+    }
+);
+
+// Checkbox Box Variants
+const checkboxBoxVariants = cva(
+    'rounded border-2 items-center justify-center',
+    {
+        variants: {
+            size: {
+                sm: 'h-4 w-4 border',
+                md: 'h-5 w-5 border-2',
+                lg: 'h-6 w-6 border-2',
+            },
+            checked: {
+                true: 'bg-primary border-primary',
+                false: 'border-input',
+            },
+            disabled: {
+                true: 'opacity-50',
+                false: '',
+            },
+        },
+        defaultVariants: {
+            size: 'md',
+            checked: false,
+            disabled: false,
+        },
+    }
+);
+
+interface CheckboxProps extends VariantProps<typeof checkboxVariants> {
     checked?: boolean;
     onCheckedChange?: (checked: boolean) => void;
     children?: React.ReactNode;
     className?: string;
     disabled?: boolean;
+    indeterminate?: boolean;
 }
 
-export function Checkbox({ checked = false, onCheckedChange, children, className, disabled = false }: CheckboxProps) {
+interface CheckboxLabelProps {
+    children: React.ReactNode;
+    className?: string;
+}
+
+interface CheckboxDescriptionProps {
+    children: React.ReactNode;
+    className?: string;
+}
+
+export function Checkbox({
+    checked = false,
+    onCheckedChange,
+    children,
+    className,
+    size = 'md',
+    disabled = false,
+    indeterminate = false,
+}: CheckboxProps) {
+    const { colors } = useThemeColors();
+
+    const iconSize = size === 'sm' ? 12 : size === 'lg' ? 18 : 14;
+
     return (
         <Pressable
             onPress={() => !disabled && onCheckedChange?.(!checked)}
-            className={cn('flex-row items-center gap-3', disabled && 'opacity-50', className)}
+            className={cn(checkboxVariants({ size }), className)}
             disabled={disabled}
         >
             {/* Checkbox Square */}
             <View
                 className={cn(
-                    'h-5 w-5 rounded border-2 items-center justify-center',
-                    checked ? 'bg-blue-600 border-blue-600' : 'border-slate-300'
+                    checkboxBoxVariants({
+                        size,
+                        checked: checked || indeterminate,
+                        disabled
+                    })
                 )}
             >
-                {checked && (
-                    // Checkmark icon (simple)
-                    <Text className="text-white text-xs font-bold">✓</Text>
-                )}
+                {indeterminate ? (
+                    <Minus size={iconSize} color={colors.primaryForeground} strokeWidth={3} />
+                ) : checked ? (
+                    <Check size={iconSize} color={colors.primaryForeground} strokeWidth={3} />
+                ) : null}
             </View>
 
             {/* Label */}
@@ -37,9 +112,17 @@ export function Checkbox({ checked = false, onCheckedChange, children, className
     );
 }
 
-export function CheckboxLabel({ children, className }: { children: React.ReactNode; className?: string }) {
+export function CheckboxLabel({ children, className }: CheckboxLabelProps) {
     return (
-        <Text className={cn('text-base text-slate-900', className)}>
+        <Text variant="body" size="sm" className={className}>
+            {children}
+        </Text>
+    );
+}
+
+export function CheckboxDescription({ children, className }: CheckboxDescriptionProps) {
+    return (
+        <Text variant="muted" size="sm" className={cn('mt-0.5', className)}>
             {children}
         </Text>
     );

@@ -1,42 +1,12 @@
 // components/ui/date-picker.tsx
 import * as React from 'react';
-import { View, Pressable } from 'react-native';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { View, Text, Pressable } from 'react-native';
 import { cn } from '@/lib/utils';
-import { Text } from './text';
 import { Dialog, DialogContent } from './dialog';
 import { Calendar } from './calendar';
-import { CalendarDays } from 'lucide-react-native';
-import { useThemeColors } from '@/hooks/useThemeColors';
 import dayjs from 'dayjs';
 
 type DatePickerVariant = 'date' | 'month' | 'year';
-
-// Date Picker Trigger Variants
-const datePickerTriggerVariants = cva(
-    'flex-row items-center justify-between rounded-lg border',
-    {
-        variants: {
-            variant: {
-                default: 'border-input bg-background',
-                outline: 'border-input bg-transparent',
-                filled: 'border-transparent bg-muted',
-            },
-            size: {
-                sm: 'px-3 py-2',
-                md: 'px-4 py-3',
-                lg: 'px-5 py-4',
-            },
-        },
-        defaultVariants: {
-            variant: 'default',
-            size: 'md',
-        },
-    }
-);
-
-type TriggerVariant = 'default' | 'outline' | 'filled';
-type TriggerSize = 'sm' | 'md' | 'lg';
 
 interface DatePickerProps {
     value?: Date;
@@ -45,8 +15,6 @@ interface DatePickerProps {
     variant?: DatePickerVariant;
     minDate?: Date;
     maxDate?: Date;
-    triggerVariant?: TriggerVariant;
-    triggerSize?: TriggerSize;
 }
 
 interface DatePickerTriggerProps {
@@ -66,8 +34,6 @@ const DatePickerContext = React.createContext<{
     variant: DatePickerVariant;
     minDate?: Date;
     maxDate?: Date;
-    triggerVariant: TriggerVariant;
-    triggerSize: TriggerSize;
 } | null>(null);
 
 function useDatePicker() {
@@ -85,8 +51,6 @@ export function DatePicker({
     variant = 'date',
     minDate,
     maxDate,
-    triggerVariant = 'default',
-    triggerSize = 'md',
 }: DatePickerProps) {
     const [open, setOpen] = React.useState(false);
 
@@ -100,8 +64,6 @@ export function DatePicker({
                 variant,
                 minDate,
                 maxDate,
-                triggerVariant,
-                triggerSize,
             }}
         >
             <Dialog open={open} onOpenChange={setOpen}>
@@ -112,16 +74,13 @@ export function DatePicker({
 }
 
 export function DatePickerTrigger({ className, children }: DatePickerTriggerProps) {
-    const { setOpen, triggerVariant, triggerSize } = useDatePicker();
+    const { setOpen } = useDatePicker();
 
     return (
         <Pressable
             onPress={() => setOpen(true)}
             className={cn(
-                datePickerTriggerVariants({
-                    variant: triggerVariant,
-                    size: triggerSize
-                }),
+                'flex-row items-center justify-between px-4 py-3 border border-slate-300 rounded-lg bg-white',
                 className
             )}
         >
@@ -139,7 +98,7 @@ export function DatePickerContent({ className }: DatePickerContentProps) {
     };
 
     return (
-        <DialogContent className={cn('p-0', className)}>
+        <DialogContent className={cn('p-4', className)}>
             <Calendar
                 value={value}
                 onValueChange={handleValueChange}
@@ -155,36 +114,22 @@ export function DatePickerValue({
     placeholder = 'Select date',
     format = 'MMM DD, YYYY',
     className,
-    showIcon = true,
 }: {
     placeholder?: string;
     format?: string;
     className?: string;
-    showIcon?: boolean;
 }) {
     const { value } = useDatePicker();
-    const { colors } = useThemeColors();
-
-    const hasValue = !!value;
 
     return (
-        <>
-            <Text
-                size="sm"
-                className={cn(
-                    'flex-1',
-                    hasValue ? 'text-foreground' : 'text-muted-foreground',
-                    className
-                )}
-            >
-                {value ? dayjs(value).format(format) : placeholder}
-            </Text>
-            {showIcon && (
-                <CalendarDays
-                    size={18}
-                    color={hasValue ? colors.foreground : colors.mutedForeground}
-                />
+        <Text
+            className={cn(
+                'flex-1 text-sm',
+                value ? 'text-slate-900' : 'text-slate-400',
+                className
             )}
-        </>
+        >
+            {value ? dayjs(value).format(format) : placeholder}
+        </Text>
     );
 }
