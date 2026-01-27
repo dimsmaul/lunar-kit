@@ -1,7 +1,9 @@
 // components/ui/textarea.tsx
 import * as React from 'react';
-import { TextInput, View, Text } from 'react-native';
+import { TextInput, View } from 'react-native';
 import { cn } from '@/lib/utils';
+import { Text } from './text';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 export interface TextareaProps extends React.ComponentPropsWithoutRef<typeof TextInput> {
     label?: string;
@@ -23,49 +25,50 @@ export const Textarea = React.forwardRef<TextInput, TextareaProps>(
         },
         ref
     ) => {
-        const [isFocused, setIsFocused] = React.useState(false);
+        const { colors } = useThemeColors();
 
         return (
             <View className={cn('w-full', containerClassName)}>
                 {label && (
                     <Text
+                        size="sm"
+                        variant="label"
                         className={cn(
-                            'text-sm font-medium text-slate-900 mb-2',
-                            error && 'text-red-600'
+                            'mb-2',
+                            error && 'text-destructive'
                         )}
                     >
                         {label}
                     </Text>
                 )}
 
-                <View
+                <TextInput
+                    ref={ref}
                     className={cn(
-                        'border rounded-lg bg-white',
-                        isFocused ? 'border-blue-600' : 'border-slate-300',
-                        error && 'border-red-600',
-                        !editable && 'bg-slate-50 opacity-60'
+                        'border rounded-lg bg-background px-3 py-3 text-base text-foreground',
+                        error ? 'border-destructive' : 'border-input',
+                        'focus:border-ring',
+                        !editable && 'bg-muted opacity-60',
+                        className
                     )}
-                >
-                    <TextInput
-                        ref={ref}
-                        className={cn(
-                            'px-3 py-3 text-base text-slate-900',
-                            className
-                        )}
-                        placeholderTextColor="#94a3b8"
-                        multiline
-                        numberOfLines={rows}
-                        textAlignVertical="top"
-                        onFocus={() => setIsFocused(true)}
-                        onBlur={() => setIsFocused(false)}
-                        editable={editable}
-                        style={{ minHeight: rows * 24 }}
-                        {...props}
-                    />
-                </View>
+                    placeholderTextColor={colors.mutedForeground}
+                    multiline
+                    numberOfLines={rows}
+                    textAlignVertical="top"
+                    editable={editable}
+                    style={[
+                        {
+                            minHeight: rows * 24,
+                            color: colors.foreground,
+                        }
+                    ]}
+                    {...props}
+                />
 
                 {error && (
-                    <Text className="text-sm text-red-600 mt-2">{error}</Text>
+                    <Text size="sm" className="text-destructive mt-2">
+                        {error}
+                    </Text>
                 )}
             </View>
         );

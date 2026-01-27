@@ -1,15 +1,19 @@
 import { Checkbox, CheckboxLabel } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem, RadioGroupLabel } from '@/components/ui/radio-group';
+import { useToolbar } from '@/hooks/useToolbar';
 import React from 'react';
 import { View, Text } from 'react-native';
 
 export default function CheckboxView() {
   const [radioValue, setRadioValue] = React.useState('option1');
   const [checked, setChecked] = React.useState(false);
-  const [selectValue, setSelectValue] = React.useState('');
+
+  useToolbar({
+    title: 'Checkbox View',
+  })
 
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center">
       <Text className="text-2xl font-bold">CheckboxView</Text>
 
       <View>

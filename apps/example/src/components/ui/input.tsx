@@ -2,6 +2,7 @@
 import React, { forwardRef, useState } from 'react';
 import { View, TextInput, Platform, type TextInputProps } from 'react-native';
 import { cn } from '@/lib/utils';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 export interface InputProps extends TextInputProps {
     variant?: 'outline' | 'underline';
@@ -29,6 +30,7 @@ export const Input = forwardRef<TextInput, InputProps>(
         ref
     ) => {
         const [isFocused, setIsFocused] = useState(false);
+        const { colors } = useThemeColors();
         const isOutline = variant === 'outline';
 
         const sizeStyles = {
@@ -50,16 +52,16 @@ export const Input = forwardRef<TextInput, InputProps>(
         return (
             <View
                 className={cn(
-                    'flex-row items-center',
+                    'flex-row items-center bg-background',
                     sizeStyles[size],
                     isOutline && 'border rounded-lg px-3',
                     !isOutline && 'border-b',
-                    isOutline && !error && !isFocused && 'border-slate-300',
-                    isOutline && !error && isFocused && 'border-blue-600',
-                    isOutline && error && 'border-red-600',
-                    !isOutline && !error && !isFocused && 'border-slate-300',
-                    !isOutline && !error && isFocused && 'border-blue-600',
-                    !isOutline && error && 'border-red-600',
+                    isOutline && !error && !isFocused && 'border-input',
+                    isOutline && !error && isFocused && 'border-ring',
+                    isOutline && error && 'border-destructive',
+                    !isOutline && !error && !isFocused && 'border-input',
+                    !isOutline && !error && isFocused && 'border-ring',
+                    !isOutline && error && 'border-destructive',
                     containerClassName
                 )}
             >
@@ -72,7 +74,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                         {
                             flex: 1,
                             fontSize: 16,
-                            color: '#0f172a',
+                            color: colors.foreground,
                             padding: 0,
                             paddingVertical: 0,
                             paddingHorizontal: 0,
@@ -89,8 +91,8 @@ export const Input = forwardRef<TextInput, InputProps>(
                         },
                         style,
                     ]}
-                    className={cn('text-slate-900 outline-none', inputClassName)}
-                    placeholderTextColor="#cbd5e1"
+                    className={cn('text-foreground outline-none', inputClassName)}
+                    placeholderTextColor={colors.mutedForeground}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                     underlineColorAndroid="transparent"

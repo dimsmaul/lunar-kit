@@ -22,6 +22,10 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Text } from './text';
+import { Check } from 'lucide-react-native';
+import { Checkbox } from './checkbox';
+import { RadioGroupItem } from './radio-group';
+import { Radio } from './radio';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const VELOCITY_THRESHOLD = 300;
@@ -503,27 +507,11 @@ export function BottomSheetList<T>({
       >
         <View className="flex-row items-center gap-3 flex-1">
           {variant === 'select' && (
-            <View
-              className={cn(
-                'h-5 w-5 rounded-full border-2 items-center justify-center',
-                isSelected ? 'border-primary' : 'border-border'
-              )}
-            >
-              {isSelected && <View className="h-2.5 w-2.5 rounded-full bg-primary" />}
-            </View>
+            <Radio checked={isSelected} />
           )}
 
           {variant === 'multiple' && (
-            <View
-              className={cn(
-                'h-5 w-5 rounded border-2 items-center justify-center',
-                isSelected ? 'bg-primary border-primary' : 'border-border'
-              )}
-            >
-              {isSelected && (
-                <Text className="text-primary-foreground text-xs font-bold">✓</Text>
-              )}
-            </View>
+            <Checkbox checked={isSelected} />
           )}
 
           <Text

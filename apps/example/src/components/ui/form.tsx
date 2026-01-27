@@ -1,6 +1,6 @@
 // components/ui/form.tsx
 import * as React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import {
     Controller,
     ControllerProps,
@@ -10,6 +10,7 @@ import {
     useFormContext,
 } from 'react-hook-form';
 import { cn } from '@/lib/utils';
+import { Text } from './text';
 
 export const Form = FormProvider;
 
@@ -82,52 +83,41 @@ export const FormItem = React.forwardRef<
 });
 FormItem.displayName = 'FormItem';
 
-export const FormLabel = React.forwardRef<
-    Text,
-    React.ComponentPropsWithoutRef<typeof Text>
->(({ className, ...props }, ref) => {
+export const FormLabel = ({ className, ...props }: React.ComponentPropsWithoutRef<typeof Text>) => {
     const { error, formItemId } = useFormField();
 
     return (
         <Text
-            ref={ref}
+            size="sm"
+            variant="label"
             className={cn(
-                'text-sm font-medium text-slate-900 mb-2',
-                error && 'text-red-600',
+                'mb-2',
+                error && 'text-destructive',
                 className
             )}
             nativeID={formItemId}
             {...props}
         />
     );
-});
+};
 FormLabel.displayName = 'FormLabel';
 
-export const FormDescription = React.forwardRef<
-    Text,
-    React.ComponentPropsWithoutRef<typeof Text>
->(({ className, ...props }, ref) => {
+export const FormDescription = ({ className, ...props }: React.ComponentPropsWithoutRef<typeof Text>) => {
     const { formDescriptionId } = useFormField();
 
     return (
         <Text
-            ref={ref}
+            size="sm"
             nativeID={formDescriptionId}
-            className={cn('text-sm text-slate-500 mt-2', className)}
+            className={cn('text-muted-foreground mt-2', className)}
             {...props}
         />
     );
-});
+};
 FormDescription.displayName = 'FormDescription';
 
-export const FormMessage = React.forwardRef<
-    Text,
-    React.ComponentPropsWithoutRef<typeof Text>
->(({ className, children, ...props }, ref) => {
+export const FormMessage = ({ className, children, ...props }: React.ComponentPropsWithoutRef<typeof Text>) => {
     const { error, formMessageId } = useFormField();
-
-    // Debug: uncomment ini untuk cek error object
-    // console.log('FormMessage error:', error);
 
     const body = error ? String(error?.message) : children;
 
@@ -137,13 +127,13 @@ export const FormMessage = React.forwardRef<
 
     return (
         <Text
-            ref={ref}
+            size="sm"
             nativeID={formMessageId}
-            className={cn('text-sm text-red-600 mt-1', className)}
+            className={cn('text-destructive mt-1', className)}
             {...props}
         >
             {body}
         </Text>
     );
-});
+};
 FormMessage.displayName = 'FormMessage';

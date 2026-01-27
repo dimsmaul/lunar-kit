@@ -1,13 +1,34 @@
 // components/ui/radio-group.tsx
 import * as React from 'react';
-import { View, Text, Pressable } from 'react-native';
-import { cn } from '../../lib/utils';
+import { View } from 'react-native';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+import { Text } from './text';
+import { Radio } from './radio';
 
-interface RadioGroupProps {
+// Radio Group Variants
+const radioGroupVariants = cva(
+  '',
+  {
+    variants: {
+      orientation: {
+        vertical: 'gap-3',
+        horizontal: 'flex-row gap-4',
+      },
+    },
+    defaultVariants: {
+      orientation: 'vertical',
+    },
+  }
+);
+
+interface RadioGroupProps extends VariantProps<typeof radioGroupVariants> {
   value?: string;
   onValueChange?: (value: string) => void;
   children: React.ReactNode;
   className?: string;
+  disabled?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 interface RadioGroupItemProps {
@@ -15,11 +36,19 @@ interface RadioGroupItemProps {
   id?: string;
   children?: React.ReactNode;
   className?: string;
+  disabled?: boolean;
+}
+
+interface RadioGroupLabelProps {
+  children: React.ReactNode;
+  className?: string;
 }
 
 const RadioGroupContext = React.createContext<{
   value?: string;
   onValueChange?: (value: string) => void;
+  disabled?: boolean;
+  size: 'sm' | 'md' | 'lg';
 } | null>(null);
 
 function useRadioGroup() {
@@ -30,46 +59,64 @@ function useRadioGroup() {
   return context;
 }
 
-export function RadioGroup({ value, onValueChange, children, className }: RadioGroupProps) {
+export function RadioGroup({
+  value,
+  onValueChange,
+  children,
+  className,
+  orientation,
+  disabled = false,
+  size = 'md',
+}: RadioGroupProps) {
   return (
-    <RadioGroupContext.Provider value={{ value, onValueChange }}>
-      <View className={cn('gap-3', className)}>
+    <RadioGroupContext.Provider value={{ value, onValueChange, disabled, size }}>
+      <View className={cn(radioGroupVariants({ orientation }), className)}>
         {children}
       </View>
     </RadioGroupContext.Provider>
   );
 }
 
-export function RadioGroupItem({ value, id, children, className }: RadioGroupItemProps) {
-  const { value: selectedValue, onValueChange } = useRadioGroup();
+export function RadioGroupItem({
+  value,
+  id,
+  children,
+  className,
+  disabled: itemDisabled,
+}: RadioGroupItemProps) {
+  const { value: selectedValue, onValueChange, disabled: groupDisabled, size } = useRadioGroup();
   const isSelected = selectedValue === value;
+  const isDisabled = groupDisabled || itemDisabled;
 
   return (
-    <Pressable
-      onPress={() => onValueChange?.(value)}
-      className={cn('flex-row items-center gap-3', className)}
+    <Radio
+      checked={isSelected}
+      onCheckedChange={() => !isDisabled && onValueChange?.(value)}
+      disabled={isDisabled}
+      size={size}
+      value={value}
+      className={className}
     >
-      {/* Radio Circle */}
-      <View
-        className={cn(
-          'h-5 w-5 rounded-full border-2 items-center justify-center',
-          isSelected ? 'border-blue-600' : 'border-slate-300'
-        )}
-      >
-        {isSelected && (
-          <View className="h-2.5 w-2.5 rounded-full bg-blue-600" />
-        )}
-      </View>
-
-      {/* Label */}
       {children}
-    </Pressable>
+    </Radio>
   );
 }
 
-export function RadioGroupLabel({ children, className }: { children: React.ReactNode; className?: string }) {
+export function RadioGroupLabel({ children, className }: RadioGroupLabelProps) {
+  const { size } = useRadioGroup();
+
+  const textSize = size === 'sm' ? 'sm' : size === 'lg' ? 'md' : 'sm';
+
   return (
-    <Text className={cn('text-base text-slate-900', className)}>
+    <Text variant="body" size={textSize} className={className}>
+      {children}
+    </Text>
+  );
+}
+
+export function RadioGroupDescription({ children, className }: RadioGroupLabelProps) {
+  return (
+    <Text variant="muted" size="sm" className={cn('mt-0.5', className)}>
       {children}
     </Text>
   );

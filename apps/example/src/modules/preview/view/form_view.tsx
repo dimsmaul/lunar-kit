@@ -7,13 +7,18 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Mail } from 'lucide-react-native';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToolbar } from '@/hooks/useToolbar';
 
 
 
 export default function FormView() {
   const { form, onSubmit, countryOptions } = useForms()
+
+  useToolbar({
+    title: 'Form',
+  })
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView className="flex-1 ">
       <View className="p-4 web:max-w-[900px]">
         <Form {...form}>
           <View className="space-y-4">

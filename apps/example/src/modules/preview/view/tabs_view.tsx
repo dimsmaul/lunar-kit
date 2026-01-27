@@ -1,11 +1,16 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToolbar } from '@/hooks/useToolbar';
 import React from 'react';
 import { View, Text } from 'react-native';
 
 export default function TabsView() {
   const [activeTab, setActiveTab] = React.useState('overview');
+
+  useToolbar({
+    title: 'Tabs',
+  })
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center">
       <Text className="text-2xl font-bold">Tabs</Text>
 
       <View className="p-4 w-full flex flex-col gap-10">

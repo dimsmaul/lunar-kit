@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react-native';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { useToolbar } from '@/hooks/useToolbar';
+import { cn } from '@/lib/utils';
 
 export default function PreviewView() {
   const { filteredData, search, setSearch } = usePreview()
@@ -27,11 +28,11 @@ export default function PreviewView() {
               suffix={<Search size={20} className='text-foreground/40' />}
               className='w-screen'
             />
-            <View className='border-foreground/40 border bg-background shadow-sm rounded-lg'>
+            <View className='border-foreground/20 border bg-background rounded-lg'>
               {
                 filteredData.map((item, i) => (
                   <Link href={item.path} className='' key={i}>
-                    <View className='w-full p-3 border-b border-foreground/40'>
+                    <View className={cn('w-full p-3 border-b border-foreground/20', i === filteredData.length - 1 && 'border-0')}>
                       <Text className='text-foreground'>
                         {item.name}
                       </Text>

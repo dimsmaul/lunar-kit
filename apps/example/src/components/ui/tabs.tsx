@@ -1,7 +1,8 @@
 // components/ui/tabs.tsx
 import * as React from 'react';
-import { View, Text, Pressable, Animated, LayoutChangeEvent } from 'react-native';
+import { View, Pressable, Animated, LayoutChangeEvent } from 'react-native';
 import { cn } from '@/lib/utils';
+import { Text } from './text';
 
 // Context untuk share state
 interface TabsContextValue {
@@ -147,15 +148,15 @@ export function TabsList({ children, className }: TabsListProps) {
             <View
                 className={cn(
                     'relative flex-row items-center',
-                    variant === 'pill' && 'bg-slate-200 rounded-lg p-1',
-                    variant === 'underline' && 'border-b border-slate-300',
+                    variant === 'pill' && 'bg-muted rounded-lg p-1',
+                    variant === 'underline' && 'border-b border-border',
                     className
                 )}
             >
                 {/* Animated Pill Background */}
                 {variant === 'pill' && (
                     <Animated.View
-                        className="absolute bg-white rounded-md shadow-sm"
+                        className="absolute bg-background rounded-md shadow-sm"
                         style={{
                             left: indicatorPosition,
                             width: indicatorWidth,
@@ -209,17 +210,17 @@ export function TabsTrigger({ value: triggerValue, children, className, disabled
             disabled={disabled}
             className={cn(
                 'flex-1 items-center justify-center',
-                variant === 'pill' && 'px-4 rounded-md z-10',
+                variant === 'pill' && 'px-4 py-2 rounded-md z-10',
                 disabled && 'opacity-50',
                 className
             )}
         >
             <View className="items-center w-full">
                 <Text
+                    size={variant === 'pill' ? 'sm' : 'md'}
+                    variant="label"
                     className={cn(
-                        'text-base font-medium',
-                        isActive ? 'text-slate-900' : 'text-slate-400',
-                        variant === 'pill' && 'text-sm py-1'
+                        isActive ? 'text-foreground' : 'text-muted-foreground'
                     )}
                 >
                     {children}
@@ -228,7 +229,7 @@ export function TabsTrigger({ value: triggerValue, children, className, disabled
                 {/* Animated Underline Indicator */}
                 {variant === 'underline' && (
                     <Animated.View
-                        className="h-0.5 mt-3 rounded-full bg-slate-900 border-b-2 border-slate-900"
+                        className="h-0.5 mt-3 rounded-full bg-primary border-b-2 border-primary"
                         style={{
                             width: '100%',
                             transform: [{ scaleX: scaleAnim }],

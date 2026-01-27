@@ -1,6 +1,8 @@
+// components/ui/dialog.tsx
 import * as React from 'react';
-import { Modal, View, Text, Pressable, Animated } from 'react-native';
+import { Modal, View, Pressable, Animated } from 'react-native';
 import { cn } from '@/lib/utils';
+import { Text } from './text';
 
 interface DialogProps {
   open?: boolean;
@@ -49,10 +51,6 @@ function useDialog() {
 export function Dialog({ open: controlledOpen, onOpenChange: controlledOnOpenChange, children }: DialogProps) {
   const [internalOpen, setInternalOpen] = React.useState(false);
 
-  const hasDialogTrigger = React.Children.toArray(children).some(
-    (child) => React.isValidElement(child) && child.type === DialogTrigger
-  );
-
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const onOpenChange = controlledOnOpenChange || setInternalOpen;
 
@@ -82,7 +80,6 @@ export function DialogTrigger({ children }: { children: React.ReactNode }) {
 export function DialogContent({ children, className }: DialogContentProps) {
   const { open, onOpenChange } = useDialog();
 
-  // DONE: Track visible state separately for animation
   const [visible, setVisible] = React.useState(false);
 
   const scaleAnim = React.useRef(new Animated.Value(0.9)).current;
@@ -90,10 +87,8 @@ export function DialogContent({ children, className }: DialogContentProps) {
 
   React.useEffect(() => {
     if (open) {
-      // Show modal first
       setVisible(true);
 
-      // Then animate in
       Animated.parallel([
         Animated.spring(scaleAnim, {
           toValue: 1,
@@ -108,7 +103,6 @@ export function DialogContent({ children, className }: DialogContentProps) {
         }),
       ]).start();
     } else {
-      // Animate out first
       Animated.parallel([
         Animated.timing(scaleAnim, {
           toValue: 0.9,
@@ -121,7 +115,6 @@ export function DialogContent({ children, className }: DialogContentProps) {
           useNativeDriver: true,
         }),
       ]).start(() => {
-        // Then hide modal after animation completes
         setVisible(false);
       });
     }
@@ -138,7 +131,7 @@ export function DialogContent({ children, className }: DialogContentProps) {
     >
       <Pressable
         onPress={() => onOpenChange(false)}
-        className="flex-1 bg-black/50 items-center justify-center p-4"
+        className="flex-1 bg-black/50 dark:bg-black/70 items-center justify-center p-4"
       >
         <Animated.View
           style={{
@@ -150,7 +143,7 @@ export function DialogContent({ children, className }: DialogContentProps) {
           <Pressable
             onPress={(e) => e.stopPropagation()}
             className={cn(
-              'bg-white rounded-lg p-6 shadow-lg web:min-w-[400px]',
+              'bg-background rounded-lg p-6 shadow-lg web:min-w-[400px] border border-border',
               className
             )}
           >
@@ -172,7 +165,7 @@ export function DialogHeader({ children, className }: DialogHeaderProps) {
 
 export function DialogTitle({ children, className }: DialogTitleProps) {
   return (
-    <Text className={cn('text-xl font-semibold text-slate-900', className)}>
+    <Text size="xl" variant="title" className={cn(className)}>
       {children}
     </Text>
   );
@@ -180,7 +173,7 @@ export function DialogTitle({ children, className }: DialogTitleProps) {
 
 export function DialogDescription({ children, className }: DialogDescriptionProps) {
   return (
-    <Text className={cn('text-sm text-slate-500 mt-2', className)}>
+    <Text size="sm" className={cn('text-muted-foreground mt-2', className)}>
       {children}
     </Text>
   );
