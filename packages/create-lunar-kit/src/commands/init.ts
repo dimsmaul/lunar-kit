@@ -1,9 +1,6 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 
-
-const REGISTRY_URL = 'https://raw.githubusercontent.com/yourusername/lunar-kit/main/registry';
-const LOCAL_REGISTRY = path.join(__dirname, '../..', 'src', 'registry');
 const COMPONENTS_SOURCE = path.join(__dirname, '../..', 'src', 'components');
 
 const SOURCE = path.join(__dirname, '../..', 'src');
@@ -130,7 +127,7 @@ import { Button } from './components/ui/button';
 
 export default function Main() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center">
       <Text className="text-3xl font-bold text-slate-900 mb-2">
         🌙 Lunar Kit
       </Text>
@@ -192,7 +189,7 @@ import { Button } from '@/components/ui/button';
 
 export default function IndexScreen() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center">
       <Text className="text-3xl font-bold text-slate-900 mb-2">
         🌙 Lunar Kit
       </Text>
@@ -236,7 +233,7 @@ import { Button } from '../components/ui/button';
 
 export default function HomeScreen() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center">
       <Text className="text-3xl font-bold text-slate-900 mb-2">
         🌙 Lunar Kit
       </Text>
@@ -282,7 +279,7 @@ import { Button } from '@/src/components/ui/button';
 
 export default function LoginScreen() {
   return (
-    <View className="flex-1 items-center justify-center bg-white p-4">
+    <View className="flex-1 items-center justify-center p-4">
       <Text className="text-2xl font-bold mb-4">Login</Text>
       <Button className="w-full">Sign In</Button>
     </View>
@@ -486,63 +483,12 @@ module.exports = withNativeWind(config, {
   const buttonContent = fs.readFileSync(
     path.join(COMPONENTS_SOURCE, 'ui', 'button.tsx'),
   )
-//   const buttonContent = `import * as React from 'react';
-// import { Pressable, Text } from 'react-native';
-// import { cn } from '../../lib/utils';
-
-// interface ButtonProps {
-//   children: React.ReactNode;
-//   variant?: 'default' | 'outline' | 'ghost';
-//   size?: 'default' | 'sm' | 'lg';
-//   onPress?: () => void;
-//   className?: string;
-// }
-
-// export function Button({
-//   children,
-//   variant = 'default',
-//   size = 'default',
-//   onPress,
-//   className,
-// }: ButtonProps) {
-//   return (
-//     <Pressable
-//       onPress={onPress}
-//       className={cn(
-//         'items-center justify-center rounded-md',
-//         {
-//           'bg-slate-900': variant === 'default',
-//           'border border-slate-200': variant === 'outline',
-//           'bg-transparent': variant === 'ghost',
-//         },
-//         {
-//           'h-10 px-4': size === 'default',
-//           'h-9 px-3': size === 'sm',
-//           'h-11 px-8': size === 'lg',
-//         },
-//         className
-//       )}
-//     >
-//       <Text
-//         className={cn(
-//           'font-medium',
-//           {
-//             'text-slate-50': variant === 'default',
-//             'text-slate-900': variant === 'outline' || variant === 'ghost',
-//           },
-//           {
-//             'text-sm': size === 'default' || size === 'sm',
-//             'text-base': size === 'lg',
-//           }
-//         )}
-//       >
-//         {children}
-//       </Text>
-//     </Pressable>
-//   );
-// }`;
+  const textContent = fs.readFileSync(
+    path.join(COMPONENTS_SOURCE, 'ui', 'text.tsx'),
+  )
 
   await fs.writeFile(path.join(projectPath, 'src', 'components', 'ui', 'button.tsx'), buttonContent);
+  await fs.writeFile(path.join(projectPath, 'src', 'components', 'ui', 'text.tsx'), textContent);
 
   // Create tsconfig path aliases
   const tsconfigContent = `{

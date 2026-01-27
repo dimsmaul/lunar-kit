@@ -208,7 +208,7 @@ function generateBasicScreen(name: string): string {
 
 export default function ${name}Screen() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center">
       <Text className="text-2xl font-bold">${name}</Text>
     </View>
   );
@@ -226,7 +226,7 @@ const data = [
 
 export default function ${name}Screen() {
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1">
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
@@ -254,7 +254,7 @@ export default function ${name}Screen() {
   };
 
   return (
-    <View className="flex-1 bg-white p-4">
+    <View className="flex-1 p-4">
       <Text className="text-2xl font-bold mb-6">${name}</Text>
       
       <View className="mb-4">
@@ -286,7 +286,7 @@ function generateDetailScreen(name: string): string {
 
 export default function ${name}Screen() {
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView className="flex-1">
       <View className="p-4">
         <Text className="text-3xl font-bold mb-4">${name} Detail</Text>
         <Text className="text-gray-600 leading-6">
