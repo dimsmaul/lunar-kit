@@ -15,3 +15,5 @@ export { default as AccordionView } from './view/accordion_view';
 export { default as TabsView } from './view/tabs_view';
 export { default as FormView } from './view/form_view';
 export { useForms } from './hooks/useForm';
+export { default as BannerView } from './view/banner_view';
+export { default as BadgeView } from './view/badge_view';

@@ -14,7 +14,7 @@ const buttonVariants = cva(
         outline: 'border border-input bg-background',
         secondary: 'bg-secondary',
         ghost: 'bg-transparent',
-        link: 'bg-transparent',
+        link: 'bg-transparent px-0 py-0',
       },
       size: {
         default: 'h-10 px-4 py-2',
