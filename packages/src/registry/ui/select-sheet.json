@@ -1,0 +1,29 @@
+{
+  "name": "select-sheet",
+  "type": "registry:ui",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "text",
+    "input"
+  ],
+  "files": [
+    {
+      "path": "components/ui/select-sheet.tsx",
+      "type": "component"
+    }
+  ],
+  "meta": {
+    "description": "A bottom sheet-based select component for React Native, supporting both single and multiple selection modes. Includes search functionality, customizable labels, error handling, loading indicators, and flexible styling options for seamless integration into mobile UIs.",
+    "features": [
+      "Single and multiple selection modes",
+      "Searchable options list",
+      "Context-based value management",
+      "Optional label and description support",
+      "Visual selection indicator",
+      "Customizable styling and snap points",
+      "Error and loading state handling",
+      "Support for async option loading"
+    ]
+  }
+}

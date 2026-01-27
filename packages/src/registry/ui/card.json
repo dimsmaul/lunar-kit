@@ -8,9 +8,18 @@
       "type": "component"
     }
   ],
-  "dependencies": [
-    "clsx",
-    "tailwind-merge"
+  "dependencies": [],
+  "registryDependencies": [
+    "text"
   ],
-  "registryDependencies": []
+  "meta": {
+    "description": "A customizable card component with header, content, and footer sections.",
+    "features": [
+      "Header, content, and footer sections",
+      "Customizable padding and margin",
+      "Shadow and border radius options",
+      "Supports images and media",
+      "Lightweight and easy to integrate into existing designs"
+    ]
+  }
 }

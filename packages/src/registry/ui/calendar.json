@@ -5,11 +5,13 @@
     "dayjs"
   ],
   "devDependencies": [],
-  "registryDependencies": [],
+  "registryDependencies": [
+    "text"
+  ],
   "files": [
     {
       "path": "/src/components/ui/calendar.tsx",
-      "type": "registry:ui"
+      "type": "component"
     }
   ],
   "meta": {

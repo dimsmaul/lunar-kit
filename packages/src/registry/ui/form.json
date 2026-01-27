@@ -1,0 +1,27 @@
+{
+  "name": "form",
+  "type": "registry:ui",
+  "description": "A customizable form component",
+  "files": [
+    {
+      "path": "/src/components/ui/form.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [
+    "react-hook-form"
+  ],
+  "registryDependencies": [
+    "text"
+  ],
+  "meta": {
+    "description": "A customizable form component with input fields and validation support.",
+    "features": [
+      "Input fields with labels",
+      "Validation support",
+      "Customizable styling",
+      "Supports various input types",
+      "Lightweight and easy to integrate into existing designs"
+    ]
+  }
+}

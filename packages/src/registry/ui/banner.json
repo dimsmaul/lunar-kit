@@ -1,0 +1,27 @@
+{
+  "name": "banner",
+  "type": "registry:ui",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "text"
+  ],
+  "files": [
+    {
+      "path": "/src/components/ui/banner.tsx",
+      "type": "component"
+    }
+  ],
+  "meta": {
+    "description": "A banner component used to display important messages or alerts to users. Can be used for notifications, warnings, or informational messages.",
+    "features": [
+      "Multiple preset styles for different contexts (e.g., info, success, warning, error)",
+      "Customizable icons to enhance visual representation",
+      "Optional action buttons for user interaction",
+      "Dismissible banners with smooth animations",
+      "Supports text truncation for long content",
+      "Accessible with proper ARIA attributes",
+      "Lightweight and easy to integrate into existing designs"
+    ]
+  }
+}

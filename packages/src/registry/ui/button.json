@@ -8,9 +8,17 @@
       "type": "component"
     }
   ],
-  "dependencies": [
-    "clsx",
-    "tailwind-merge"
-  ],
-  "registryDependencies": []
+  "dependencies": [],
+  "registryDependencies": [],
+  "meta": {
+    "description": "A customizable button component with various styles and states.",
+    "features": [
+      "Multiple preset styles (primary, secondary, danger, etc.)",
+      "Customizable sizes (small, medium, large)",
+      "Supports icons on the left or right side",
+      "Disabled and loading states",
+      "Accessible with proper ARIA attributes",
+      "Lightweight and easy to integrate into existing designs"
+    ]
+  }
 }

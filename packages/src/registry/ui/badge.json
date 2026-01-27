@@ -1,0 +1,26 @@
+{
+  "name": "badge",
+  "type": "registry:ui",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "text"
+  ],
+  "files": [
+    {
+      "path": "/src/components/ui/badge.tsx",
+      "type": "component"
+    }
+  ],
+  "meta": {
+    "description": "A small badge component used to display status, counts, or labels. Can be used standalone or in conjunction with other UI elements.",
+    "features": [
+      "Multiple preset colors for different contexts (e.g., success, warning, error)",
+      "Customizable sizes (small, medium, large)",
+      "Optional icons to enhance visual representation",
+      "Supports text truncation for long content",
+      "Accessible with proper ARIA attributes",
+      "Lightweight and easy to integrate into existing designs"
+    ]
+  }
+}

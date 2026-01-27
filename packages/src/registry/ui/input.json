@@ -1,0 +1,22 @@
+{
+  "name": "input",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "/src/components/ui/input.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [],
+  "registryDependencies": [],
+  "meta": {
+    "description": "A flexible and theme-aware input component supporting prefixes, suffixes, multiple variants, and error states.",
+    "features": [
+      "Supports prefix and suffix elements",
+      "Multiple variants: outline, filled, underlined",
+      "Error state styling",
+      "Customizable padding and margin",
+      "Lightweight and easy to integrate into existing designs"
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "select",
+  "type": "registry:ui",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [
+    "text",
+    "dialog"
+  ],
+  "files": [
+    {
+      "path": "components/ui/select.tsx",
+      "type": "component"
+    }
+  ],
+  "meta": {
+    "description": "A versatile select component supporting single and multiple selection modes.",
+    "features": [
+      "Supports single and multiple selection modes",
+      "Customizable option rendering",
+      "Keyboard navigation support",
+      "Accessible with ARIA attributes",
+      "Integrates with Dialog for dropdown display"
+    ]
+  }
+}

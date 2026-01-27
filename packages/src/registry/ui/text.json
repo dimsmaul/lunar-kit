@@ -1,0 +1,22 @@
+{
+  "name": "text",
+  "type": "registry:ui",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "/src/components/ui/text.tsx",
+      "type": "component"
+    }
+  ],
+  "meta": {
+    "description": "A component for rendering text with various styles and sizes, designed for consistent typography across the application.",
+    "features": [
+      "Supports multiple text styles and sizes",
+      "Customizable font weight and color",
+      "Handles text truncation and wrapping",
+      "Accessible with proper ARIA roles"
+    ]
+  }
+}

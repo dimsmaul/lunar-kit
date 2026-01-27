@@ -3,11 +3,13 @@
   "type": "registry:ui",
   "dependencies": [],
   "devDependencies": [],
-  "registryDependencies": [],
+  "registryDependencies": [
+    "text"
+  ],
   "files": [
     {
-      "path": "components/ui/avatar.tsx",
-      "type": "registry:ui"
+      "path": "/src/components/ui/avatar.tsx",
+      "type": "component"
     }
   ],
   "tailwind": {

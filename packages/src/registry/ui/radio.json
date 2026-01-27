@@ -1,20 +1,17 @@
 {
-  "name": "radio-group",
+  "name": "radio",
   "type": "registry:ui",
   "dependencies": [],
   "devDependencies": [],
-  "registryDependencies": [
-    "text",
-    "radio"
-  ],
+  "registryDependencies": [],
   "files": [
     {
-      "path": "components/ui/radio-group.tsx",
-      "type": "registry:ui"
+      "path": "components/ui/radio.tsx",
+      "type": "component"
     }
   ],
   "meta": {
-    "description": "A radio group component for single selection with context-based state management.",
+    "description": "A radio component for single selection with context-based state management.",
     "features": [
       "Single selection mode",
       "Context-based value management",

@@ -3,11 +3,13 @@
   "type": "registry:ui",
   "dependencies": [],
   "devDependencies": [],
-  "registryDependencies": [],
+  "registryDependencies": [
+    "text"
+  ],
   "files": [
     {
       "path": "components/ui/checkbox.tsx",
-      "type": "registry:ui"
+      "type": "component"
     }
   ],
   "meta": {

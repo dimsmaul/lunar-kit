@@ -22,9 +22,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Text } from './text';
-import { Check } from 'lucide-react-native';
 import { Checkbox } from './checkbox';
-import { RadioGroupItem } from './radio-group';
 import { Radio } from './radio';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;

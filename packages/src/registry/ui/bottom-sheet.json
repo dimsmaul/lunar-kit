@@ -5,14 +5,15 @@
   "files": [
     {
       "path": "/src/components/ui/bottom-sheet.tsx",
-      "type": "component"
+      "type": "registry:ui"
     }
   ],
-  "dependencies": [
-    "clsx",
-    "tailwind-merge"
+  "dependencies": [],
+  "registryDependencies": [
+    "text",
+    "radio",
+    "checkbox"
   ],
-  "registryDependencies": [],
   "meta": {
     "description": "A draggable bottom sheet component with snap points, smooth gestures, and list variants.",
     "features": [
