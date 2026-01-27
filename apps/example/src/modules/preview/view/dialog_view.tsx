@@ -1,12 +1,18 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Text } from '@/components/ui/text';
+import { useToolbar } from '@/hooks/useToolbar';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 export default function DialogView() {
   const [open, setOpen] = React.useState(false);
+
+  useToolbar({
+    title: 'Dialog',
+  })
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center ">
       <Text className="text-2xl font-bold">DialogView</Text>
 
       <Text className='mt-10'>dengan state manual</Text>

@@ -1,13 +1,16 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToolbar } from '@/hooks/useToolbar';
 import React from 'react';
 import { View, Text } from 'react-native';
 
 export default function SelectView() {
   // const [value, setValue] = React.useState<SelectOption | undefined>();
   const [value, setValue] = React.useState('');
-
+  useToolbar({
+    title: 'Select',
+  })
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center">
       <Text className="text-2xl font-bold">SelectView</Text>
       <Select value={value} onValueChange={setValue}>
         <SelectTrigger>
