@@ -65,6 +65,10 @@ export function usePreview() {
       path: '/preview/badge',
       name: 'Badge',
     },
+    {
+      path: '/preview/select-sheet',
+      name: 'Select Sheet',
+    },
   ]
 
   const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));

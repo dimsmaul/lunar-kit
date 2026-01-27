@@ -17,3 +17,4 @@ export { default as FormView } from './view/form_view';
 export { useForms } from './hooks/useForm';
 export { default as BannerView } from './view/banner_view';
 export { default as BadgeView } from './view/badge_view';
+export { default as SelectSheetView } from './view/select-sheet_view';

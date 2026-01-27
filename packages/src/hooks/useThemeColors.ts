@@ -7,7 +7,6 @@ export function useThemeColors() {
 
   const colors = useMemo(() => {
     const result = colorScheme === 'dark' ? darkThemeColors : lightThemeColors;
-    console.log('🎨 useThemeColors - colorScheme:', colorScheme, 'background:', result.background);
     return result;
   }, [colorScheme]);
 

@@ -135,6 +135,13 @@ interface BottomSheetListProps<T> {
   selectedValues?: any[];
   getItemValue?: (item: T) => any;
   className?: string;
+  onEndReached?: () => void;
+  onEndReachedThreshold?: number;
+  ListFooterComponent?:
+  | React.ComponentType<any>
+  | React.ReactElement
+  | null
+  | undefined;
 }
 
 interface BottomSheetListItemProps {
@@ -437,6 +444,9 @@ export function BottomSheetList<T>({
   selectedValues = [],
   getItemValue,
   className,
+  onEndReached,
+  onEndReachedThreshold,
+  ListFooterComponent,
 }: BottomSheetListProps<T>) {
   const [internalSelectedValues, setInternalSelectedValues] =
     React.useState<any[]>(selectedValues);
@@ -543,6 +553,9 @@ export function BottomSheetList<T>({
       className={cn('flex-1 px-0', className)}
       showsVerticalScrollIndicator={false}
       bounces={false}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={onEndReachedThreshold}
+      ListFooterComponent={ListFooterComponent}
     />
   );
 }
