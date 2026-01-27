@@ -1,7 +1,13 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { View, Text } from 'react-native';
+import { Text } from '@/components/ui/text';
+import { useToolbar } from '@/hooks/useToolbar';
+import { View } from 'react-native';
 
 export default function CardView() {
+
+  useToolbar({
+    title: 'Card View',
+  })
   return (
     <View className="flex-1 items-center justify-center bg-white">
       <Text className="text-2xl font-bold">CardView</Text>

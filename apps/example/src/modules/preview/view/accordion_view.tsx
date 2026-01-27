@@ -1,14 +1,21 @@
 import { Accordion, AccordionContent, AccordionContentText, AccordionItem, AccordionTrigger, AccordionTriggerText } from '@/components/ui/accordion';
+import { Text } from '@/components/ui/text';
+import { useToolbar } from '@/hooks/useToolbar';
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 
 export default function AccordionView() {
   const [value, setValue] = React.useState<string | string[]>('');
   const [multiple, setMultiple] = React.useState<string | string[]>('');
+
+  useToolbar({
+    title: 'Accordion View',
+  })
+
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center">
       <ScrollView className='w-full p-3'>
-        <Text className="text-2xl font-bold">AccordionView</Text>
+        <Text variant="title" size="xl">AccordionView</Text>
 
         <View className='w-full flex flex-col gap-2'>
           <Text>

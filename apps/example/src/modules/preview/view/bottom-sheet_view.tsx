@@ -1,6 +1,8 @@
 import { BottomSheet, BottomSheetBody, BottomSheetClose, BottomSheetContent, BottomSheetDescription, BottomSheetFooter, BottomSheetHeader, BottomSheetList, BottomSheetTitle, BottomSheetTrigger } from '@/components/ui/bottom-sheet';
 import { Button } from '@/components/ui/button';
-import { View, Text } from 'react-native';
+import { Text } from '@/components/ui/text';
+import { useToolbar } from '@/hooks/useToolbar';
+import { View } from 'react-native';
 
 
 const data = Array.from({ length: 50 }, (_, i) => ({
@@ -15,8 +17,12 @@ export default function BottomSheetView() {
     { id: '3', label: 'Item 3', value: 'item3' },
   ];
 
+  useToolbar({
+    title: 'Bottom Sheet View',
+  })
+
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <View className="flex-1 items-center justify-center">
       <Text className="text-2xl font-bold">Bottom Sheet</Text>
       <View className='flex flex-col gap-2'>
         <BottomSheet snapPoints={['45%', '75%']} defaultSnapPoint={0}>

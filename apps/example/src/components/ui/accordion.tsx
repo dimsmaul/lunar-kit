@@ -1,18 +1,97 @@
 // components/ui/accordion.tsx
 import * as React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
     withTiming,
     Easing,
 } from 'react-native-reanimated';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react-native';
+import { Text } from './text';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 type AccordionType = 'single' | 'multiple';
 
-interface AccordionProps {
+// Accordion Variants
+const accordionVariants = cva(
+    'rounded-lg overflow-hidden',
+    {
+        variants: {
+            variant: {
+                default: 'border border-border',
+                bordered: 'border-2 border-border',
+                separated: 'gap-2',
+                filled: 'bg-muted',
+                ghost: '',
+            },
+        },
+        defaultVariants: {
+            variant: 'default',
+        },
+    }
+);
+
+// Accordion Item Variants
+const accordionItemVariants = cva(
+    '',
+    {
+        variants: {
+            variant: {
+                default: 'border-b border-border last:border-b-0',
+                bordered: 'border-b-2 border-border last:border-b-0',
+                separated: 'border border-border rounded-lg mb-2 last:mb-0',
+                filled: 'border-b border-border last:border-b-0',
+                ghost: 'mb-1',
+            },
+        },
+        defaultVariants: {
+            variant: 'default',
+        },
+    }
+);
+
+// Accordion Trigger Variants
+const accordionTriggerVariants = cva(
+    'flex-row items-center justify-between px-4 py-4',
+    {
+        variants: {
+            variant: {
+                default: 'bg-card',
+                bordered: 'bg-card',
+                separated: 'bg-card',
+                filled: 'bg-muted',
+                ghost: 'bg-transparent',
+            },
+        },
+        defaultVariants: {
+            variant: 'default',
+        },
+    }
+);
+
+// Accordion Content Variants
+const accordionContentVariants = cva(
+    'px-4 pb-4',
+    {
+        variants: {
+            variant: {
+                default: 'bg-card',
+                bordered: 'bg-card',
+                separated: 'bg-card',
+                filled: 'bg-muted',
+                ghost: 'bg-transparent',
+            },
+        },
+        defaultVariants: {
+            variant: 'default',
+        },
+    }
+);
+
+interface AccordionProps extends VariantProps<typeof accordionVariants> {
     type?: AccordionType;
     value?: string | string[];
     onValueChange?: (value: string | string[]) => void;
@@ -43,6 +122,7 @@ const AccordionContext = React.createContext<{
     value?: string | string[];
     onValueChange?: (value: string | string[]) => void;
     collapsible: boolean;
+    variant: 'default' | 'bordered' | 'separated' | 'filled' | 'ghost';
 } | null>(null);
 
 const AccordionItemContext = React.createContext<{
@@ -75,10 +155,17 @@ export function Accordion({
     children,
     className,
     collapsible = false,
+    variant = 'default',
 }: AccordionProps) {
     return (
-        <AccordionContext.Provider value={{ type, value, onValueChange, collapsible }}>
-            <View className={cn('border border-slate-200 rounded-lg overflow-hidden', className)}>
+        <AccordionContext.Provider value={{
+            type,
+            value,
+            onValueChange,
+            collapsible,
+            variant: variant ?? 'default'
+        }}>
+            <View className={cn(accordionVariants({ variant }), className)}>
                 {children}
             </View>
         </AccordionContext.Provider>
@@ -86,7 +173,7 @@ export function Accordion({
 }
 
 export function AccordionItem({ value, children, className, disabled = false }: AccordionItemProps) {
-    const { type, value: accordionValue, onValueChange, collapsible } = useAccordion();
+    const { type, value: accordionValue, onValueChange, collapsible, variant } = useAccordion();
 
     const isOpen = React.useMemo(() => {
         if (type === 'single') {
@@ -117,7 +204,7 @@ export function AccordionItem({ value, children, className, disabled = false }: 
 
     return (
         <AccordionItemContext.Provider value={{ value, isOpen, toggle, disabled }}>
-            <View className={cn('border-b border-slate-200 last:border-b-0', className)}>
+            <View className={cn(accordionItemVariants({ variant }), className)}>
                 {children}
             </View>
         </AccordionItemContext.Provider>
@@ -126,7 +213,9 @@ export function AccordionItem({ value, children, className, disabled = false }: 
 
 export function AccordionTrigger({ children, className }: AccordionTriggerProps) {
     const { isOpen, toggle, disabled } = useAccordionItem();
+    const { variant } = useAccordion();
     const rotation = useSharedValue(0);
+    const { colors } = useThemeColors();
 
     React.useEffect(() => {
         rotation.value = withTiming(isOpen ? 180 : 0, {
@@ -144,7 +233,7 @@ export function AccordionTrigger({ children, className }: AccordionTriggerProps)
             onPress={toggle}
             disabled={disabled}
             className={cn(
-                'flex-row items-center justify-between px-4 py-4 bg-white',
+                accordionTriggerVariants({ variant }),
                 disabled && 'opacity-50',
                 className
             )}
@@ -152,9 +241,7 @@ export function AccordionTrigger({ children, className }: AccordionTriggerProps)
             <View className="flex-1 pr-2">{children}</View>
 
             <Animated.View style={animatedStyle}>
-                <Text className="text-slate-500 text-sm">
-                    <ChevronDown />
-                </Text>
+                <ChevronDown size={20} className="text-muted-foreground" color={colors.mutedForeground} />
             </Animated.View>
         </Pressable>
     );
@@ -162,6 +249,7 @@ export function AccordionTrigger({ children, className }: AccordionTriggerProps)
 
 export function AccordionContent({ children, className }: AccordionContentProps) {
     const { isOpen } = useAccordionItem();
+    const { variant } = useAccordion();
     const height = useSharedValue(0);
     const opacity = useSharedValue(0);
     const [measured, setMeasured] = React.useState(false);
@@ -191,7 +279,6 @@ export function AccordionContent({ children, className }: AccordionContentProps)
         top: 0,
         left: 0,
         right: 0,
-
     }));
 
     return (
@@ -208,14 +295,15 @@ export function AccordionContent({ children, className }: AccordionContentProps)
                     }
                 }}
             >
-                <View className={cn('px-4 pb-4 bg-slate-50', className)}>
+                <View className={cn(accordionContentVariants({ variant }), className)}>
                     {children}
                 </View>
             </Animated.View>
-        </Animated.View >
+        </Animated.View>
     );
 }
 
+// Preset Text Components with theme colors
 export function AccordionTriggerText({
     children,
     className,
@@ -223,7 +311,11 @@ export function AccordionTriggerText({
     children: React.ReactNode;
     className?: string;
 }) {
-    return <Text className={cn('text-base font-medium text-slate-900', className)}>{children}</Text>;
+    return (
+        <Text variant="title" size="sm" className={className}>
+            {children}
+        </Text>
+    );
 }
 
 export function AccordionContentText({
@@ -233,5 +325,10 @@ export function AccordionContentText({
     children: React.ReactNode;
     className?: string;
 }) {
-    return <Text className={cn('text-sm text-slate-600 leading-6', className)}>{children}</Text>;
+    return (
+        <Text variant="body" size="sm" className={cn('leading-6', className)}>
+            {children}
+        </Text>
+    );
 }
+

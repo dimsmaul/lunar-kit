@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Default text color untuk semua Text component */
+@layer base {
+  * {
+    color: hsl(var(--foreground));
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "use-toolbar",
+  "type": "hook",
+  "description": "Hook for controlling navigation toolbar",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "variants": {
+    "expo-router": {
+      "file": "use-toolbar.expo-router.tsx",
+      "peerDependencies": ["expo-router"],
+      "imports": ["expo-router"]
+    },
+    "react-navigation": {
+      "file": "use-toolbar.react-navigation.tsx",
+      "peerDependencies": ["@react-navigation/native", "@react-navigation/native-stack"],
+      "imports": ["@react-navigation/native"]
+    }
+  },
+  "files": [
+    {
+      "path": "hooks/use-toolbar.ts",
+      "type": "hook"
+    }
+  ]
+}

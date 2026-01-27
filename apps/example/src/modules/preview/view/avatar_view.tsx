@@ -1,9 +1,17 @@
 import { Avatar, AvatarGroup } from '@/components/ui/avatar';
-import { View, Text } from 'react-native';
+import { Text } from '@/components/ui/text';
+import { useThemeColors } from '@/hooks/useThemeColors';
+import { useToolbar } from '@/hooks/useToolbar';
+import { Notebook } from 'lucide-react-native';
+import { View, } from 'react-native';
 
 export default function AvatarView() {
+  const { colors } = useThemeColors()
+  useToolbar({
+    title: 'Avatar View',
+  })
   return (
-    <View className="flex-1 items-center justify-center bg-white gap-10">
+    <View className="flex-1 items-center justify-center gap-10">
       <Text className="text-2xl font-bold">AvatarView</Text>
       <Avatar
         source={{ uri: 'https://i.pravatar.cc/150?img=1' }}

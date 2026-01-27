@@ -1,61 +1,142 @@
+// components/ui/button.tsx
 import * as React from 'react';
-import { Pressable, Text } from 'react-native';
+import { Pressable, Text as RNText, ActivityIndicator } from 'react-native';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-interface ButtonProps {
+const buttonVariants = cva(
+  'items-center justify-center rounded-md flex-row gap-2',
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary',
+        destructive: 'bg-destructive',
+        outline: 'border border-input bg-background',
+        secondary: 'bg-secondary',
+        ghost: 'bg-transparent',
+        link: 'bg-transparent',
+      },
+      size: {
+        default: 'h-10 px-4 py-2',
+        sm: 'h-9 px-3 py-1.5',
+        lg: 'h-11 px-8 py-3',
+        icon: 'h-10 w-10',
+      },
+      disabled: {
+        true: 'opacity-50',
+        false: '',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+      disabled: false,
+    },
+  }
+);
+
+const buttonTextVariants = cva(
+  'font-semibold text-center',
+  {
+    variants: {
+      variant: {
+        default: 'text-primary-foreground',
+        destructive: 'text-destructive-foreground',
+        outline: 'text-foreground',
+        secondary: 'text-secondary-foreground',
+        ghost: 'text-foreground',
+        link: 'text-primary underline',
+      },
+      size: {
+        default: 'text-sm',
+        sm: 'text-xs',
+        lg: 'text-base',
+        icon: 'text-sm',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
+  }
+);
+
+export interface ButtonProps
+  extends React.ComponentPropsWithoutRef<typeof Pressable>,
+  VariantProps<typeof buttonVariants> {
   children: React.ReactNode;
-  variant?: 'default' | 'outline' | 'ghost';
-  size?: 'default' | 'sm' | 'lg' | 'icon';
-  onPress?: () => void;
   className?: string;
+  textClassName?: string;
+  loading?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
 export function Button({
   children,
   variant = 'default',
   size = 'default',
-  onPress,
+  disabled = false,
+  loading = false,
+  leftIcon,
+  rightIcon,
   className,
+  textClassName,
+  ...props
 }: ButtonProps) {
+  const isDisabled = disabled || loading;
+
+  // Check if children is only icon (for icon button)
+  const isIconOnly = size === 'icon' && typeof children !== 'string';
+
   return (
     <Pressable
-      onPress={onPress}
+      disabled={isDisabled}
       className={cn(
-        'items-center justify-center rounded-md',
-        {
-          'bg-slate-900': variant === 'default',
-          'border border-slate-200': variant === 'outline',
-          'bg-transparent': variant === 'ghost',
-        },
-        {
-          'h-10 px-4': size === 'default',
-          'h-9 px-3': size === 'sm',
-          'h-11 px-8': size === 'lg',
-          'h-10 w-10': size === 'icon', // Square button
-        },
+        buttonVariants({
+          variant,
+          size,
+          disabled: isDisabled
+        }),
         className
       )}
+      {...props}
     >
-      {/* DONE: Only render Text if not icon size or if children is string */}
-      {size === 'icon' && typeof children !== 'string' ? (
-        children
-      ) : (
-        <Text
-          className={cn(
-            'font-medium',
-            {
-              'text-slate-50': variant === 'default',
-              'text-slate-900': variant === 'outline' || variant === 'ghost',
-            },
-            {
-              'text-sm': size === 'default' || size === 'sm',
-              'text-base': size === 'lg',
-            }
-          )}
-        >
-          {children}
-        </Text>
+      {/* Loading Indicator */}
+      {loading && (
+        <ActivityIndicator
+          size="small"
+          color={
+            variant === 'default' || variant === 'destructive'
+              ? '#ffffff'
+              : variant === 'outline' || variant === 'ghost'
+                ? '#0f172a'
+                : '#0f172a'
+          }
+        />
       )}
+
+      {/* Left Icon */}
+      {!loading && leftIcon && leftIcon}
+
+      {/* Text or Icon Content */}
+      {!loading && (
+        isIconOnly ? (
+          children
+        ) : (
+          <RNText
+            className={cn(
+              buttonTextVariants({ variant, size }),
+              textClassName
+            )}
+          >
+            {children}
+          </RNText>
+        )
+      )}
+
+      {/* Right Icon */}
+      {!loading && rightIcon && rightIcon}
     </Pressable>
   );
 }

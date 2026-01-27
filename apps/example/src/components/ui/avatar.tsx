@@ -1,13 +1,91 @@
 // components/ui/avatar.tsx
 import * as React from 'react';
-import { View, Text, Image, ImageSourcePropType } from 'react-native';
-import { cn } from '../../lib/utils';
+import { View, Image, ImageSourcePropType } from 'react-native';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+import { Text } from './text';
 
-interface AvatarProps {
+// Avatar Variants
+const avatarVariants = cva(
+    'rounded-full overflow-hidden items-center justify-center',
+    {
+        variants: {
+            variant: {
+                default: 'bg-muted',
+                primary: 'bg-primary',
+                secondary: 'bg-secondary',
+                outline: 'bg-background border-2 border-border',
+            },
+            size: {
+                xs: 'h-6 w-6',
+                sm: 'h-8 w-8',
+                md: 'h-10 w-10',
+                lg: 'h-12 w-12',
+                xl: 'h-16 w-16',
+                '2xl': 'h-20 w-20',
+            },
+        },
+        defaultVariants: {
+            variant: 'default',
+            size: 'md',
+        },
+    }
+);
+
+// Text size variants
+const avatarTextVariants = cva(
+    'font-semibold',
+    {
+        variants: {
+            variant: {
+                default: 'text-muted-foreground',
+                primary: 'text-primary-foreground',
+                secondary: 'text-secondary-foreground',
+                outline: 'text-foreground',
+            },
+            size: {
+                xs: 'text-[10px]',
+                sm: 'text-xs',
+                md: 'text-sm',
+                lg: 'text-base',
+                xl: 'text-xl',
+                '2xl': 'text-2xl',
+            },
+        },
+        defaultVariants: {
+            variant: 'default',
+            size: 'md',
+        },
+    }
+);
+
+// Status indicator variants
+const statusVariants = cva(
+    'absolute bottom-0 right-0 rounded-full border-2 border-background',
+    {
+        variants: {
+            status: {
+                online: 'bg-green-500',
+                offline: 'bg-muted-foreground',
+                away: 'bg-yellow-500',
+                busy: 'bg-red-500',
+            },
+            size: {
+                xs: 'h-1.5 w-1.5',
+                sm: 'h-2 w-2',
+                md: 'h-2.5 w-2.5',
+                lg: 'h-3 w-3',
+                xl: 'h-4 w-4',
+                '2xl': 'h-5 w-5',
+            },
+        },
+    }
+);
+
+interface AvatarProps extends VariantProps<typeof avatarVariants> {
     source?: ImageSourcePropType;
     alt?: string;
     fallback?: string;
-    size?: 'sm' | 'md' | 'lg' | 'xl';
     status?: 'online' | 'offline' | 'away' | 'busy';
     className?: string;
 }
@@ -15,7 +93,8 @@ interface AvatarProps {
 interface AvatarGroupProps {
     children: React.ReactNode;
     max?: number;
-    size?: 'sm' | 'md' | 'lg' | 'xl';
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    variant?: 'default' | 'primary' | 'secondary' | 'outline';
     className?: string;
 }
 
@@ -30,7 +109,8 @@ interface AvatarFallbackProps {
 }
 
 const AvatarContext = React.createContext<{
-    size: 'sm' | 'md' | 'lg' | 'xl';
+    size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    variant: 'default' | 'primary' | 'secondary' | 'outline';
     hasImage: boolean;
     setHasImage: (value: boolean) => void;
 } | null>(null);
@@ -43,40 +123,23 @@ function useAvatar() {
     return context;
 }
 
-// Size mappings
-const sizeClasses = {
-    sm: 'h-8 w-8',
-    md: 'h-10 w-10',
-    lg: 'h-12 w-12',
-    xl: 'h-16 w-16',
+// Get initials helper
+const getInitials = (text?: string) => {
+    if (!text) return '?';
+    const words = text.trim().split(' ');
+    if (words.length >= 2) {
+        return (words[0][0] + words[1][0]).toUpperCase();
+    }
+    return text.substring(0, 2).toUpperCase();
 };
 
-const textSizeClasses = {
-    sm: 'text-xs',
-    md: 'text-sm',
-    lg: 'text-base',
-    xl: 'text-xl',
-};
-
-const statusSizeClasses = {
-    sm: 'h-2 w-2',
-    md: 'h-2.5 w-2.5',
-    lg: 'h-3 w-3',
-    xl: 'h-4 w-4',
-};
-
-const statusColors = {
-    online: 'bg-green-500',
-    offline: 'bg-slate-400',
-    away: 'bg-yellow-500',
-    busy: 'bg-red-500',
-};
-
+// Simple Avatar (All-in-one)
 export function Avatar({
     source,
     alt,
     fallback,
     size = 'md',
+    variant = 'default',
     status,
     className
 }: AvatarProps) {
@@ -87,25 +150,18 @@ export function Avatar({
         setHasImage(!!source && !imageError);
     }, [source, imageError]);
 
-    // Get initials from fallback text
-    const getInitials = (text?: string) => {
-        if (!text) return '?';
-        const words = text.trim().split(' ');
-        if (words.length >= 2) {
-            return (words[0][0] + words[1][0]).toUpperCase();
-        }
-        return text.substring(0, 2).toUpperCase();
-    };
+    const avatarSize = size ?? 'md';
+    const avatarVariant = variant ?? 'default';
 
     return (
-        <AvatarContext.Provider value={{ size, hasImage, setHasImage }}>
+        <AvatarContext.Provider value={{
+            size: avatarSize,
+            variant: avatarVariant,
+            hasImage,
+            setHasImage
+        }}>
             <View className={cn('relative', className)}>
-                <View
-                    className={cn(
-                        'rounded-full overflow-hidden items-center justify-center bg-slate-200',
-                        sizeClasses[size]
-                    )}
-                >
+                <View className={cn(avatarVariants({ variant: avatarVariant, size: avatarSize }))}>
                     {source && !imageError ? (
                         <Image
                             source={source}
@@ -115,12 +171,7 @@ export function Avatar({
                             resizeMode="cover"
                         />
                     ) : (
-                        <Text
-                            className={cn(
-                                'font-semibold text-slate-600',
-                                textSizeClasses[size]
-                            )}
-                        >
+                        <Text className={cn(avatarTextVariants({ variant: avatarVariant, size: avatarSize }))}>
                             {getInitials(fallback || alt)}
                         </Text>
                     )}
@@ -128,46 +179,45 @@ export function Avatar({
 
                 {/* Status Indicator */}
                 {status && (
-                    <View
-                        className={cn(
-                            'absolute bottom-0 right-0 rounded-full border-2 border-white',
-                            statusSizeClasses[size],
-                            statusColors[status]
-                        )}
-                    />
+                    <View className={cn(statusVariants({ status, size: avatarSize }))} />
                 )}
             </View>
         </AvatarContext.Provider>
     );
 }
 
-// Composable Avatar components
+// Composable Avatar Root
 export function AvatarRoot({
     size = 'md',
+    variant = 'default',
     className,
     children
 }: {
-    size?: 'sm' | 'md' | 'lg' | 'xl';
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    variant?: 'default' | 'primary' | 'secondary' | 'outline';
     className?: string;
     children: React.ReactNode;
 }) {
     const [hasImage, setHasImage] = React.useState(false);
 
+    const avatarSize = size ?? 'md';
+    const avatarVariant = variant ?? 'default';
+
     return (
-        <AvatarContext.Provider value={{ size, hasImage, setHasImage }}>
-            <View
-                className={cn(
-                    'rounded-full overflow-hidden items-center justify-center bg-slate-200',
-                    sizeClasses[size],
-                    className
-                )}
-            >
+        <AvatarContext.Provider value={{
+            size: avatarSize,
+            variant: avatarVariant,
+            hasImage,
+            setHasImage
+        }}>
+            <View className={cn(avatarVariants({ variant: avatarVariant, size: avatarSize }), className)}>
                 {children}
             </View>
         </AvatarContext.Provider>
     );
 }
 
+// Avatar Image
 export function AvatarImage({ source, alt }: AvatarImageProps) {
     const { setHasImage } = useAvatar();
 
@@ -183,36 +233,55 @@ export function AvatarImage({ source, alt }: AvatarImageProps) {
     );
 }
 
+// Avatar Fallback
 export function AvatarFallback({ children, className }: AvatarFallbackProps) {
-    const { size, hasImage } = useAvatar();
+    const { size, variant, hasImage } = useAvatar();
 
     if (hasImage) return null;
 
     return (
-        <Text
-            className={cn(
-                'font-semibold text-slate-600',
-                textSizeClasses[size],
-                className
-            )}
-        >
+        <Text className={cn(avatarTextVariants({ variant, size }), className)}>
             {children}
         </Text>
     );
 }
 
+// Avatar Status
+export function AvatarStatus({
+    status
+}: {
+    status: 'online' | 'offline' | 'away' | 'busy'
+}) {
+    const { size } = useAvatar();
+
+    return (
+        <View className={cn(statusVariants({ status, size }))} />
+    );
+}
+
 // Avatar Group
-export function AvatarGroup({ children, max = 3, size = 'md', className }: AvatarGroupProps) {
+export function AvatarGroup({
+    children,
+    max = 3,
+    size = 'md',
+    variant = 'default',
+    className
+}: AvatarGroupProps) {
     const avatars = React.Children.toArray(children);
     const visibleAvatars = avatars.slice(0, max);
     const remainingCount = avatars.length - max;
 
+    const avatarSize = size ?? 'md';
+    const avatarVariant = variant ?? 'default';
+
     // Overlap offset based on size
     const overlapOffset = {
+        xs: -6,
         sm: -8,
         md: -10,
         lg: -12,
         xl: -16,
+        '2xl': -20,
     };
 
     return (
@@ -221,13 +290,16 @@ export function AvatarGroup({ children, max = 3, size = 'md', className }: Avata
                 <View
                     key={index}
                     style={{
-                        marginLeft: index > 0 ? overlapOffset[size] : 0,
+                        marginLeft: index > 0 ? overlapOffset[avatarSize] : 0,
                         zIndex: visibleAvatars.length - index,
                     }}
-                    className="border-2 border-white rounded-full"
+                    className="border-2 border-background rounded-full"
                 >
                     {React.isValidElement(avatar) && avatar.type === Avatar
-                        ? React.cloneElement(avatar as React.ReactElement<AvatarProps>, { size })
+                        ? React.cloneElement(avatar as React.ReactElement<AvatarProps>, {
+                            size: avatarSize,
+                            variant: avatarVariant
+                        })
                         : avatar}
                 </View>
             ))}
@@ -236,20 +308,15 @@ export function AvatarGroup({ children, max = 3, size = 'md', className }: Avata
             {remainingCount > 0 && (
                 <View
                     style={{
-                        marginLeft: overlapOffset[size],
+                        marginLeft: overlapOffset[avatarSize],
                         zIndex: 0,
                     }}
                     className={cn(
-                        'rounded-full bg-slate-300 items-center justify-center border-2 border-white',
-                        sizeClasses[size]
+                        avatarVariants({ variant: 'default', size: avatarSize }),
+                        'border-2 border-background'
                     )}
                 >
-                    <Text
-                        className={cn(
-                            'font-semibold text-slate-700',
-                            textSizeClasses[size]
-                        )}
-                    >
+                    <Text className={cn(avatarTextVariants({ variant: 'default', size: avatarSize }))}>
                         +{remainingCount}
                     </Text>
                 </View>
