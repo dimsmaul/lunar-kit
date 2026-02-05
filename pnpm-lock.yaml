@@ -142,8 +142,8 @@ importers:
   packages/cli:
     dependencies:
       '@lunar-kit/core':
-        specifier: workspace:*
-        version: link:../core
+        specifier: 0.1.0
+        version: 0.1.0
       axios:
         specifier: ^1.13.2
         version: 1.13.2
@@ -191,8 +191,8 @@ importers:
   packages/create-lunar-kit:
     dependencies:
       '@lunar-kit/core':
-        specifier: workspace:*
-        version: link:../core
+        specifier: 0.1.0
+        version: 0.1.0
       chalk:
         specifier: ^5.4.1
         version: 5.6.2
@@ -1119,6 +1119,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@lunar-kit/core@0.1.0':
+    resolution: {integrity: sha512-CW9rUo1cf9Ye0zBCwWCk5CYhzwHCage6J+SUoeibViBhW+YC9rTHh6GmyAUV+IzvUeeIveaVx8tLIUtnZf++5w==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -5512,6 +5515,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@lunar-kit/core@0.1.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:

@@ -24,7 +24,7 @@
     "starter"
   ],
   "dependencies": {
-    "@lunar-kit/core": "workspace:*",
+    "@lunar-kit/core": "0.1.0",
     "chalk": "^5.4.1",
     "commander": "^12.1.0",
     "execa": "^9.6.1",

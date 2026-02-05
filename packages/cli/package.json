@@ -14,7 +14,7 @@
     "prepublishOnly": "pnpm build" 
   },
   "dependencies": {
-    "@lunar-kit/core": "workspace:*",
+    "@lunar-kit/core": "0.1.0",
     "axios": "^1.13.2",
     "chalk": "^5.6.2",
     "commander": "^14.0.2",
