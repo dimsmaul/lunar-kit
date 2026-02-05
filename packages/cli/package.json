@@ -1,17 +1,20 @@
 {
-  "name": "lk",
+  "name": "@lunar-kit/cli",
   "version": "0.1.0",
   "description": "CLI for Lunar Kit",
   "bin": {
     "lk": "./dist/index.js",
-    "lunar": "./dist/index.js"
+    "lunar": "./dist/index.js",
+    "lunar-kit": "./dist/index.js"
   },
   "type": "module",
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch"
+    "dev": "tsup --watch",
+    "prepublishOnly": "pnpm build" 
   },
   "dependencies": {
+    "@lunar-kit/core": "workspace:*",
     "axios": "^1.13.2",
     "chalk": "^5.6.2",
     "commander": "^14.0.2",
@@ -24,5 +27,30 @@
     "@types/prompts": "^2.4.9",
     "tsup": "^8.5.1",
     "typescript": "~5.9.3"
+  },
+  "files": [
+    "dist"
+  ],
+   "keywords": [
+    "react-native",
+    "cli",
+    "lunar-kit",
+    "component-generator",
+    "expo",
+    "ui-components"
+  ],
+  "author": "Your Name <your@email.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/lunar-kit.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/yourusername/lunar-kit#readme",
+  "bugs": {
+    "url": "https://github.com/yourusername/lunar-kit/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
