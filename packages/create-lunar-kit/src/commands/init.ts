@@ -1,7 +1,9 @@
 import fs from 'fs-extra';
 import path from 'node:path';
+import { LOCAL_COMPONENTS_PATH } from '@lunar-kit/core';
 
-const COMPONENTS_SOURCE = path.join(__dirname, '../..', 'src', 'components');
+// Tidak perlu define lagi, import dari core
+// const COMPONENTS_SOURCE = ...
 
 const SOURCE = path.join(__dirname, '../..', 'src');
 
@@ -29,7 +31,6 @@ export async function createSrcStructure(projectPath: string, navigation: string
   await createBarrelExport(path.join(projectPath, 'src/stores'), 'index.ts');
 }
 
-
 /**
  * @Setup app entry point
  */
@@ -41,7 +42,6 @@ export async function createBarrelExport(dir: string, filename: string) {
 /**
  * @Setup app entry point
  */
-
 export async function setupAppEntry(projectPath: string, navigation: string) {
   if (navigation === 'expo-router') {
     // ============================================
@@ -290,7 +290,6 @@ export default function LoginScreen() {
 }
 
 export async function setupDarkModeSrc(projectPath: string, navigation: string) {
-// export const useTheme = () => useContext(ThemeContext);`;
   const themeProvider = fs.readFileSync(
     path.join(SOURCE, 'providers', 'theme-provider.tsx'),
   );
@@ -299,6 +298,7 @@ export async function setupDarkModeSrc(projectPath: string, navigation: string) 
   const themeStore = fs.readFileSync(
     path.join(SOURCE, 'stores', 'theme.ts'),
   );
+  
   // update export theme.ts on stores/index.ts
   const storesIndexPath = path.join(projectPath, 'src', 'stores', 'index.ts');
   let storesIndexContent = `// Auto-generated barrel export\n// This file is managed by Lunar Kit CLI\n`;
@@ -306,7 +306,6 @@ export async function setupDarkModeSrc(projectPath: string, navigation: string) 
   await fs.writeFile(storesIndexPath, storesIndexContent);
 
   // Hooks
-  // expo-router, react-navigation
   let toolbarContent: Buffer;
   if (navigation === 'expo-router') {
     toolbarContent = fs.readFileSync(
@@ -318,7 +317,6 @@ export async function setupDarkModeSrc(projectPath: string, navigation: string) 
     )
   }
 
-  // theme
   const themeContent = fs.readFileSync(
     path.join(SOURCE, 'hooks', 'useTheme.ts'),
   );
@@ -379,10 +377,6 @@ export function useForm<T>(initialValues: T) {
   await fs.writeFile(path.join(projectPath, 'src', 'hooks', 'useForm.ts'), hookContent);
 }
 
-/**
- * TODO: need to adjust
- * @param projectPath 
- */
 export async function setupStateSrc(projectPath: string) {
   const storeContent = `import { create } from 'zustand';
 
@@ -410,27 +404,14 @@ export async function setupNativeWind(projectPath: string) {
 
   await fs.writeFile(path.join(projectPath, 'src', 'global.css'), globalCss);
 
-  // Create tailwind.config.js
-//   const tailwindConfig = `/** @type {import('tailwindcss').Config} */
-// module.exports = {
-//   content: [
-//     "./App.{js,jsx,ts,tsx}",
-//     "./app/**/*.{js,jsx,ts,tsx}",
-//     "./src/**/*.{js,jsx,ts,tsx}"
-//   ],
-//   presets: [require("nativewind/preset")],
-//   theme: {
-//     extend: {},
-//   },
-//   plugins: [],
-// }`;
+  // Read config dari CLI source (bukan core)
   const tailwindConfig = fs.readFileSync(
-      path.join(SOURCE, 'tailwind.config.js'),
-  )
+    path.join(SOURCE, 'tailwind.config.js'),
+  );
 
   await fs.writeFile(path.join(projectPath, 'tailwind.config.js'), tailwindConfig);
 
-  // Create metro.config.js - CORRECT FORMAT
+  // Create metro.config.js
   const metroConfig = `const { getDefaultConfig } = require('expo/metro-config');
 const { withNativeWind } = require('nativewind/metro');
 
@@ -442,7 +423,7 @@ module.exports = withNativeWind(config, {
 
   await fs.writeFile(path.join(projectPath, 'metro.config.js'), metroConfig);
 
-  // Create babel.config.js - FIX: Correct plugin format
+  // Create babel.config.js
   const babelConfig = `module.exports = function (api) {
   api.cache(true);
   return {
@@ -459,33 +440,24 @@ module.exports = withNativeWind(config, {
   const nativewindEnv = `/// <reference types="nativewind/types" />`;
   await fs.writeFile(path.join(projectPath, 'nativewind-env.d.ts'), nativewindEnv);
 
-  // Create utils
-//   const utilsContent = `import { clsx, type ClassValue } from 'clsx';
-// import { twMerge } from 'tailwind-merge';
-
-// export function cn(...inputs: ClassValue[]) {
-//   return twMerge(clsx(inputs));
-// }`;
-
-  // read ./lib/theme.ts
-  const utilsContent =  fs.readFileSync(
+  // Read utils dari CLI source
+  const utilsContent = fs.readFileSync(
     path.join(SOURCE, 'lib', 'utils.ts'),
-  )
-  const colorsContent =  fs.readFileSync(
+  );
+  const colorsContent = fs.readFileSync(
     path.join(SOURCE, 'lib', 'theme.ts'),
-  )
+  );
 
   await fs.writeFile(path.join(projectPath, 'src', 'lib', 'utils.ts'), utilsContent);
   await fs.writeFile(path.join(projectPath, 'src', 'lib', 'theme.ts'), colorsContent);
 
-  // Create Button component
-  // components/ui/button.tsx
+  // ✅ PAKAI LOCAL_COMPONENTS_PATH dari @lunar-kit/core
   const buttonContent = fs.readFileSync(
-    path.join(COMPONENTS_SOURCE, 'ui', 'button.tsx'),
-  )
+    path.join(LOCAL_COMPONENTS_PATH, 'ui', 'button.tsx'),
+  );
   const textContent = fs.readFileSync(
-    path.join(COMPONENTS_SOURCE, 'ui', 'text.tsx'),
-  )
+    path.join(LOCAL_COMPONENTS_PATH, 'ui', 'text.tsx'),
+  );
 
   await fs.writeFile(path.join(projectPath, 'src', 'components', 'ui', 'button.tsx'), buttonContent);
   await fs.writeFile(path.join(projectPath, 'src', 'components', 'ui', 'text.tsx'), textContent);
@@ -549,12 +521,7 @@ export async function updatePackageJson(projectPath: string, navigation: string,
     pkg.dependencies['react-hook-form'] = '^7.54.2';
     pkg.dependencies['@hookform/resolvers'] = '^5.2.2';
     pkg.dependencies['zod'] = '^4.3.6';
-
   }
-
-  // if (features.includes('state')) {
-  //   pkg.dependencies['zustand'] = '^5.0.3';
-  // }
   
   pkg.devDependencies = {
     ...pkg.devDependencies,
@@ -580,7 +547,7 @@ export async function createConfig(projectPath: string, navigation: string, feat
     hooksDir: 'src/hooks',
     storesDir: 'src/stores',
     uiComponentsDir: 'src/components/ui',
-    packageManager, // DONE: Add this
+    packageManager,
     namingConvention: {
       files: 'snake_case',
       exports: 'PascalCase',
