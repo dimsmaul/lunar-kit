@@ -1,12 +1,8 @@
 {
   "name": "@lunar-kit/cli",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "CLI for Lunar Kit",
-  "bin": {
-    "lk": "./dist/index.js",
-    "lunar": "./dist/index.js",
-    "lunar-kit": "./dist/index.js"
-  },
+  "bin": "./dist/index.js",
   "type": "module",
   "scripts": {
     "build": "tsup",
@@ -39,16 +35,16 @@
     "expo",
     "ui-components"
   ],
-  "author": "Your Name <your@email.com>",
+  "author": "Dimas Maulana",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/lunar-kit.git",
+    "url": "https://github.com/dimsmaul/lunar-kit.git",
     "directory": "packages/cli"
   },
-  "homepage": "https://github.com/yourusername/lunar-kit#readme",
+  "homepage": "https://github.com/dimsmaul/lunar-kit#readme",
   "bugs": {
-    "url": "https://github.com/yourusername/lunar-kit/issues"
+    "url": "https://github.com/dimsmaul/lunar-kit/issues"
   },
   "engines": {
     "node": ">=18.0.0"
