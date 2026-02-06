@@ -494,9 +494,9 @@ export async function updatePackageJson(projectPath: string, navigation: string,
     '@react-native-async-storage/async-storage': '^2.2.0',
     'lucide-react-native': '^0.562.0',
     'react-native-gesture-handler': '^2.28.0',
-    'react-native-reanimated': '^4.1.6',
+    'react-native-reanimated': '~3.10.1',
     'react-native-safe-area-context': '^5.6.2',
-    'react-native-worklets': '^0.5.1',
+    'react-native-worklets': '^0.7.0',
     'zustand': '^5.0.3',
   };
 
