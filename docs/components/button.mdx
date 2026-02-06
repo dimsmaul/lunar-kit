@@ -1,0 +1,308 @@
+---
+sidebar_position: 6
+title: Button
+description: A versatile button component with multiple variants and sizes
+---
+
+# Button
+
+Displays a button or a component that looks like a button.
+
+## Installation
+
+```bash
+lunar-kit add button
+```
+
+## Usage
+
+```tsx
+import { Button } from '@/components/ui/button';
+```
+
+### Basic Usage
+
+```tsx
+<Button>Click me</Button>
+```
+
+### Variants
+
+```tsx
+<Button variant="default">Default</Button>
+<Button variant="destructive">Destructive</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="link">Link</Button>
+```
+
+### Sizes
+
+```tsx
+<Button size="sm">Small</Button>
+<Button size="default">Default</Button>
+<Button size="lg">Large</Button>
+<Button size="icon">
+  <Settings size={16} />
+</Button>
+```
+
+### Loading State
+
+```tsx
+<Button loading>Submitting...</Button>
+
+// With custom loading behavior
+const [isLoading, setIsLoading] = useState(false);
+
+<Button 
+  loading={isLoading} 
+  onPress={async () => {
+    setIsLoading(true);
+    await submitForm();
+    setIsLoading(false);
+  }}
+>
+  Submit
+</Button>
+```
+
+### Disabled State
+
+```tsx
+<Button disabled>Disabled</Button>
+```
+
+### With Icons
+
+```tsx
+import { Mail, ArrowRight, Plus } from 'lucide-react-native';
+
+// Left icon
+<Button leftIcon={<Mail size={16} color="white" />}>
+  Send Email
+</Button>
+
+// Right icon
+<Button rightIcon={<ArrowRight size={16} color="white" />}>
+  Continue
+</Button>
+
+// Both icons
+<Button 
+  leftIcon={<Plus size={16} color="white" />}
+  rightIcon={<ArrowRight size={16} color="white" />}
+>
+  Add Item
+</Button>
+
+// Icon only
+<Button size="icon" variant="outline">
+  <Plus size={16} />
+</Button>
+```
+
+### Full Width
+
+```tsx
+<Button className="w-full">
+  Full Width Button
+</Button>
+```
+
+## API Reference
+
+### Button
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Button content |
+| `variant` | `'default' \| 'destructive' \| 'outline' \| 'secondary' \| 'ghost' \| 'link'` | `'default'` | Visual variant |
+| `size` | `'default' \| 'sm' \| 'lg' \| 'icon'` | `'default'` | Button size |
+| `disabled` | `boolean` | `false` | Disable the button |
+| `loading` | `boolean` | `false` | Show loading spinner |
+| `leftIcon` | `ReactNode` | — | Icon on the left |
+| `rightIcon` | `ReactNode` | — | Icon on the right |
+| `className` | `string` | — | Additional classes for container |
+| `textClassName` | `string` | — | Additional classes for text |
+| `onPress` | `() => void` | — | Press handler |
+
+All standard `Pressable` props are also supported.
+
+## Styling
+
+### Custom Styles
+
+```tsx
+// Custom background color
+<Button className="bg-purple-500">
+  Purple Button
+</Button>
+
+// Custom text color
+<Button textClassName="text-yellow-400">
+  Yellow Text
+</Button>
+
+// Combined
+<Button 
+  className="bg-gradient-to-r from-pink-500 to-purple-500"
+  textClassName="font-bold"
+>
+  Gradient Button
+</Button>
+```
+
+### Rounded Variants
+
+```tsx
+<Button className="rounded-full">
+  Pill Button
+</Button>
+
+<Button className="rounded-none">
+  Square Button
+</Button>
+```
+
+## Examples
+
+### Form Submit Button
+
+```tsx
+export function SubmitButton({ isSubmitting, onSubmit }) {
+  return (
+    <Button
+      loading={isSubmitting}
+      disabled={isSubmitting}
+      onPress={onSubmit}
+      className="w-full mt-4"
+    >
+      {isSubmitting ? 'Submitting...' : 'Submit'}
+    </Button>
+  );
+}
+```
+
+### Button Group
+
+```tsx
+export function ButtonGroup() {
+  return (
+    <View className="flex-row gap-2">
+      <Button variant="outline">Cancel</Button>
+      <Button>Save</Button>
+    </View>
+  );
+}
+```
+
+### Social Login Buttons
+
+```tsx
+export function SocialButtons() {
+  return (
+    <View className="gap-3">
+      <Button
+        variant="outline"
+        leftIcon={<GoogleIcon size={20} />}
+        className="w-full"
+      >
+        Continue with Google
+      </Button>
+      
+      <Button
+        variant="outline"
+        leftIcon={<AppleIcon size={20} />}
+        className="w-full"
+      >
+        Continue with Apple
+      </Button>
+    </View>
+  );
+}
+```
+
+### Destructive Action
+
+```tsx
+export function DeleteButton({ onDelete, isDeleting }) {
+  return (
+    <Button
+      variant="destructive"
+      loading={isDeleting}
+      onPress={onDelete}
+      leftIcon={<Trash size={16} color="white" />}
+    >
+      Delete Account
+    </Button>
+  );
+}
+```
+
+### Floating Action Button
+
+```tsx
+export function FAB({ onPress }) {
+  return (
+    <Button
+      size="icon"
+      onPress={onPress}
+      className="absolute bottom-6 right-6 w-14 h-14 rounded-full shadow-lg"
+    >
+      <Plus size={24} color="white" />
+    </Button>
+  );
+}
+```
+
+### Toggle Button
+
+```tsx
+export function ToggleButton({ isActive, onToggle }) {
+  return (
+    <Button
+      variant={isActive ? 'default' : 'outline'}
+      onPress={onToggle}
+    >
+      {isActive ? 'Active' : 'Inactive'}
+    </Button>
+  );
+}
+```
+
+### Link Button
+
+```tsx
+export function LinkButton() {
+  return (
+    <Button variant="link" onPress={() => Linking.openURL('https://example.com')}>
+      Learn More
+    </Button>
+  );
+}
+```
+
+### With Badge
+
+```tsx
+export function ButtonWithBadge({ notificationCount }) {
+  return (
+    <View className="relative">
+      <Button size="icon" variant="ghost">
+        <Bell size={20} />
+      </Button>
+      {notificationCount > 0 && (
+        <Badge 
+          variant="destructive" 
+          size="sm"
+          className="absolute -top-1 -right-1"
+        >
+          {notificationCount}
+        </Badge>
+      )}
+    </View>
+  );
+}
+```

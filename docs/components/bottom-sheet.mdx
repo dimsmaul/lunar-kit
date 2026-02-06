@@ -1,0 +1,406 @@
+---
+sidebar_position: 5
+title: Bottom Sheet
+description: A sliding panel from the bottom of the screen
+---
+
+# Bottom Sheet
+
+A panel that slides up from the bottom of the screen, commonly used for selections, menus, or additional content.
+
+## Installation
+
+```bash
+lunar-kit add bottom-sheet
+```
+
+## Dependencies
+
+```bash
+pnpm add react-native-reanimated react-native-gesture-handler
+```
+
+## Usage
+
+```tsx
+import {
+  BottomSheet,
+  BottomSheetTrigger,
+  BottomSheetContent,
+  BottomSheetHeader,
+  BottomSheetTitle,
+  BottomSheetBody,
+  BottomSheetFooter,
+  BottomSheetClose,
+  BottomSheetList,
+} from '@/components/ui/bottom-sheet';
+```
+
+### Basic Usage
+
+```tsx
+<BottomSheet>
+  <BottomSheetTrigger>
+    <Button>Open Sheet</Button>
+  </BottomSheetTrigger>
+  
+  <BottomSheetContent>
+    <BottomSheetHeader>
+      <BottomSheetTitle>Sheet Title</BottomSheetTitle>
+    </BottomSheetHeader>
+    
+    <BottomSheetBody>
+      <Text>Your content goes here.</Text>
+    </BottomSheetBody>
+    
+    <BottomSheetFooter>
+      <BottomSheetClose>
+        <Button>Close</Button>
+      </BottomSheetClose>
+    </BottomSheetFooter>
+  </BottomSheetContent>
+</BottomSheet>
+```
+
+### Controlled State
+
+```tsx
+const [open, setOpen] = useState(false);
+
+<BottomSheet open={open} onOpenChange={setOpen}>
+  <BottomSheetTrigger>
+    <Button>Open Sheet</Button>
+  </BottomSheetTrigger>
+  
+  <BottomSheetContent>
+    <BottomSheetHeader>
+      <BottomSheetTitle>Controlled Sheet</BottomSheetTitle>
+    </BottomSheetHeader>
+    
+    <BottomSheetBody>
+      <Text>This sheet's state is controlled externally.</Text>
+      <Button onPress={() => setOpen(false)}>Close</Button>
+    </BottomSheetBody>
+  </BottomSheetContent>
+</BottomSheet>
+```
+
+### Snap Points
+
+Define multiple snap points for the sheet:
+
+```tsx
+<BottomSheet snapPoints={['25%', '50%', '90%']}>
+  <BottomSheetTrigger>
+    <Button>Open Sheet</Button>
+  </BottomSheetTrigger>
+  
+  <BottomSheetContent>
+    <BottomSheetHeader>
+      <BottomSheetTitle>Resizable Sheet</BottomSheetTitle>
+    </BottomSheetHeader>
+    
+    <BottomSheetBody>
+      <Text>Drag to resize between snap points.</Text>
+    </BottomSheetBody>
+  </BottomSheetContent>
+</BottomSheet>
+```
+
+### Variants
+
+```tsx
+// Default
+<BottomSheet variant="default">
+  {/* ... */}
+</BottomSheet>
+
+// Filled
+<BottomSheet variant="filled">
+  {/* ... */}
+</BottomSheet>
+```
+
+### With List
+
+Display a selectable list:
+
+```tsx
+const options = [
+  { label: 'Option 1', value: '1' },
+  { label: 'Option 2', value: '2' },
+  { label: 'Option 3', value: '3' },
+];
+
+<BottomSheet>
+  <BottomSheetTrigger>
+    <Button>Select Option</Button>
+  </BottomSheetTrigger>
+  
+  <BottomSheetContent>
+    <BottomSheetHeader>
+      <BottomSheetTitle>Choose an Option</BottomSheetTitle>
+    </BottomSheetHeader>
+    
+    <BottomSheetList
+      data={options}
+      variant="select"
+      selectedValue={selected}
+      onSelect={(item) => setSelected(item.value)}
+      getItemValue={(item) => item.value}
+    />
+  </BottomSheetContent>
+</BottomSheet>
+```
+
+### Multiple Selection List
+
+```tsx
+<BottomSheetList
+  data={options}
+  variant="multiple"
+  selectedValues={selectedValues}
+  onSelect={(items) => setSelectedValues(items.map(i => i.value))}
+  getItemValue={(item) => item.value}
+/>
+```
+
+### Scrollable Content
+
+```tsx
+<BottomSheet snapPoints={['70%']}>
+  <BottomSheetTrigger>
+    <Button>Open Sheet</Button>
+  </BottomSheetTrigger>
+  
+  <BottomSheetContent>
+    <BottomSheetHeader>
+      <BottomSheetTitle>Long Content</BottomSheetTitle>
+    </BottomSheetHeader>
+    
+    <BottomSheetBody scrollable>
+      {/* Long scrollable content */}
+      {items.map((item) => (
+        <View key={item.id} className="py-4 border-b border-border">
+          <Text>{item.name}</Text>
+        </View>
+      ))}
+    </BottomSheetBody>
+  </BottomSheetContent>
+</BottomSheet>
+```
+
+## API Reference
+
+### BottomSheet
+
+Root component.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `open` | `boolean` | — | Controlled open state |
+| `onOpenChange` | `(open: boolean) => void` | — | Callback when state changes |
+| `snapPoints` | `string[]` | `['50%']` | Height snap points |
+| `defaultSnapPoint` | `number` | `0` | Initial snap point index |
+| `variant` | `'default' \| 'filled'` | `'default'` | Visual variant |
+
+### BottomSheetTrigger
+
+Button that opens the sheet.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Trigger element |
+
+### BottomSheetContent
+
+Content container.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Sheet content |
+| `className` | `string` | — | Additional classes |
+
+### BottomSheetHeader
+
+Header section.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Header content |
+| `className` | `string` | — | Additional classes |
+
+### BottomSheetTitle
+
+Title text.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Title text |
+| `className` | `string` | — | Additional classes |
+
+### BottomSheetBody
+
+Main content area.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Body content |
+| `scrollable` | `boolean` | `false` | Enable scrolling |
+| `className` | `string` | — | Additional classes |
+
+### BottomSheetFooter
+
+Footer section.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Footer content |
+| `className` | `string` | — | Additional classes |
+
+### BottomSheetClose
+
+Closes the sheet when pressed.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Close trigger |
+
+### BottomSheetList
+
+Selectable list component.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `data` | `T[]` | Required | List data |
+| `variant` | `'list' \| 'select' \| 'multiple'` | `'list'` | List type |
+| `selectedValue` | `any` | — | Selected value (select) |
+| `selectedValues` | `any[]` | — | Selected values (multiple) |
+| `onSelect` | `(selected) => void` | — | Selection callback |
+| `getItemValue` | `(item) => any` | — | Value extractor |
+| `renderItem` | `ListRenderItem` | — | Custom render function |
+| `keyExtractor` | `(item, index) => string` | — | Key extractor |
+
+## Examples
+
+### Action Sheet
+
+```tsx
+export function ActionSheet() {
+  return (
+    <BottomSheet snapPoints={['40%']}>
+      <BottomSheetTrigger>
+        <Button variant="outline">More Options</Button>
+      </BottomSheetTrigger>
+      
+      <BottomSheetContent>
+        <BottomSheetHeader>
+          <BottomSheetTitle>Actions</BottomSheetTitle>
+        </BottomSheetHeader>
+        
+        <BottomSheetBody>
+          <Pressable className="flex-row items-center py-4 gap-3">
+            <Share size={20} />
+            <Text>Share</Text>
+          </Pressable>
+          <Pressable className="flex-row items-center py-4 gap-3">
+            <Copy size={20} />
+            <Text>Copy Link</Text>
+          </Pressable>
+          <Pressable className="flex-row items-center py-4 gap-3">
+            <Trash size={20} color="red" />
+            <Text className="text-destructive">Delete</Text>
+          </Pressable>
+        </BottomSheetBody>
+      </BottomSheetContent>
+    </BottomSheet>
+  );
+}
+```
+
+### Filter Sheet
+
+```tsx
+export function FilterSheet({ filters, onApply }) {
+  const [open, setOpen] = useState(false);
+  const [localFilters, setLocalFilters] = useState(filters);
+
+  const handleApply = () => {
+    onApply(localFilters);
+    setOpen(false);
+  };
+
+  return (
+    <BottomSheet open={open} onOpenChange={setOpen} snapPoints={['70%']}>
+      <BottomSheetTrigger>
+        <Button variant="outline">Filters</Button>
+      </BottomSheetTrigger>
+      
+      <BottomSheetContent>
+        <BottomSheetHeader>
+          <BottomSheetTitle>Filter Results</BottomSheetTitle>
+        </BottomSheetHeader>
+        
+        <BottomSheetBody scrollable>
+          {/* Filter options */}
+        </BottomSheetBody>
+        
+        <BottomSheetFooter>
+          <Button variant="outline" onPress={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button onPress={handleApply}>
+            Apply Filters
+          </Button>
+        </BottomSheetFooter>
+      </BottomSheetContent>
+    </BottomSheet>
+  );
+}
+```
+
+### Share Sheet
+
+```tsx
+export function ShareSheet({ url }) {
+  const shareOptions = [
+    { icon: MessageCircle, label: 'Message', action: shareViaMessage },
+    { icon: Mail, label: 'Email', action: shareViaEmail },
+    { icon: Twitter, label: 'Twitter', action: shareViaTwitter },
+    { icon: Copy, label: 'Copy Link', action: copyToClipboard },
+  ];
+
+  return (
+    <BottomSheet snapPoints={['35%']}>
+      <BottomSheetTrigger>
+        <Button variant="ghost" size="icon">
+          <Share size={20} />
+        </Button>
+      </BottomSheetTrigger>
+      
+      <BottomSheetContent>
+        <BottomSheetHeader>
+          <BottomSheetTitle>Share</BottomSheetTitle>
+        </BottomSheetHeader>
+        
+        <BottomSheetBody>
+          <View className="flex-row justify-around py-4">
+            {shareOptions.map((option) => (
+              <Pressable
+                key={option.label}
+                onPress={option.action}
+                className="items-center gap-2"
+              >
+                <View className="w-12 h-12 rounded-full bg-muted items-center justify-center">
+                  <option.icon size={24} />
+                </View>
+                <Text size="sm">{option.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </BottomSheetBody>
+      </BottomSheetContent>
+    </BottomSheet>
+  );
+}
+```

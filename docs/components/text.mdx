@@ -1,0 +1,310 @@
+---
+sidebar_position: 18
+title: Text
+description: A styled text component with semantic variants
+---
+
+# Text
+
+A versatile text component with semantic variants and sizes.
+
+## Installation
+
+```bash
+lunar-kit add text
+```
+
+## Usage
+
+```tsx
+import { Text } from '@/components/ui/text';
+```
+
+### Basic Usage
+
+```tsx
+<Text>Default text</Text>
+```
+
+### Variants
+
+```tsx
+// Default
+<Text variant="default">Default text</Text>
+
+// Header - Bold, large text
+<Text variant="header">Header Text</Text>
+
+// Title - Semibold text
+<Text variant="title">Title Text</Text>
+
+// Label - Medium weight, uppercase
+<Text variant="label">Label Text</Text>
+
+// Body - Normal weight
+<Text variant="body">Body text for paragraphs</Text>
+
+// Caption - Small, muted
+<Text variant="caption">Caption text</Text>
+
+// Muted - Dimmed color
+<Text variant="muted">Muted text</Text>
+
+// Error - Destructive color
+<Text variant="error">Error message</Text>
+
+// Success - Green color
+<Text variant="success">Success message</Text>
+```
+
+### Sizes
+
+Each variant has its own size scale:
+
+```tsx
+// Header sizes
+<Text variant="header" size="sm">Small Header (24px)</Text>
+<Text variant="header" size="md">Medium Header (30px)</Text>
+<Text variant="header" size="lg">Large Header (36px)</Text>
+<Text variant="header" size="xl">XL Header (48px)</Text>
+
+// Title sizes
+<Text variant="title" size="sm">Small Title (18px)</Text>
+<Text variant="title" size="md">Medium Title (20px)</Text>
+<Text variant="title" size="lg">Large Title (24px)</Text>
+<Text variant="title" size="xl">XL Title (30px)</Text>
+
+// Body/Default sizes
+<Text size="sm">Small (14px)</Text>
+<Text size="md">Medium (16px)</Text>
+<Text size="lg">Large (18px)</Text>
+```
+
+### Alignment
+
+```tsx
+<Text align="left">Left aligned (default)</Text>
+<Text align="center">Center aligned</Text>
+<Text align="right">Right aligned</Text>
+```
+
+## API Reference
+
+### Text
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'default' \| 'header' \| 'title' \| 'label' \| 'body' \| 'caption' \| 'muted' \| 'error' \| 'success'` | `'default'` | Text variant |
+| `size` | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Text size |
+| `align` | `'left' \| 'center' \| 'right'` | `'left'` | Text alignment |
+| `className` | `string` | — | Additional classes |
+
+All standard React Native `Text` props are also supported.
+
+## Size Mapping by Variant
+
+| Variant | sm | md | lg | xl |
+|---------|----|----|----|----|
+| header | 24px | 30px | 36px | 48px |
+| title | 18px | 20px | 24px | 30px |
+| label | 12px uppercase | 14px uppercase | 16px uppercase | — |
+| body | 14px | 16px | 18px | — |
+| default | 14px | 16px | 18px | — |
+| muted | 14px | 16px | 18px | — |
+| caption | 12px | 14px | 16px | — |
+| error | 14px | 16px | 18px | — |
+| success | 14px | 16px | 18px | — |
+
+## Examples
+
+### Page Header
+
+```tsx
+export function PageHeader({ title, subtitle }) {
+  return (
+    <View className="gap-2 mb-6">
+      <Text variant="header" size="lg">{title}</Text>
+      {subtitle && (
+        <Text variant="muted" size="md">{subtitle}</Text>
+      )}
+    </View>
+  );
+}
+```
+
+### Section Title
+
+```tsx
+export function SectionTitle({ children }) {
+  return (
+    <Text variant="title" size="md" className="mb-4">
+      {children}
+    </Text>
+  );
+}
+```
+
+### Form Labels
+
+```tsx
+export function FormField({ label, required, children }) {
+  return (
+    <View className="gap-2">
+      <Text variant="label" size="sm">
+        {label}
+        {required && <Text variant="error"> *</Text>}
+      </Text>
+      {children}
+    </View>
+  );
+}
+```
+
+### Article Content
+
+```tsx
+export function Article({ title, content, author, date }) {
+  return (
+    <View className="gap-4">
+      <Text variant="header" size="md">{title}</Text>
+      
+      <View className="flex-row gap-2">
+        <Text variant="muted" size="sm">By {author}</Text>
+        <Text variant="muted" size="sm">•</Text>
+        <Text variant="muted" size="sm">{date}</Text>
+      </View>
+      
+      <Text variant="body" size="md" className="leading-relaxed">
+        {content}
+      </Text>
+    </View>
+  );
+}
+```
+
+### Status Messages
+
+```tsx
+export function StatusMessage({ type, message }) {
+  const variants = {
+    success: 'success',
+    error: 'error',
+    warning: 'muted',
+    info: 'muted',
+  };
+
+  return (
+    <Text variant={variants[type]} size="sm">
+      {message}
+    </Text>
+  );
+}
+
+// Usage
+<StatusMessage type="success" message="Changes saved successfully!" />
+<StatusMessage type="error" message="Something went wrong." />
+```
+
+### Price Display
+
+```tsx
+export function PriceDisplay({ price, originalPrice }) {
+  return (
+    <View className="flex-row items-baseline gap-2">
+      <Text variant="header" size="md">
+        ${price.toFixed(2)}
+      </Text>
+      {originalPrice && originalPrice > price && (
+        <Text variant="muted" size="sm" className="line-through">
+          ${originalPrice.toFixed(2)}
+        </Text>
+      )}
+    </View>
+  );
+}
+```
+
+### Empty State
+
+```tsx
+export function EmptyState({ title, description }) {
+  return (
+    <View className="items-center py-12 gap-2">
+      <Text variant="title" size="lg" align="center">
+        {title}
+      </Text>
+      <Text variant="muted" size="md" align="center">
+        {description}
+      </Text>
+    </View>
+  );
+}
+```
+
+### Typography Showcase
+
+```tsx
+export function TypographyDemo() {
+  return (
+    <View className="gap-4">
+      <View>
+        <Text variant="label" size="sm">Headers</Text>
+        <Text variant="header" size="xl">Extra Large Header</Text>
+        <Text variant="header" size="lg">Large Header</Text>
+        <Text variant="header" size="md">Medium Header</Text>
+        <Text variant="header" size="sm">Small Header</Text>
+      </View>
+
+      <View>
+        <Text variant="label" size="sm">Titles</Text>
+        <Text variant="title" size="xl">Extra Large Title</Text>
+        <Text variant="title" size="lg">Large Title</Text>
+        <Text variant="title" size="md">Medium Title</Text>
+        <Text variant="title" size="sm">Small Title</Text>
+      </View>
+
+      <View>
+        <Text variant="label" size="sm">Body Text</Text>
+        <Text variant="body" size="lg">Large body text</Text>
+        <Text variant="body" size="md">Medium body text</Text>
+        <Text variant="body" size="sm">Small body text</Text>
+      </View>
+
+      <View>
+        <Text variant="label" size="sm">Special</Text>
+        <Text variant="caption">Caption text</Text>
+        <Text variant="muted">Muted text</Text>
+        <Text variant="error">Error text</Text>
+        <Text variant="success">Success text</Text>
+      </View>
+    </View>
+  );
+}
+```
+
+## Styling
+
+### Custom Styles
+
+```tsx
+<Text className="text-blue-500 font-bold">
+  Custom styled text
+</Text>
+
+<Text variant="header" className="text-primary underline">
+  Primary colored header
+</Text>
+```
+
+### Line Height
+
+```tsx
+<Text className="leading-loose">
+  Text with loose line height for better readability
+  in longer paragraphs.
+</Text>
+
+<Text className="leading-tight">
+  Tight line height
+</Text>
+```

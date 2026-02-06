@@ -1,0 +1,402 @@
+---
+sidebar_position: 2
+title: Installation
+description: How to install and set up Lunar Kit in your React Native project
+---
+
+# Installation
+
+Get Lunar Kit up and running in your React Native project.
+
+## Quick Start (New Project)
+
+The fastest way to get started is to create a new project with Lunar Kit pre-configured:
+
+```bash
+# Using npm
+npm create lunar-kit@latest my-app
+
+# Using pnpm (recommended)
+pnpm create lunar-kit my-app
+
+# Using yarn
+yarn create lunar-kit my-app
+```
+
+This will scaffold a new Expo project with:
+- ✅ NativeWind configured
+- ✅ Theme system set up
+- ✅ Base utilities included
+- ✅ TypeScript ready
+
+After creation:
+
+```bash
+cd my-app
+pnpm start
+```
+
+## Adding to Existing Project
+
+If you have an existing React Native project, follow these steps:
+
+### 1. Install the CLI
+
+```bash
+# Global installation
+pnpm add -g @lunar-kit/cli
+
+# Or use npx (no installation needed)
+npx @lunar-kit/cli init
+```
+
+### 2. Initialize Lunar Kit
+
+Run the init command in your project root:
+
+```bash
+lunar-kit init
+```
+
+This will:
+- Create `src/components/ui` directory
+- Set up `lib/utils.ts` with helper functions
+- Install required dependencies
+- Create configuration file
+
+### 3. Install NativeWind (if not already installed)
+
+Lunar Kit requires NativeWind v4. If you haven't set it up:
+
+```bash
+pnpm add nativewind tailwindcss
+pnpm add -D tailwindcss
+```
+
+Create `tailwind.config.js`:
+
+```js title="tailwind.config.js"
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./app/**/*.{js,jsx,ts,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./components/**/*.{js,jsx,ts,tsx}",
+  ],
+  presets: [require("nativewind/preset")],
+  theme: {
+    extend: {
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+    },
+  },
+  plugins: [],
+};
+```
+
+Create `global.css`:
+
+```css title="src/global.css"
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+```
+
+### 4. Configure Metro
+
+Update `metro.config.js`:
+
+```js title="metro.config.js"
+const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require("nativewind/metro");
+
+const config = getDefaultConfig(__dirname);
+
+module.exports = withNativeWind(config, { input: "./src/global.css" });
+```
+
+### 5. Configure Babel
+
+Update `babel.config.js`:
+
+```js title="babel.config.js"
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: [
+      ["babel-preset-expo", { jsxImportSource: "nativewind" }],
+      "nativewind/babel",
+    ],
+  };
+};
+```
+
+### 6. Add TypeScript Declarations
+
+Create `nativewind-env.d.ts`:
+
+```ts title="nativewind-env.d.ts"
+/// <reference types="nativewind/types" />
+```
+
+### 7. Import Global CSS
+
+In your root layout or App.tsx:
+
+```tsx title="app/_layout.tsx"
+import "../src/global.css";
+
+export default function RootLayout() {
+  // ...
+}
+```
+
+## Adding Components
+
+Once initialized, use the CLI to add components:
+
+```bash
+# Add a single component
+lunar-kit add button
+
+# Add multiple components
+lunar-kit add button card dialog input
+
+# Add all components
+lunar-kit add --all
+```
+
+Components will be added to `src/components/ui/`.
+
+## Required Dependencies
+
+Lunar Kit components may require these peer dependencies:
+
+```bash
+# Core dependencies
+pnpm add clsx tailwind-merge class-variance-authority
+
+# Animation (for some components)
+pnpm add react-native-reanimated react-native-gesture-handler
+
+# Icons (optional but recommended)
+pnpm add lucide-react-native react-native-svg
+
+# Date components
+pnpm add dayjs
+```
+
+## Path Aliases
+
+We recommend setting up path aliases for cleaner imports.
+
+### For Expo
+
+In `tsconfig.json`:
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/hooks/*": ["./src/hooks/*"]
+    }
+  }
+}
+```
+
+In `babel.config.js`:
+
+```js title="babel.config.js"
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: [
+      ["babel-preset-expo", { jsxImportSource: "nativewind" }],
+      "nativewind/babel",
+    ],
+    plugins: [
+      [
+        "module-resolver",
+        {
+          root: ["./"],
+          alias: {
+            "@": "./src",
+          },
+        },
+      ],
+    ],
+  };
+};
+```
+
+Don't forget to install the plugin:
+
+```bash
+pnpm add -D babel-plugin-module-resolver
+```
+
+## Utility Functions
+
+The `utils.ts` file provides essential helper functions:
+
+```ts title="lib/utils.ts"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+The `cn` function combines `clsx` and `tailwind-merge` to handle conditional classes and merge Tailwind classes properly.
+
+## Project Structure
+
+After setup, your project should look like:
+
+```
+my-app/
+├── app/                    # Expo Router pages
+│   ├── _layout.tsx
+│   └── index.tsx
+├── src/
+│   ├── components/
+│   │   └── ui/            # Lunar Kit components
+│   │       ├── button.tsx
+│   │       ├── card.tsx
+│   │       └── ...
+│   ├── lib/
+│   │   └── utils.ts       # Utility functions
+│   ├── hooks/             # Custom hooks
+│   └── global.css         # Tailwind styles
+├── tailwind.config.js
+├── metro.config.js
+├── babel.config.js
+└── kit.config.json        # Lunar Kit config
+```
+
+## Verification
+
+To verify everything is working:
+
+```tsx title="app/index.tsx"
+import { View } from "react-native";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+
+export default function Home() {
+  return (
+    <View className="flex-1 items-center justify-center p-4">
+      <Text variant="header" size="lg">
+        Welcome to Lunar Kit! 🌙
+      </Text>
+      <Button className="mt-4">
+        Get Started
+      </Button>
+    </View>
+  );
+}
+```
+
+Run the app:
+
+```bash
+pnpm start
+```
+
+## Troubleshooting
+
+### Styles not applying
+
+1. Make sure you imported `global.css` in your root layout
+2. Clear Metro cache: `pnpm start --clear`
+3. Restart the development server
+
+### TypeScript errors
+
+1. Ensure `nativewind-env.d.ts` is in your project root
+2. Restart TypeScript server in VS Code
+
+### Component not found
+
+1. Check that the component was added correctly to `src/components/ui/`
+2. Verify path aliases are configured correctly
+
+---
+
+Next, learn about [Theme Configuration](/docs/theme) to customize the look of your app!

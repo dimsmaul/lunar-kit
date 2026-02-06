@@ -1,0 +1,415 @@
+---
+sidebar_position: 11
+title: Date Range Picker
+description: A component for selecting a date range
+---
+
+# Date Range Picker
+
+A component that allows users to select a range of dates from a calendar.
+
+## Installation
+
+```bash
+lunar-kit add date-range-picker
+```
+
+## Dependencies
+
+This component requires `calendar`, `dialog`, and `button`:
+
+```bash
+lunar-kit add calendar dialog button
+pnpm add dayjs lucide-react-native react-native-svg
+```
+
+## Usage
+
+```tsx
+import {
+  DateRangePicker,
+  DateRangePickerTrigger,
+  DateRangePickerContent,
+  DateRangePickerValue,
+} from '@/components/ui/date-range-picker';
+```
+
+### Basic Usage
+
+```tsx
+const [startDate, setStartDate] = useState<Date>();
+const [endDate, setEndDate] = useState<Date>();
+
+<DateRangePicker
+  startDate={startDate}
+  endDate={endDate}
+  onRangeChange={(start, end) => {
+    setStartDate(start);
+    setEndDate(end);
+  }}
+>
+  <DateRangePickerTrigger>
+    <DateRangePickerValue placeholder="Select date range" />
+  </DateRangePickerTrigger>
+  <DateRangePickerContent />
+</DateRangePicker>
+```
+
+### With Min/Max Dates
+
+```tsx
+<DateRangePicker
+  startDate={startDate}
+  endDate={endDate}
+  onRangeChange={handleRangeChange}
+  minDate={new Date()}
+  maxDate={new Date(2025, 11, 31)}
+>
+  {/* ... */}
+</DateRangePicker>
+```
+
+### Maximum Days
+
+Limit the maximum number of days that can be selected:
+
+```tsx
+<DateRangePicker
+  startDate={startDate}
+  endDate={endDate}
+  onRangeChange={handleRangeChange}
+  maxDays={7}  // Maximum 7 days selection
+>
+  {/* ... */}
+</DateRangePicker>
+```
+
+### Trigger Variants
+
+```tsx
+// Default
+<DateRangePicker variant="default" {...props}>
+  {/* ... */}
+</DateRangePicker>
+
+// Outline
+<DateRangePicker variant="outline" {...props}>
+  {/* ... */}
+</DateRangePicker>
+
+// Filled
+<DateRangePicker variant="filled" {...props}>
+  {/* ... */}
+</DateRangePicker>
+```
+
+### Trigger Sizes
+
+```tsx
+<DateRangePicker size="sm" {...props}>
+  {/* ... */}
+</DateRangePicker>
+
+<DateRangePicker size="md" {...props}>
+  {/* ... */}
+</DateRangePicker>
+
+<DateRangePicker size="lg" {...props}>
+  {/* ... */}
+</DateRangePicker>
+```
+
+### Custom Format
+
+```tsx
+<DateRangePickerValue
+  placeholder="Choose dates"
+  format="DD/MM/YYYY"
+/>
+
+<DateRangePickerValue
+  placeholder="Choose dates"
+  format="MMMM D, YYYY"
+/>
+```
+
+## API Reference
+
+### DateRangePicker
+
+Root component.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `startDate` | `Date` | — | Range start date |
+| `endDate` | `Date` | — | Range end date |
+| `onRangeChange` | `(start, end) => void` | — | Callback when range changes |
+| `minDate` | `Date` | — | Minimum selectable date |
+| `maxDate` | `Date` | — | Maximum selectable date |
+| `maxDays` | `number` | — | Maximum days in range |
+| `variant` | `'default' \| 'outline' \| 'filled'` | `'default'` | Trigger variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Trigger size |
+
+### DateRangePickerTrigger
+
+The button that opens the picker.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Trigger content |
+| `className` | `string` | — | Additional classes |
+
+### DateRangePickerContent
+
+The calendar popup with action buttons.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `className` | `string` | — | Additional classes |
+
+### DateRangePickerValue
+
+Display component for the selected range.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `placeholder` | `string` | `'Select date range'` | Placeholder text |
+| `format` | `string` | `'MMM DD, YYYY'` | Date format |
+| `showIcon` | `boolean` | `true` | Show calendar icon |
+| `className` | `string` | — | Additional classes |
+
+## Examples
+
+### Hotel Booking
+
+```tsx
+export function HotelBooking() {
+  const [checkIn, setCheckIn] = useState<Date>();
+  const [checkOut, setCheckOut] = useState<Date>();
+
+  const handleRangeChange = (start?: Date, end?: Date) => {
+    setCheckIn(start);
+    setCheckOut(end);
+  };
+
+  const nights = checkIn && checkOut
+    ? Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Book Your Stay</CardTitle>
+        <CardDescription>Select your check-in and check-out dates</CardDescription>
+      </CardHeader>
+      <CardContent className="gap-4">
+        <DateRangePicker
+          startDate={checkIn}
+          endDate={checkOut}
+          onRangeChange={handleRangeChange}
+          minDate={new Date()}
+          maxDays={30}
+        >
+          <DateRangePickerTrigger>
+            <DateRangePickerValue placeholder="Select dates" />
+          </DateRangePickerTrigger>
+          <DateRangePickerContent />
+        </DateRangePicker>
+
+        {nights > 0 && (
+          <View className="p-4 bg-muted rounded-lg">
+            <Text variant="muted">Duration: {nights} night{nights > 1 ? 's' : ''}</Text>
+          </View>
+        )}
+      </CardContent>
+      <CardFooter>
+        <Button disabled={!checkIn || !checkOut} className="w-full">
+          Check Availability
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
+```
+
+### Report Date Range
+
+```tsx
+export function ReportDateRange({ onGenerate }) {
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
+
+  const presets = [
+    { label: 'Last 7 days', days: 7 },
+    { label: 'Last 30 days', days: 30 },
+    { label: 'Last 90 days', days: 90 },
+  ];
+
+  const applyPreset = (days: number) => {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(start.getDate() - days);
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  return (
+    <View className="gap-4">
+      <View className="flex-row gap-2">
+        {presets.map((preset) => (
+          <Button
+            key={preset.days}
+            variant="outline"
+            size="sm"
+            onPress={() => applyPreset(preset.days)}
+          >
+            {preset.label}
+          </Button>
+        ))}
+      </View>
+
+      <DateRangePicker
+        startDate={startDate}
+        endDate={endDate}
+        onRangeChange={(start, end) => {
+          setStartDate(start);
+          setEndDate(end);
+        }}
+        maxDate={new Date()}
+      >
+        <DateRangePickerTrigger>
+          <DateRangePickerValue placeholder="Or select custom range" />
+        </DateRangePickerTrigger>
+        <DateRangePickerContent />
+      </DateRangePicker>
+
+      <Button
+        onPress={() => onGenerate(startDate, endDate)}
+        disabled={!startDate || !endDate}
+      >
+        Generate Report
+      </Button>
+    </View>
+  );
+}
+```
+
+### Event Duration
+
+```tsx
+export function EventDuration() {
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
+
+  return (
+    <View className="gap-4">
+      <Text variant="label">Event Duration</Text>
+      <DateRangePicker
+        startDate={startDate}
+        endDate={endDate}
+        onRangeChange={(start, end) => {
+          setStartDate(start);
+          setEndDate(end);
+        }}
+        minDate={new Date()}
+        maxDays={14}
+      >
+        <DateRangePickerTrigger>
+          <DateRangePickerValue
+            placeholder="Select start and end dates"
+            format="ddd, MMM D"
+          />
+        </DateRangePickerTrigger>
+        <DateRangePickerContent />
+      </DateRangePicker>
+
+      {startDate && endDate && (
+        <Banner variant="info" showIcon={false}>
+          <Text>
+            Your event will run from{' '}
+            <Text className="font-semibold">
+              {startDate.toLocaleDateString()}
+            </Text>
+            {' '}to{' '}
+            <Text className="font-semibold">
+              {endDate.toLocaleDateString()}
+            </Text>
+          </Text>
+        </Banner>
+      )}
+    </View>
+  );
+}
+```
+
+### Vacation Planner
+
+```tsx
+export function VacationPlanner() {
+  const [vacation, setVacation] = useState({
+    startDate: undefined as Date | undefined,
+    endDate: undefined as Date | undefined,
+  });
+
+  const handleRangeChange = (start?: Date, end?: Date) => {
+    setVacation({ startDate: start, endDate: end });
+  };
+
+  return (
+    <View className="gap-6">
+      <View>
+        <Text variant="title" size="lg">Plan Your Vacation</Text>
+        <Text variant="muted">Select up to 2 weeks</Text>
+      </View>
+
+      <DateRangePicker
+        startDate={vacation.startDate}
+        endDate={vacation.endDate}
+        onRangeChange={handleRangeChange}
+        minDate={new Date()}
+        maxDays={14}
+        size="lg"
+      >
+        <DateRangePickerTrigger className="w-full">
+          <DateRangePickerValue
+            placeholder="When are you traveling?"
+            format="MMM D, YYYY"
+          />
+        </DateRangePickerTrigger>
+        <DateRangePickerContent />
+      </DateRangePicker>
+
+      {vacation.startDate && vacation.endDate && (
+        <Card variant="filled">
+          <CardContent>
+            <View className="flex-row justify-between">
+              <View>
+                <Text variant="muted" size="sm">Check-in</Text>
+                <Text variant="title">
+                  {vacation.startDate.toLocaleDateString()}
+                </Text>
+              </View>
+              <View className="items-end">
+                <Text variant="muted" size="sm">Check-out</Text>
+                <Text variant="title">
+                  {vacation.endDate.toLocaleDateString()}
+                </Text>
+              </View>
+            </View>
+          </CardContent>
+        </Card>
+      )}
+    </View>
+  );
+}
+```
+
+## Content Actions
+
+The DateRangePickerContent includes built-in action buttons:
+
+- **Clear** — Clears both dates
+- **Cancel** — Closes without saving
+- **Apply** — Confirms the selection
+
+The Apply button is only enabled when both start and end dates are selected.

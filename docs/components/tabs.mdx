@@ -1,0 +1,362 @@
+---
+sidebar_position: 17
+title: Tabs
+description: Tab navigation component for switching between views
+---
+
+# Tabs
+
+A tabbed interface component for switching between different views or sections.
+
+## Installation
+
+```bash
+lunar-kit add tabs
+```
+
+## Usage
+
+```tsx
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+```
+
+### Basic Usage
+
+```tsx
+const [activeTab, setActiveTab] = useState('tab1');
+
+<Tabs value={activeTab} onValueChange={setActiveTab}>
+  <TabsList>
+    <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+    <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+    <TabsTrigger value="tab3">Tab 3</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="tab1">
+    <Text>Content for Tab 1</Text>
+  </TabsContent>
+  
+  <TabsContent value="tab2">
+    <Text>Content for Tab 2</Text>
+  </TabsContent>
+  
+  <TabsContent value="tab3">
+    <Text>Content for Tab 3</Text>
+  </TabsContent>
+</Tabs>
+```
+
+### Variants
+
+```tsx
+// Underline (default)
+<Tabs variant="underline" value={tab} onValueChange={setTab}>
+  {/* ... */}
+</Tabs>
+
+// Pill
+<Tabs variant="pill" value={tab} onValueChange={setTab}>
+  {/* ... */}
+</Tabs>
+```
+
+### Disabled Tabs
+
+```tsx
+<Tabs value={activeTab} onValueChange={setActiveTab}>
+  <TabsList>
+    <TabsTrigger value="tab1">Active</TabsTrigger>
+    <TabsTrigger value="tab2" disabled>Disabled</TabsTrigger>
+    <TabsTrigger value="tab3">Active</TabsTrigger>
+  </TabsList>
+  {/* Content */}
+</Tabs>
+```
+
+## API Reference
+
+### Tabs
+
+Root component that manages tab state.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | Required | Active tab value |
+| `onValueChange` | `(value: string) => void` | Required | Change callback |
+| `variant` | `'underline' \| 'pill'` | `'underline'` | Visual variant |
+| `className` | `string` | — | Additional classes |
+
+### TabsList
+
+Container for tab triggers.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | TabsTrigger components |
+| `className` | `string` | — | Additional classes |
+
+### TabsTrigger
+
+Individual tab button.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | Required | Tab identifier |
+| `children` | `string` | Required | Tab label |
+| `disabled` | `boolean` | `false` | Disable the tab |
+| `className` | `string` | — | Additional classes |
+
+### TabsContent
+
+Content panel for a tab.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | Required | Tab identifier |
+| `children` | `ReactNode` | Required | Tab content |
+| `className` | `string` | — | Additional classes |
+
+## Examples
+
+### Account Settings
+
+```tsx
+export function AccountSettings() {
+  const [tab, setTab] = useState('profile');
+
+  return (
+    <View className="flex-1">
+      <Tabs value={tab} onValueChange={setTab}>
+        <TabsList>
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="security">Security</TabsTrigger>
+          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="profile">
+          <Card>
+            <CardHeader>
+              <CardTitle>Profile Information</CardTitle>
+            </CardHeader>
+            <CardContent className="gap-4">
+              <Input label="Name" placeholder="Your name" />
+              <Input label="Email" placeholder="your@email.com" />
+              <Textarea label="Bio" placeholder="Tell us about yourself" />
+            </CardContent>
+            <CardFooter>
+              <Button>Save Changes</Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="security">
+          <Card>
+            <CardHeader>
+              <CardTitle>Password</CardTitle>
+            </CardHeader>
+            <CardContent className="gap-4">
+              <Input label="Current Password" secureTextEntry />
+              <Input label="New Password" secureTextEntry />
+              <Input label="Confirm Password" secureTextEntry />
+            </CardContent>
+            <CardFooter>
+              <Button>Update Password</Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="notifications">
+          <Card>
+            <CardHeader>
+              <CardTitle>Notification Preferences</CardTitle>
+            </CardHeader>
+            <CardContent className="gap-4">
+              <Checkbox checked={emailNotifs} onCheckedChange={setEmailNotifs}>
+                <CheckboxLabel>Email notifications</CheckboxLabel>
+              </Checkbox>
+              <Checkbox checked={pushNotifs} onCheckedChange={setPushNotifs}>
+                <CheckboxLabel>Push notifications</CheckboxLabel>
+              </Checkbox>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </View>
+  );
+}
+```
+
+### Product Details
+
+```tsx
+export function ProductDetails({ product }) {
+  const [tab, setTab] = useState('description');
+
+  return (
+    <Tabs value={tab} onValueChange={setTab} variant="pill">
+      <TabsList>
+        <TabsTrigger value="description">Description</TabsTrigger>
+        <TabsTrigger value="specs">Specifications</TabsTrigger>
+        <TabsTrigger value="reviews">Reviews</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="description">
+        <Text>{product.description}</Text>
+      </TabsContent>
+
+      <TabsContent value="specs">
+        <View className="gap-2">
+          {product.specs.map((spec) => (
+            <View key={spec.key} className="flex-row justify-between py-2 border-b border-border">
+              <Text variant="muted">{spec.key}</Text>
+              <Text>{spec.value}</Text>
+            </View>
+          ))}
+        </View>
+      </TabsContent>
+
+      <TabsContent value="reviews">
+        <View className="gap-4">
+          {product.reviews.map((review) => (
+            <Card key={review.id} variant="filled">
+              <CardContent>
+                <View className="flex-row items-center gap-2 mb-2">
+                  <Avatar size="sm" fallback={review.author} />
+                  <Text variant="label">{review.author}</Text>
+                </View>
+                <Text>{review.comment}</Text>
+              </CardContent>
+            </Card>
+          ))}
+        </View>
+      </TabsContent>
+    </Tabs>
+  );
+}
+```
+
+### Dashboard Tabs
+
+```tsx
+export function DashboardTabs() {
+  const [activeTab, setActiveTab] = useState('overview');
+
+  return (
+    <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <TabsList className="mb-4">
+        <TabsTrigger value="overview">Overview</TabsTrigger>
+        <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <TabsTrigger value="reports">Reports</TabsTrigger>
+        <TabsTrigger value="settings" disabled>Settings</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="overview">
+        <View className="gap-4">
+          <View className="flex-row gap-4">
+            <StatsCard title="Users" value="2,340" change={12} />
+            <StatsCard title="Revenue" value="$12,345" change={-3} />
+          </View>
+          <RecentActivityList />
+        </View>
+      </TabsContent>
+
+      <TabsContent value="analytics">
+        <AnalyticsCharts />
+      </TabsContent>
+
+      <TabsContent value="reports">
+        <ReportsTable />
+      </TabsContent>
+    </Tabs>
+  );
+}
+```
+
+### Code Example Tabs
+
+```tsx
+export function CodeTabs({ examples }) {
+  const [language, setLanguage] = useState('javascript');
+
+  return (
+    <Tabs value={language} onValueChange={setLanguage} variant="pill">
+      <TabsList>
+        <TabsTrigger value="javascript">JavaScript</TabsTrigger>
+        <TabsTrigger value="typescript">TypeScript</TabsTrigger>
+        <TabsTrigger value="python">Python</TabsTrigger>
+      </TabsList>
+
+      {Object.entries(examples).map(([lang, code]) => (
+        <TabsContent key={lang} value={lang}>
+          <View className="bg-muted p-4 rounded-lg">
+            <Text className="font-mono text-sm">{code}</Text>
+          </View>
+        </TabsContent>
+      ))}
+    </Tabs>
+  );
+}
+```
+
+### Segmented Control Style
+
+```tsx
+export function SegmentedTabs() {
+  const [view, setView] = useState('list');
+
+  return (
+    <View className="flex-1">
+      <Tabs value={view} onValueChange={setView} variant="pill">
+        <TabsList className="self-center">
+          <TabsTrigger value="list">List</TabsTrigger>
+          <TabsTrigger value="grid">Grid</TabsTrigger>
+          <TabsTrigger value="map">Map</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="list">
+          <ListView items={items} />
+        </TabsContent>
+
+        <TabsContent value="grid">
+          <GridView items={items} />
+        </TabsContent>
+
+        <TabsContent value="map">
+          <MapView items={items} />
+        </TabsContent>
+      </Tabs>
+    </View>
+  );
+}
+```
+
+## Animation
+
+The tabs component includes smooth animations:
+
+### Underline Variant
+- Animated underline indicator that slides between tabs
+- Opacity and scale transitions for the indicator
+
+### Pill Variant
+- Animated background that slides to the active tab
+- Smooth width and position transitions using spring animation
+
+## Styling
+
+```tsx
+// Custom tab list styling
+<TabsList className="bg-muted/50 p-1 rounded-xl">
+  {/* ... */}
+</TabsList>
+
+// Custom trigger styling
+<TabsTrigger value="tab1" className="px-6">
+  Custom Tab
+</TabsTrigger>
+
+// Custom content styling
+<TabsContent value="tab1" className="p-4">
+  {/* ... */}
+</TabsContent>
+```

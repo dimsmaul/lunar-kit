@@ -1,0 +1,251 @@
+---
+sidebar_position: 2
+title: Avatar
+description: Display user profile images with fallback support
+---
+
+# Avatar
+
+An image element with a fallback for representing the user.
+
+## Installation
+
+```bash
+lunar-kit add avatar
+```
+
+## Usage
+
+```tsx
+import { Avatar, AvatarGroup } from '@/components/ui/avatar';
+```
+
+### Basic Usage
+
+```tsx
+<Avatar
+  source={{ uri: 'https://example.com/avatar.jpg' }}
+  fallback="JD"
+/>
+```
+
+### With Fallback
+
+Display initials when image fails to load:
+
+```tsx
+// Automatic initials from text
+<Avatar fallback="John Doe" />
+
+// Custom fallback
+<Avatar fallback="JD" />
+```
+
+### Sizes
+
+```tsx
+<Avatar size="xs" fallback="XS" />
+<Avatar size="sm" fallback="SM" />
+<Avatar size="md" fallback="MD" />  {/* Default */}
+<Avatar size="lg" fallback="LG" />
+<Avatar size="xl" fallback="XL" />
+<Avatar size="2xl" fallback="2X" />
+```
+
+### Variants
+
+```tsx
+// Default - muted background
+<Avatar variant="default" fallback="DF" />
+
+// Primary - primary color background
+<Avatar variant="primary" fallback="PR" />
+
+// Secondary - secondary color background
+<Avatar variant="secondary" fallback="SE" />
+
+// Outline - bordered style
+<Avatar variant="outline" fallback="OL" />
+```
+
+### With Status Indicator
+
+Show online/offline status:
+
+```tsx
+<Avatar
+  source={{ uri: 'https://example.com/avatar.jpg' }}
+  fallback="JD"
+  status="online"
+/>
+
+<Avatar fallback="JD" status="offline" />
+<Avatar fallback="JD" status="away" />
+<Avatar fallback="JD" status="busy" />
+```
+
+### Avatar Group
+
+Display a group of avatars:
+
+```tsx
+<AvatarGroup max={3}>
+  <Avatar source={{ uri: 'https://example.com/1.jpg' }} fallback="U1" />
+  <Avatar source={{ uri: 'https://example.com/2.jpg' }} fallback="U2" />
+  <Avatar source={{ uri: 'https://example.com/3.jpg' }} fallback="U3" />
+  <Avatar source={{ uri: 'https://example.com/4.jpg' }} fallback="U4" />
+  <Avatar source={{ uri: 'https://example.com/5.jpg' }} fallback="U5" />
+</AvatarGroup>
+```
+
+### Compound Component Pattern
+
+For more control, use the compound component pattern:
+
+```tsx
+import {
+  AvatarRoot,
+  AvatarImage,
+  AvatarFallback,
+} from '@/components/ui/avatar';
+
+<AvatarRoot size="lg" variant="primary">
+  <AvatarImage
+    source={{ uri: 'https://example.com/avatar.jpg' }}
+    alt="John Doe"
+  />
+  <AvatarFallback>JD</AvatarFallback>
+</AvatarRoot>
+```
+
+## API Reference
+
+### Avatar (Simple)
+
+All-in-one avatar component.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `source` | `ImageSourcePropType` | — | Image source |
+| `fallback` | `string` | — | Fallback text or initials |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl'` | `'md'` | Avatar size |
+| `variant` | `'default' \| 'primary' \| 'secondary' \| 'outline'` | `'default'` | Visual variant |
+| `status` | `'online' \| 'offline' \| 'away' \| 'busy'` | — | Status indicator |
+| `alt` | `string` | — | Accessibility label |
+| `className` | `string` | — | Additional classes |
+
+### AvatarGroup
+
+Container for displaying multiple avatars.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Avatar components |
+| `max` | `number` | — | Maximum avatars to show |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl'` | `'md'` | Size for all avatars |
+| `variant` | `'default' \| 'primary' \| 'secondary' \| 'outline'` | `'default'` | Variant for all avatars |
+| `className` | `string` | — | Additional classes |
+
+### AvatarRoot
+
+Container for compound pattern.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl'` | `'md'` | Avatar size |
+| `variant` | `'default' \| 'primary' \| 'secondary' \| 'outline'` | `'default'` | Visual variant |
+| `className` | `string` | — | Additional classes |
+
+### AvatarImage
+
+Image component for compound pattern.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `source` | `ImageSourcePropType` | Required | Image source |
+| `alt` | `string` | — | Accessibility label |
+
+### AvatarFallback
+
+Fallback component for compound pattern.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Fallback content |
+| `className` | `string` | — | Additional classes |
+
+## Styling
+
+### Custom Styles
+
+```tsx
+<Avatar
+  source={{ uri: 'https://example.com/avatar.jpg' }}
+  fallback="JD"
+  className="border-2 border-primary"
+/>
+```
+
+## Examples
+
+### User Profile
+
+```tsx
+export function UserProfile() {
+  return (
+    <View className="flex-row items-center gap-3">
+      <Avatar
+        size="lg"
+        source={{ uri: user.avatarUrl }}
+        fallback={user.name}
+        status="online"
+      />
+      <View>
+        <Text variant="title" size="sm">{user.name}</Text>
+        <Text variant="muted" size="sm">{user.email}</Text>
+      </View>
+    </View>
+  );
+}
+```
+
+### Team Members
+
+```tsx
+export function TeamMembers({ members }) {
+  return (
+    <View>
+      <Text variant="label" className="mb-2">Team</Text>
+      <AvatarGroup max={4} size="sm">
+        {members.map((member) => (
+          <Avatar
+            key={member.id}
+            source={{ uri: member.avatar }}
+            fallback={member.name}
+          />
+        ))}
+      </AvatarGroup>
+    </View>
+  );
+}
+```
+
+### Comment Author
+
+```tsx
+export function CommentHeader({ author, date }) {
+  return (
+    <View className="flex-row items-center gap-2">
+      <Avatar
+        size="sm"
+        source={{ uri: author.avatar }}
+        fallback={author.name}
+      />
+      <View className="flex-1">
+        <Text variant="label" size="sm">{author.name}</Text>
+        <Text variant="muted" size="sm">{date}</Text>
+      </View>
+    </View>
+  );
+}
+```

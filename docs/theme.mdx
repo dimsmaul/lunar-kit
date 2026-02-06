@@ -1,0 +1,437 @@
+---
+sidebar_position: 3
+title: Theme
+description: Configure themes and dark mode in Lunar Kit
+---
+
+# Theme Configuration
+
+Lunar Kit uses CSS variables for theming, making it easy to customize colors and support dark mode.
+
+## Color System
+
+The theme is based on semantic color tokens that adapt to light and dark modes:
+
+| Token | Description |
+|-------|-------------|
+| `background` | Main background color |
+| `foreground` | Main text color |
+| `card` | Card/surface background |
+| `card-foreground` | Card text color |
+| `primary` | Primary brand color |
+| `primary-foreground` | Text on primary color |
+| `secondary` | Secondary color |
+| `secondary-foreground` | Text on secondary color |
+| `muted` | Muted/subtle background |
+| `muted-foreground` | Muted text color |
+| `accent` | Accent/highlight color |
+| `accent-foreground` | Text on accent color |
+| `destructive` | Error/danger color |
+| `destructive-foreground` | Text on destructive color |
+| `border` | Border color |
+| `input` | Input border color |
+| `ring` | Focus ring color |
+
+## CSS Variables
+
+Colors are defined in `global.css` using HSL values:
+
+```css title="src/global.css"
+@layer base {
+  :root {
+    /* Light mode colors */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+  }
+
+  .dark {
+    /* Dark mode colors */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+```
+
+## Tailwind Configuration
+
+Colors are mapped in `tailwind.config.js`:
+
+```js title="tailwind.config.js"
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  // ...
+  theme: {
+    extend: {
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+    },
+  },
+};
+```
+
+## Dark Mode
+
+### Using NativeWind
+
+Lunar Kit supports dark mode through NativeWind's `dark:` prefix:
+
+```tsx
+<View className="bg-background dark:bg-background">
+  <Text className="text-foreground">
+    This text adapts to the theme
+  </Text>
+</View>
+```
+
+### Theme Provider
+
+Set up a theme provider to manage theme state:
+
+```tsx title="src/providers/theme-provider.tsx"
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useColorScheme } from 'nativewind';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+type Theme = 'light' | 'dark' | 'system';
+
+interface ThemeContextValue {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  resolvedTheme: 'light' | 'dark';
+}
+
+const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const { colorScheme, setColorScheme } = useColorScheme();
+  const [theme, setThemeState] = useState<Theme>('system');
+
+  useEffect(() => {
+    // Load saved theme
+    AsyncStorage.getItem('theme').then((saved) => {
+      if (saved) {
+        setThemeState(saved as Theme);
+        if (saved !== 'system') {
+          setColorScheme(saved as 'light' | 'dark');
+        }
+      }
+    });
+  }, []);
+
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme);
+    AsyncStorage.setItem('theme', newTheme);
+    if (newTheme === 'system') {
+      setColorScheme(undefined);
+    } else {
+      setColorScheme(newTheme);
+    }
+  };
+
+  return (
+    <ThemeContext.Provider
+      value={{
+        theme,
+        setTheme,
+        resolvedTheme: colorScheme ?? 'light',
+      }}
+    >
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within ThemeProvider');
+  }
+  return context;
+}
+```
+
+### Using the Theme Hook
+
+```tsx
+import { useTheme } from '@/providers/theme-provider';
+
+export function ThemeSwitcher() {
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
+  return (
+    <View>
+      <Text>Current theme: {resolvedTheme}</Text>
+      <Button onPress={() => setTheme('light')}>Light</Button>
+      <Button onPress={() => setTheme('dark')}>Dark</Button>
+      <Button onPress={() => setTheme('system')}>System</Button>
+    </View>
+  );
+}
+```
+
+## useThemeColors Hook
+
+Lunar Kit provides a `useThemeColors` hook to access theme colors programmatically:
+
+```tsx title="src/hooks/useThemeColors.ts"
+import { useColorScheme } from 'nativewind';
+
+const lightColors = {
+  background: '#ffffff',
+  foreground: '#0f172a',
+  card: '#ffffff',
+  cardForeground: '#0f172a',
+  primary: '#0f172a',
+  primaryForeground: '#f8fafc',
+  secondary: '#f1f5f9',
+  secondaryForeground: '#0f172a',
+  muted: '#f1f5f9',
+  mutedForeground: '#64748b',
+  accent: '#f1f5f9',
+  accentForeground: '#0f172a',
+  destructive: '#ef4444',
+  destructiveForeground: '#f8fafc',
+  border: '#e2e8f0',
+  input: '#e2e8f0',
+  ring: '#0f172a',
+};
+
+const darkColors = {
+  background: '#0f172a',
+  foreground: '#f8fafc',
+  card: '#0f172a',
+  cardForeground: '#f8fafc',
+  primary: '#f8fafc',
+  primaryForeground: '#0f172a',
+  secondary: '#1e293b',
+  secondaryForeground: '#f8fafc',
+  muted: '#1e293b',
+  mutedForeground: '#94a3b8',
+  accent: '#1e293b',
+  accentForeground: '#f8fafc',
+  destructive: '#7f1d1d',
+  destructiveForeground: '#f8fafc',
+  border: '#1e293b',
+  input: '#1e293b',
+  ring: '#cbd5e1',
+};
+
+export function useThemeColors() {
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  return {
+    colors: isDark ? darkColors : lightColors,
+    isDark,
+  };
+}
+```
+
+### Usage
+
+```tsx
+import { useThemeColors } from '@/hooks/useThemeColors';
+import { Check } from 'lucide-react-native';
+
+function MyComponent() {
+  const { colors, isDark } = useThemeColors();
+
+  return (
+    <View>
+      <Check color={colors.primary} size={24} />
+      <Text style={{ color: colors.foreground }}>
+        Current mode: {isDark ? 'Dark' : 'Light'}
+      </Text>
+    </View>
+  );
+}
+```
+
+## Custom Themes
+
+### Creating a Custom Theme
+
+You can create custom themes by modifying the CSS variables:
+
+```css title="src/global.css"
+/* Blue Theme */
+:root {
+  --primary: 217 91% 60%;           /* Blue */
+  --primary-foreground: 0 0% 100%;
+}
+
+/* Green Theme */
+.theme-green {
+  --primary: 142 76% 36%;           /* Green */
+  --primary-foreground: 0 0% 100%;
+}
+
+/* Purple Theme */
+.theme-purple {
+  --primary: 263 70% 50%;           /* Purple */
+  --primary-foreground: 0 0% 100%;
+}
+```
+
+### Theme Presets
+
+Here are some popular theme presets you can use:
+
+#### Slate (Default)
+```css
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --primary: 222.2 47.4% 11.2%;
+}
+```
+
+#### Zinc
+```css
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --primary: 240 5.9% 10%;
+}
+```
+
+#### Stone
+```css
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --primary: 24 9.8% 10%;
+}
+```
+
+#### Rose
+```css
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --primary: 346.8 77.2% 49.8%;
+}
+```
+
+#### Blue
+```css
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+}
+```
+
+## Using Colors in Components
+
+### With NativeWind Classes
+
+```tsx
+<Button className="bg-primary text-primary-foreground">
+  Primary Button
+</Button>
+
+<View className="bg-card border border-border rounded-lg p-4">
+  <Text className="text-card-foreground">Card Content</Text>
+</View>
+
+<Text className="text-muted-foreground">
+  Muted text for descriptions
+</Text>
+```
+
+### With Style Props
+
+When you need to use colors with style props (for libraries like react-native-svg):
+
+```tsx
+import { useThemeColors } from '@/hooks/useThemeColors';
+import Svg, { Circle } from 'react-native-svg';
+
+function ThemedSvg() {
+  const { colors } = useThemeColors();
+
+  return (
+    <Svg width={100} height={100}>
+      <Circle
+        cx={50}
+        cy={50}
+        r={40}
+        fill={colors.primary}
+        stroke={colors.border}
+      />
+    </Svg>
+  );
+}
+```
+
+## Best Practices
+
+1. **Use semantic tokens** — Use `primary`, `secondary`, etc. instead of specific color values
+2. **Test both modes** — Always check your UI in both light and dark modes
+3. **Contrast ratios** — Ensure text is readable against backgrounds
+4. **Consistent usage** — Use the same tokens consistently across your app
+5. **Avoid hardcoded colors** — Use theme colors instead of hex values
+
+---
+
+Next, learn about the [CLI](/docs/cli) to add components to your project!

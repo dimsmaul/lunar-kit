@@ -1,0 +1,275 @@
+---
+sidebar_position: 4
+title: Banner
+description: Display important messages or alerts
+---
+
+# Banner
+
+A banner component for displaying important information, alerts, or notifications.
+
+## Installation
+
+```bash
+lunar-kit add banner
+```
+
+## Dependencies
+
+```bash
+pnpm add lucide-react-native react-native-svg
+```
+
+## Usage
+
+```tsx
+import { Banner } from '@/components/ui/banner';
+```
+
+### Basic Usage
+
+```tsx
+<Banner
+  title="Information"
+  description="This is an informational message."
+/>
+```
+
+### Variants
+
+```tsx
+// Default
+<Banner
+  variant="default"
+  title="Default Banner"
+  description="This is a default banner."
+/>
+
+// Info
+<Banner
+  variant="info"
+  title="Did you know?"
+  description="You can customize the appearance of banners."
+/>
+
+// Success
+<Banner
+  variant="success"
+  title="Success!"
+  description="Your changes have been saved."
+/>
+
+// Warning
+<Banner
+  variant="warning"
+  title="Warning"
+  description="Please review your information carefully."
+/>
+
+// Destructive/Error
+<Banner
+  variant="destructive"
+  title="Error"
+  description="Something went wrong. Please try again."
+/>
+```
+
+### Dismissible
+
+Allow users to dismiss the banner:
+
+```tsx
+const [showBanner, setShowBanner] = useState(true);
+
+{showBanner && (
+  <Banner
+    variant="info"
+    title="New Feature"
+    description="Check out our latest update!"
+    dismissible
+    onDismiss={() => setShowBanner(false)}
+  />
+)}
+```
+
+### Custom Icon
+
+Replace the default icon:
+
+```tsx
+import { Sparkles } from 'lucide-react-native';
+
+<Banner
+  variant="info"
+  title="Pro Tip"
+  description="Use keyboard shortcuts to speed up your workflow."
+  icon={<Sparkles size={20} color="#3b82f6" />}
+/>
+```
+
+### Without Icon
+
+Hide the icon entirely:
+
+```tsx
+<Banner
+  variant="default"
+  title="Notice"
+  description="This banner has no icon."
+  showIcon={false}
+/>
+```
+
+### With Custom Content
+
+Add any content to the banner:
+
+```tsx
+<Banner variant="warning" title="Subscription Expiring">
+  <View className="mt-2">
+    <Text className="text-yellow-900 dark:text-yellow-100">
+      Your subscription expires in 3 days.
+    </Text>
+    <Button
+      variant="outline"
+      size="sm"
+      className="mt-2"
+      onPress={renewSubscription}
+    >
+      Renew Now
+    </Button>
+  </View>
+</Banner>
+```
+
+## API Reference
+
+### Banner
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'default' \| 'info' \| 'success' \| 'warning' \| 'destructive'` | `'default'` | Visual variant |
+| `title` | `string` | — | Banner title |
+| `description` | `string` | — | Banner description |
+| `children` | `ReactNode` | — | Custom content |
+| `icon` | `ReactNode` | — | Custom icon |
+| `showIcon` | `boolean` | `true` | Show/hide icon |
+| `dismissible` | `boolean` | `false` | Allow dismissal |
+| `onDismiss` | `() => void` | — | Callback when dismissed |
+| `className` | `string` | — | Additional classes |
+
+## Styling
+
+### Custom Styles
+
+```tsx
+<Banner
+  variant="info"
+  title="Custom Style"
+  description="This banner has custom styling."
+  className="rounded-xl border-2"
+/>
+```
+
+## Examples
+
+### App Update Banner
+
+```tsx
+export function UpdateBanner() {
+  const [dismissed, setDismissed] = useState(false);
+
+  if (dismissed) return null;
+
+  return (
+    <Banner
+      variant="info"
+      title="Update Available"
+      description="A new version of the app is available."
+      dismissible
+      onDismiss={() => setDismissed(true)}
+    >
+      <Button size="sm" className="mt-3" onPress={updateApp}>
+        Update Now
+      </Button>
+    </Banner>
+  );
+}
+```
+
+### Form Validation Error
+
+```tsx
+export function FormErrors({ errors }) {
+  if (errors.length === 0) return null;
+
+  return (
+    <Banner variant="destructive" title="Please fix the following errors:">
+      <View className="mt-2 gap-1">
+        {errors.map((error, index) => (
+          <Text key={index} className="text-red-900 dark:text-red-100 text-sm">
+            • {error}
+          </Text>
+        ))}
+      </View>
+    </Banner>
+  );
+}
+```
+
+### Success Message
+
+```tsx
+export function SuccessMessage({ message, onClose }) {
+  return (
+    <Banner
+      variant="success"
+      title="Success"
+      description={message}
+      dismissible
+      onDismiss={onClose}
+    />
+  );
+}
+```
+
+### Maintenance Notice
+
+```tsx
+export function MaintenanceBanner() {
+  return (
+    <Banner
+      variant="warning"
+      title="Scheduled Maintenance"
+      description="The system will be unavailable on Sunday, 2 AM - 4 AM UTC."
+      showIcon
+    />
+  );
+}
+```
+
+### Cookie Consent
+
+```tsx
+export function CookieConsent() {
+  const [accepted, setAccepted] = useState(false);
+
+  if (accepted) return null;
+
+  return (
+    <Banner
+      variant="default"
+      showIcon={false}
+    >
+      <View className="flex-row items-center justify-between">
+        <Text className="flex-1 mr-4">
+          We use cookies to enhance your experience.
+        </Text>
+        <Button size="sm" onPress={() => setAccepted(true)}>
+          Accept
+        </Button>
+      </View>
+    </Banner>
+  );
+}
+```

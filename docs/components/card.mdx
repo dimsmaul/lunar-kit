@@ -1,0 +1,355 @@
+---
+sidebar_position: 8
+title: Card
+description: A container component for grouping related content
+---
+
+# Card
+
+A container for displaying content and actions on a single topic.
+
+## Installation
+
+```bash
+lunar-kit add card
+```
+
+## Usage
+
+```tsx
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/card';
+```
+
+### Basic Usage
+
+```tsx
+<Card>
+  <CardHeader>
+    <CardTitle>Card Title</CardTitle>
+    <CardDescription>Card description goes here.</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <Text>Main content of the card.</Text>
+  </CardContent>
+  <CardFooter>
+    <Button>Action</Button>
+  </CardFooter>
+</Card>
+```
+
+### Variants
+
+```tsx
+// Default - with border and shadow
+<Card variant="default">
+  {/* ... */}
+</Card>
+
+// Elevated - more shadow
+<Card variant="elevated">
+  {/* ... */}
+</Card>
+
+// Outline - border only
+<Card variant="outline">
+  {/* ... */}
+</Card>
+
+// Ghost - no background or border
+<Card variant="ghost">
+  {/* ... */}
+</Card>
+
+// Filled - muted background
+<Card variant="filled">
+  {/* ... */}
+</Card>
+```
+
+### Simple Card
+
+Without header/footer:
+
+```tsx
+<Card>
+  <CardContent>
+    <Text>Simple card with just content.</Text>
+  </CardContent>
+</Card>
+```
+
+### Card with Actions
+
+```tsx
+<Card>
+  <CardHeader>
+    <CardTitle>Settings</CardTitle>
+    <CardDescription>Manage your account settings.</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <View className="gap-4">
+      <Input label="Name" value={name} onChangeText={setName} />
+      <Input label="Email" value={email} onChangeText={setEmail} />
+    </View>
+  </CardContent>
+  <CardFooter alignment="end">
+    <Button variant="outline">Cancel</Button>
+    <Button>Save</Button>
+  </CardFooter>
+</Card>
+```
+
+### Footer Alignment
+
+```tsx
+// Start (default)
+<CardFooter alignment="start">
+  <Button>Action</Button>
+</CardFooter>
+
+// Center
+<CardFooter alignment="center">
+  <Button>Action</Button>
+</CardFooter>
+
+// End
+<CardFooter alignment="end">
+  <Button>Action</Button>
+</CardFooter>
+
+// Between
+<CardFooter alignment="between">
+  <Button variant="outline">Cancel</Button>
+  <Button>Submit</Button>
+</CardFooter>
+```
+
+### Content Spacing
+
+```tsx
+<CardContent spacing="sm">
+  {/* Smaller top padding */}
+</CardContent>
+
+<CardContent spacing="default">
+  {/* Default top padding */}
+</CardContent>
+
+<CardContent spacing="lg">
+  {/* Larger top padding */}
+</CardContent>
+
+<CardContent spacing="none">
+  {/* No top padding */}
+</CardContent>
+```
+
+## API Reference
+
+### Card
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Card content |
+| `variant` | `'default' \| 'elevated' \| 'outline' \| 'ghost' \| 'filled'` | `'default'` | Visual variant |
+| `className` | `string` | — | Additional classes |
+
+### CardHeader
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Header content |
+| `spacing` | `'default' \| 'sm' \| 'lg'` | `'default'` | Gap between children |
+| `className` | `string` | — | Additional classes |
+
+### CardTitle
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Title text |
+| `className` | `string` | — | Additional classes |
+
+### CardDescription
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Description text |
+| `className` | `string` | — | Additional classes |
+
+### CardContent
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Main content |
+| `spacing` | `'default' \| 'sm' \| 'lg' \| 'none'` | `'default'` | Top padding |
+| `className` | `string` | — | Additional classes |
+
+### CardFooter
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Footer content |
+| `spacing` | `'default' \| 'sm' \| 'lg' \| 'none'` | `'default'` | Top padding |
+| `alignment` | `'start' \| 'center' \| 'end' \| 'between'` | `'start'` | Content alignment |
+| `className` | `string` | — | Additional classes |
+
+## Examples
+
+### Product Card
+
+```tsx
+export function ProductCard({ product }) {
+  return (
+    <Card>
+      <Image 
+        source={{ uri: product.image }} 
+        className="w-full h-48 rounded-t-lg"
+      />
+      <CardHeader>
+        <CardTitle>{product.name}</CardTitle>
+        <CardDescription>${product.price}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Text variant="muted" numberOfLines={2}>
+          {product.description}
+        </Text>
+      </CardContent>
+      <CardFooter alignment="between">
+        <Button variant="outline" size="sm">
+          <Heart size={16} />
+        </Button>
+        <Button size="sm">Add to Cart</Button>
+      </CardFooter>
+    </Card>
+  );
+}
+```
+
+### User Profile Card
+
+```tsx
+export function ProfileCard({ user }) {
+  return (
+    <Card variant="elevated">
+      <CardHeader>
+        <View className="flex-row items-center gap-4">
+          <Avatar
+            source={{ uri: user.avatar }}
+            fallback={user.name}
+            size="lg"
+          />
+          <View>
+            <CardTitle>{user.name}</CardTitle>
+            <CardDescription>{user.email}</CardDescription>
+          </View>
+        </View>
+      </CardHeader>
+      <CardContent>
+        <Text>{user.bio}</Text>
+      </CardContent>
+      <CardFooter alignment="end">
+        <Button variant="outline">Edit Profile</Button>
+      </CardFooter>
+    </Card>
+  );
+}
+```
+
+### Stats Card
+
+```tsx
+export function StatsCard({ title, value, change, icon: Icon }) {
+  const isPositive = change >= 0;
+
+  return (
+    <Card>
+      <CardContent spacing="none">
+        <View className="flex-row items-center justify-between">
+          <View>
+            <Text variant="muted" size="sm">{title}</Text>
+            <Text variant="header" size="lg">{value}</Text>
+            <Text 
+              className={isPositive ? 'text-green-500' : 'text-red-500'}
+              size="sm"
+            >
+              {isPositive ? '+' : ''}{change}%
+            </Text>
+          </View>
+          <View className="w-12 h-12 rounded-full bg-primary/10 items-center justify-center">
+            <Icon size={24} className="text-primary" />
+          </View>
+        </View>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+### Notification Card
+
+```tsx
+export function NotificationCard({ notification, onDismiss }) {
+  return (
+    <Card variant="filled">
+      <CardHeader spacing="sm">
+        <View className="flex-row items-center justify-between">
+          <View className="flex-row items-center gap-2">
+            <Bell size={16} />
+            <CardTitle>{notification.title}</CardTitle>
+          </View>
+          <Pressable onPress={onDismiss}>
+            <X size={16} />
+          </Pressable>
+        </View>
+      </CardHeader>
+      <CardContent spacing="sm">
+        <Text variant="muted">{notification.message}</Text>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+### Login Card
+
+```tsx
+export function LoginCard() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  return (
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle>Welcome Back</CardTitle>
+        <CardDescription>Sign in to your account</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <View className="gap-4">
+          <Input
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+          <Input
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+        </View>
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full">Sign In</Button>
+      </CardFooter>
+    </Card>
+  );
+}
+```

@@ -1,0 +1,418 @@
+---
+sidebar_position: 16
+title: Select
+description: Dropdown select components for choosing from a list
+---
+
+# Select
+
+A dropdown component for selecting from a list of options.
+
+## Installation
+
+```bash
+lunar-kit add select
+# For bottom sheet select
+lunar-kit add select-sheet
+```
+
+## Usage
+
+### Select (Dialog based)
+
+```tsx
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+  SelectLabel,
+  SelectSeparator,
+} from '@/components/ui/select';
+
+const [value, setValue] = useState('');
+
+<Select value={value} onValueChange={setValue}>
+  <SelectTrigger>
+    <SelectValue placeholder="Select an option" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="option1" label="Option 1" />
+    <SelectItem value="option2" label="Option 2" />
+    <SelectItem value="option3" label="Option 3" />
+  </SelectContent>
+</Select>
+```
+
+### SelectSheet (Bottom sheet based)
+
+```tsx
+import { SelectSheet, MultiSelectSheet } from '@/components/ui/select-sheet';
+
+const options = [
+  { label: 'Apple', value: 'apple' },
+  { label: 'Banana', value: 'banana' },
+  { label: 'Orange', value: 'orange' },
+];
+
+// Single select
+<SelectSheet
+  options={options}
+  value={value}
+  onValueChange={setValue}
+  placeholder="Select a fruit"
+  title="Choose a Fruit"
+/>
+
+// Multi select
+<MultiSelectSheet
+  options={options}
+  value={selectedValues}
+  onValueChange={setSelectedValues}
+  placeholder="Select fruits"
+  title="Choose Fruits"
+/>
+```
+
+### Trigger Variants
+
+```tsx
+// Outline (default)
+<SelectSheet variant="outline" {...props} />
+
+// Underline
+<SelectSheet variant="underline" {...props} />
+```
+
+### Trigger Sizes
+
+```tsx
+<SelectSheet size="sm" {...props} />
+<SelectSheet size="md" {...props} />
+<SelectSheet size="lg" {...props} />
+```
+
+### With Label
+
+```tsx
+<SelectSheet
+  label="Category"
+  options={categories}
+  value={category}
+  onValueChange={setCategory}
+  placeholder="Select category"
+/>
+```
+
+### With Error
+
+```tsx
+<SelectSheet
+  label="Country"
+  options={countries}
+  value={country}
+  onValueChange={setCountry}
+  error="Please select a country"
+/>
+```
+
+### Searchable
+
+```tsx
+<SelectSheet
+  options={countries}
+  value={country}
+  onValueChange={setCountry}
+  searchable
+  searchPlaceholder="Search countries..."
+/>
+```
+
+### With Groups (Select)
+
+```tsx
+<Select value={value} onValueChange={setValue}>
+  <SelectTrigger>
+    <SelectValue placeholder="Select a fruit" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectGroup>
+      <SelectLabel>Fruits</SelectLabel>
+      <SelectItem value="apple" label="Apple" />
+      <SelectItem value="banana" label="Banana" />
+    </SelectGroup>
+    <SelectSeparator />
+    <SelectGroup>
+      <SelectLabel>Vegetables</SelectLabel>
+      <SelectItem value="carrot" label="Carrot" />
+      <SelectItem value="broccoli" label="Broccoli" />
+    </SelectGroup>
+  </SelectContent>
+</Select>
+```
+
+### Disabled
+
+```tsx
+<Select value={value} onValueChange={setValue} disabled>
+  {/* ... */}
+</Select>
+
+<SelectSheet
+  options={options}
+  value={value}
+  onValueChange={setValue}
+  disabled
+/>
+```
+
+## API Reference
+
+### Select
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | — | Selected value |
+| `onValueChange` | `(value: string) => void` | — | Change callback |
+| `disabled` | `boolean` | `false` | Disable the select |
+| `children` | `ReactNode` | Required | Select components |
+
+### SelectTrigger
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Trigger size |
+| `variant` | `'outline' \| 'underline'` | `'outline'` | Visual variant |
+| `prefix` | `ReactNode` | — | Left adornment |
+| `suffix` | `ReactNode` | — | Right adornment |
+| `error` | `boolean` | `false` | Error state |
+| `className` | `string` | — | Additional classes |
+
+### SelectContent
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Select items |
+| `className` | `string` | — | Additional classes |
+
+### SelectItem
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | Required | Option value |
+| `label` | `string` | Required | Display label |
+| `disabled` | `boolean` | `false` | Disable this item |
+| `className` | `string` | — | Additional classes |
+
+### SelectSheet
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `options` | `SelectOption[]` | Required | List of options |
+| `value` | `string \| number` | — | Selected value |
+| `onValueChange` | `(value) => void` | — | Change callback |
+| `placeholder` | `string` | `'Select...'` | Placeholder text |
+| `label` | `string` | — | Input label |
+| `error` | `string` | — | Error message |
+| `disabled` | `boolean` | `false` | Disable the select |
+| `variant` | `'outline' \| 'underline'` | `'outline'` | Trigger variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Trigger size |
+| `title` | `string` | — | Sheet title |
+| `description` | `string` | — | Sheet description |
+| `searchable` | `boolean` | `false` | Enable search |
+| `searchPlaceholder` | `string` | `'Search...'` | Search placeholder |
+| `emptyMessage` | `string` | `'No options found'` | Empty state message |
+| `snapPoints` | `string[]` | `['70%']` | Sheet snap points |
+
+### MultiSelectSheet
+
+Same as SelectSheet, plus:
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `(string \| number)[]` | — | Selected values |
+| `maxSelection` | `number` | — | Maximum selections |
+| `showCount` | `boolean` | `true` | Show selection count |
+
+## Examples
+
+### Country Selector
+
+```tsx
+const countries = [
+  { label: 'United States', value: 'us' },
+  { label: 'United Kingdom', value: 'uk' },
+  { label: 'Canada', value: 'ca' },
+  { label: 'Australia', value: 'au' },
+  // ...more countries
+];
+
+export function CountrySelector() {
+  const [country, setCountry] = useState('');
+
+  return (
+    <SelectSheet
+      label="Country"
+      options={countries}
+      value={country}
+      onValueChange={setCountry}
+      placeholder="Select your country"
+      title="Select Country"
+      searchable
+      searchPlaceholder="Search countries..."
+    />
+  );
+}
+```
+
+### Category Filter
+
+```tsx
+export function CategoryFilter({ onFilter }) {
+  const [category, setCategory] = useState('');
+
+  const categories = [
+    { label: 'All Categories', value: '' },
+    { label: 'Electronics', value: 'electronics' },
+    { label: 'Clothing', value: 'clothing' },
+    { label: 'Home & Garden', value: 'home' },
+    { label: 'Sports', value: 'sports' },
+  ];
+
+  const handleChange = (value) => {
+    setCategory(value);
+    onFilter(value);
+  };
+
+  return (
+    <SelectSheet
+      options={categories}
+      value={category}
+      onValueChange={handleChange}
+      placeholder="Filter by category"
+      size="sm"
+    />
+  );
+}
+```
+
+### Multi-Tag Selector
+
+```tsx
+export function TagSelector() {
+  const [tags, setTags] = useState([]);
+
+  const availableTags = [
+    { label: 'React', value: 'react' },
+    { label: 'TypeScript', value: 'typescript' },
+    { label: 'JavaScript', value: 'javascript' },
+    { label: 'Node.js', value: 'nodejs' },
+    { label: 'Python', value: 'python' },
+  ];
+
+  return (
+    <MultiSelectSheet
+      label="Tags"
+      options={availableTags}
+      value={tags}
+      onValueChange={setTags}
+      placeholder="Select tags"
+      title="Select Tags"
+      maxSelection={5}
+    />
+  );
+}
+```
+
+### Priority Selector
+
+```tsx
+export function PrioritySelector({ value, onChange }) {
+  const priorities = [
+    { label: '🔴 High', value: 'high' },
+    { label: '🟡 Medium', value: 'medium' },
+    { label: '🟢 Low', value: 'low' },
+  ];
+
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger size="sm">
+        <SelectValue placeholder="Priority" />
+      </SelectTrigger>
+      <SelectContent>
+        {priorities.map((priority) => (
+          <SelectItem
+            key={priority.value}
+            value={priority.value}
+            label={priority.label}
+          />
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+```
+
+### Form Integration
+
+```tsx
+import { Controller, useForm } from 'react-hook-form';
+
+export function FormWithSelect() {
+  const { control, handleSubmit } = useForm();
+
+  return (
+    <Controller
+      control={control}
+      name="country"
+      rules={{ required: 'Please select a country' }}
+      render={({ field: { value, onChange }, fieldState: { error } }) => (
+        <SelectSheet
+          label="Country"
+          options={countries}
+          value={value}
+          onValueChange={onChange}
+          error={error?.message}
+          placeholder="Select country"
+        />
+      )}
+    />
+  );
+}
+```
+
+### Async Options (Load More)
+
+```tsx
+export function AsyncSelect() {
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+
+  const loadMore = async () => {
+    if (loading || !hasMore) return;
+    setLoading(true);
+    
+    const newOptions = await fetchOptions(page);
+    setOptions([...options, ...newOptions]);
+    setPage(page + 1);
+    setHasMore(newOptions.length > 0);
+    setLoading(false);
+  };
+
+  return (
+    <SelectSheet
+      options={options}
+      value={value}
+      onValueChange={setValue}
+      onLoadMore={loadMore}
+      hasMore={hasMore}
+      isLoading={loading}
+      searchable
+    />
+  );
+}
+```

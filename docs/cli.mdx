@@ -1,0 +1,332 @@
+---
+sidebar_position: 4
+title: CLI
+description: Use the Lunar Kit CLI to manage components in your project
+---
+
+# CLI
+
+The Lunar Kit CLI helps you add and manage components in your React Native project.
+
+## Installation
+
+```bash
+# Global installation (recommended)
+pnpm add -g @lunar-kit/cli
+
+# Or use npx without installing
+npx @lunar-kit/cli [command]
+```
+
+## Available Commands
+
+| Command | Alias | Description |
+|---------|-------|-------------|
+| `lunar-kit` | `lk`, `lunar` | Main CLI command |
+| `init` | — | Initialize Lunar Kit in your project |
+| `add` | — | Add components to your project |
+| `generate` | `gen` | Generate new components or modules |
+| `module` | — | Create a module structure |
+
+## init
+
+Initialize Lunar Kit in your existing React Native project.
+
+```bash
+lunar-kit init
+```
+
+### What it does
+
+1. Creates `src/components/ui` directory
+2. Sets up `lib/utils.ts` with helper functions
+3. Installs required dependencies (clsx, tailwind-merge)
+4. Creates `kit.config.json` configuration file
+
+### Interactive Prompts
+
+```
+🌙 Initializing Lunar Kit...
+
+? Would you like to use TypeScript? › Yes
+? Which package manager do you use? › pnpm / npm / yarn
+```
+
+## add
+
+Add components from the Lunar Kit registry to your project.
+
+```bash
+lunar-kit add <component-name...>
+```
+
+### Examples
+
+```bash
+# Add a single component
+lunar-kit add button
+
+# Add multiple components
+lunar-kit add button card dialog input
+
+# Add all available components
+lunar-kit add --all
+```
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--all` | Add all available components |
+| `--path` | Custom path for components (default: `src/components/ui`) |
+
+### What happens
+
+1. Downloads component source files
+2. Resolves and installs registry dependencies
+3. Installs required npm packages
+4. Updates barrel exports if present
+
+### Available Components
+
+```bash
+# Form Components
+lunar-kit add button
+lunar-kit add input
+lunar-kit add textarea
+lunar-kit add checkbox
+lunar-kit add radio
+lunar-kit add radio-group
+lunar-kit add select
+lunar-kit add select-sheet
+lunar-kit add form
+
+# Layout Components
+lunar-kit add card
+lunar-kit add dialog
+lunar-kit add bottom-sheet
+lunar-kit add banner
+
+# Display Components
+lunar-kit add text
+lunar-kit add avatar
+lunar-kit add badge
+
+# Data Components
+lunar-kit add calendar
+lunar-kit add date-picker
+lunar-kit add date-range-picker
+
+# Navigation
+lunar-kit add tabs
+
+# Advanced
+lunar-kit add accordion
+```
+
+## generate (gen)
+
+Generate new components using templates.
+
+### Global Component
+
+Create a component in `src/components/`:
+
+```bash
+lunar-kit generate global <component-name>
+# or
+lunar-kit gen global UserCard
+```
+
+Creates:
+```
+src/components/
+  └── UserCard.tsx
+```
+
+### Scoped Component
+
+Create a component within a module:
+
+```bash
+lunar-kit generate scoped <module-name> <component-name>
+# or
+lunar-kit gen scoped auth LoginForm
+```
+
+Creates:
+```
+src/modules/auth/components/
+  └── LoginForm.tsx
+```
+
+### Examples
+
+```bash
+# Create a global component
+lunar-kit gen global Header
+lunar-kit gen global NavigationBar
+lunar-kit gen global ProfileCard
+
+# Create module-specific components
+lunar-kit gen scoped profile ProfileHeader
+lunar-kit gen scoped settings SettingsForm
+lunar-kit gen scoped cart CartItem
+```
+
+## module
+
+Generate a complete module structure with all necessary folders.
+
+```bash
+lunar-kit module <module-name>
+```
+
+### Example
+
+```bash
+lunar-kit module auth
+```
+
+Creates:
+```
+src/modules/auth/
+  ├── components/
+  │   └── index.ts
+  ├── hooks/
+  │   └── index.ts
+  ├── screens/
+  │   └── index.ts
+  ├── services/
+  │   └── index.ts
+  └── types/
+      └── index.ts
+```
+
+### Multiple Modules
+
+```bash
+lunar-kit module auth profile settings cart checkout
+```
+
+## Configuration
+
+Lunar Kit stores configuration in `kit.config.json`:
+
+```json title="kit.config.json"
+{
+  "typescript": true,
+  "componentsPath": "src/components",
+  "packageManager": "pnpm"
+}
+```
+
+### Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `typescript` | `true` | Use TypeScript for components |
+| `componentsPath` | `src/components` | Where to store components |
+| `packageManager` | `pnpm` | Package manager to use |
+
+## Workflow Examples
+
+### Starting a New Feature
+
+```bash
+# 1. Create a module for the feature
+lunar-kit module checkout
+
+# 2. Add required UI components
+lunar-kit add button card input form
+
+# 3. Create custom components
+lunar-kit gen scoped checkout CheckoutForm
+lunar-kit gen scoped checkout OrderSummary
+lunar-kit gen scoped checkout PaymentMethod
+```
+
+### Adding Components to Existing Project
+
+```bash
+# 1. Initialize Lunar Kit
+lunar-kit init
+
+# 2. Add commonly used components
+lunar-kit add button text card input
+
+# 3. Add more as needed
+lunar-kit add dialog bottom-sheet tabs
+```
+
+### Full Component Setup
+
+```bash
+# Add all components at once
+lunar-kit add --all
+```
+
+## Dependencies
+
+Components may install these dependencies automatically:
+
+| Dependency | Used By |
+|-----------|---------|
+| `clsx` | All components |
+| `tailwind-merge` | All components |
+| `class-variance-authority` | Components with variants |
+| `lucide-react-native` | Components with icons |
+| `react-native-svg` | Icon support |
+| `react-native-reanimated` | Animated components |
+| `react-native-gesture-handler` | Bottom sheet, swipeable |
+| `dayjs` | Calendar, date pickers |
+| `react-hook-form` | Form component |
+
+## Troubleshooting
+
+### "Command not found"
+
+```bash
+# Ensure global installation
+pnpm add -g @lunar-kit/cli
+
+# Or use npx
+npx @lunar-kit/cli add button
+```
+
+### "Registry not found"
+
+The CLI uses `@lunar-kit/core` for the component registry. Make sure it's installed:
+
+```bash
+pnpm add @lunar-kit/core
+```
+
+### Component dependencies missing
+
+Run the add command again, it will install missing dependencies:
+
+```bash
+lunar-kit add button
+```
+
+### Path issues
+
+Check your `kit.config.json` has the correct paths:
+
+```json
+{
+  "componentsPath": "src/components"
+}
+```
+
+## Tips
+
+1. **Use npx for one-time use** — No need to install globally if you only use it occasionally
+2. **Add components as needed** — Don't add all components if you only need a few
+3. **Customize after adding** — Components are copied to your project, feel free to modify them
+4. **Check dependencies** — Some components require others (e.g., `date-picker` requires `calendar`)
+
+---
+
+Now explore the [Components](/docs/components/button) documentation to learn how to use each component!

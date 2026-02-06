@@ -1,0 +1,374 @@
+---
+sidebar_position: 10
+title: Date Picker
+description: A date selection component with calendar popup
+---
+
+# Date Picker
+
+A component that allows users to select a date from a calendar popup.
+
+## Installation
+
+```bash
+lunar-kit add date-picker
+```
+
+## Dependencies
+
+This component requires `calendar` and `dialog`:
+
+```bash
+lunar-kit add calendar dialog
+pnpm add dayjs lucide-react-native react-native-svg
+```
+
+## Usage
+
+```tsx
+import {
+  DatePicker,
+  DatePickerTrigger,
+  DatePickerContent,
+  DatePickerValue,
+} from '@/components/ui/date-picker';
+```
+
+### Basic Usage
+
+```tsx
+const [date, setDate] = useState<Date>();
+
+<DatePicker value={date} onValueChange={setDate}>
+  <DatePickerTrigger>
+    <DatePickerValue placeholder="Select a date" />
+  </DatePickerTrigger>
+  <DatePickerContent />
+</DatePicker>
+```
+
+### Variants
+
+```tsx
+// Date picker (default)
+<DatePicker variant="date" value={date} onValueChange={setDate}>
+  {/* ... */}
+</DatePicker>
+
+// Month picker
+<DatePicker variant="month" value={date} onValueChange={setDate}>
+  {/* ... */}
+</DatePicker>
+
+// Year picker
+<DatePicker variant="year" value={date} onValueChange={setDate}>
+  {/* ... */}
+</DatePicker>
+```
+
+### Trigger Variants
+
+```tsx
+// Default - bordered input look
+<DatePicker value={date} onValueChange={setDate} triggerVariant="default">
+  {/* ... */}
+</DatePicker>
+
+// Outline
+<DatePicker value={date} onValueChange={setDate} triggerVariant="outline">
+  {/* ... */}
+</DatePicker>
+
+// Filled
+<DatePicker value={date} onValueChange={setDate} triggerVariant="filled">
+  {/* ... */}
+</DatePicker>
+```
+
+### Trigger Sizes
+
+```tsx
+<DatePicker value={date} onValueChange={setDate} triggerSize="sm">
+  {/* ... */}
+</DatePicker>
+
+<DatePicker value={date} onValueChange={setDate} triggerSize="md">
+  {/* ... */}
+</DatePicker>
+
+<DatePicker value={date} onValueChange={setDate} triggerSize="lg">
+  {/* ... */}
+</DatePicker>
+```
+
+### Custom Date Format
+
+```tsx
+<DatePickerValue 
+  placeholder="Pick a date"
+  format="YYYY-MM-DD"
+/>
+
+<DatePickerValue 
+  placeholder="Pick a date"
+  format="DD/MM/YYYY"
+/>
+
+<DatePickerValue 
+  placeholder="Pick a date"
+  format="MMMM D, YYYY"  // December 25, 2024
+/>
+```
+
+### With Min/Max Dates
+
+```tsx
+<DatePicker
+  value={date}
+  onValueChange={setDate}
+  minDate={new Date()}
+  maxDate={new Date(2025, 11, 31)}
+>
+  <DatePickerTrigger>
+    <DatePickerValue placeholder="Select a future date" />
+  </DatePickerTrigger>
+  <DatePickerContent />
+</DatePicker>
+```
+
+### Without Icon
+
+```tsx
+<DatePickerValue 
+  placeholder="Select date"
+  showIcon={false}
+/>
+```
+
+## API Reference
+
+### DatePicker
+
+Root component.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `Date` | — | Selected date |
+| `onValueChange` | `(date: Date) => void` | — | Callback when date changes |
+| `variant` | `'date' \| 'month' \| 'year'` | `'date'` | Picker variant |
+| `minDate` | `Date` | — | Minimum selectable date |
+| `maxDate` | `Date` | — | Maximum selectable date |
+| `triggerVariant` | `'default' \| 'outline' \| 'filled'` | `'default'` | Trigger style |
+| `triggerSize` | `'sm' \| 'md' \| 'lg'` | `'md'` | Trigger size |
+
+### DatePickerTrigger
+
+The button that opens the calendar.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Trigger content |
+| `className` | `string` | — | Additional classes |
+
+### DatePickerContent
+
+The calendar popup.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `className` | `string` | — | Additional classes |
+
+### DatePickerValue
+
+Display component for the selected date.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `placeholder` | `string` | `'Select date'` | Placeholder text |
+| `format` | `string` | `'MMM DD, YYYY'` | Date format (dayjs) |
+| `showIcon` | `boolean` | `true` | Show calendar icon |
+| `className` | `string` | — | Additional classes |
+
+## Date Formats
+
+Using dayjs format tokens:
+
+| Token | Output | Example |
+|-------|--------|---------|
+| `YYYY` | 4-digit year | 2024 |
+| `YY` | 2-digit year | 24 |
+| `MMMM` | Full month | December |
+| `MMM` | Short month | Dec |
+| `MM` | 2-digit month | 12 |
+| `M` | Month | 12 |
+| `DD` | 2-digit day | 05 |
+| `D` | Day | 5 |
+| `dddd` | Full weekday | Tuesday |
+| `ddd` | Short weekday | Tue |
+
+## Examples
+
+### Birth Date Picker
+
+```tsx
+export function BirthDatePicker() {
+  const [birthDate, setBirthDate] = useState<Date>();
+  const maxDate = new Date();
+  const minDate = new Date(1900, 0, 1);
+
+  return (
+    <View className="gap-2">
+      <Text variant="label">Date of Birth</Text>
+      <DatePicker
+        value={birthDate}
+        onValueChange={setBirthDate}
+        minDate={minDate}
+        maxDate={maxDate}
+      >
+        <DatePickerTrigger>
+          <DatePickerValue
+            placeholder="Select your birth date"
+            format="MMMM D, YYYY"
+          />
+        </DatePickerTrigger>
+        <DatePickerContent />
+      </DatePicker>
+    </View>
+  );
+}
+```
+
+### Appointment Scheduler
+
+```tsx
+export function AppointmentScheduler() {
+  const [date, setDate] = useState<Date>();
+  const today = new Date();
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Book Appointment</CardTitle>
+      </CardHeader>
+      <CardContent className="gap-4">
+        <View className="gap-2">
+          <Text variant="label">Preferred Date</Text>
+          <DatePicker
+            value={date}
+            onValueChange={setDate}
+            minDate={today}
+          >
+            <DatePickerTrigger>
+              <DatePickerValue placeholder="Choose a date" />
+            </DatePickerTrigger>
+            <DatePickerContent />
+          </DatePicker>
+        </View>
+        
+        {date && (
+          <Text variant="muted">
+            Selected: {date.toLocaleDateString('en-US', { 
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </Text>
+        )}
+      </CardContent>
+      <CardFooter>
+        <Button disabled={!date} className="w-full">
+          Confirm Booking
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
+```
+
+### Month/Year Selector
+
+```tsx
+export function MonthYearPicker() {
+  const [selectedMonth, setSelectedMonth] = useState<Date>();
+
+  return (
+    <View className="gap-2">
+      <Text variant="label">Select Month</Text>
+      <DatePicker
+        variant="month"
+        value={selectedMonth}
+        onValueChange={setSelectedMonth}
+      >
+        <DatePickerTrigger>
+          <DatePickerValue
+            placeholder="Select month"
+            format="MMMM YYYY"
+          />
+        </DatePickerTrigger>
+        <DatePickerContent />
+      </DatePicker>
+    </View>
+  );
+}
+```
+
+### Form Integration
+
+```tsx
+import { Controller, useForm } from 'react-hook-form';
+
+export function FormWithDatePicker() {
+  const { control, handleSubmit } = useForm();
+
+  return (
+    <View className="gap-4">
+      <Controller
+        control={control}
+        name="eventDate"
+        rules={{ required: 'Date is required' }}
+        render={({ field: { value, onChange }, fieldState: { error } }) => (
+          <View className="gap-2">
+            <Text variant="label">Event Date</Text>
+            <DatePicker value={value} onValueChange={onChange}>
+              <DatePickerTrigger className={error ? 'border-destructive' : ''}>
+                <DatePickerValue placeholder="Select date" />
+              </DatePickerTrigger>
+              <DatePickerContent />
+            </DatePicker>
+            {error && (
+              <Text className="text-destructive text-sm">
+                {error.message}
+              </Text>
+            )}
+          </View>
+        )}
+      />
+      
+      <Button onPress={handleSubmit(onSubmit)}>Submit</Button>
+    </View>
+  );
+}
+```
+
+### Inline Labeled
+
+```tsx
+export function InlineDatePicker() {
+  const [date, setDate] = useState<Date>();
+
+  return (
+    <View className="flex-row items-center gap-4">
+      <Text className="w-24">Start Date:</Text>
+      <View className="flex-1">
+        <DatePicker value={date} onValueChange={setDate} triggerSize="sm">
+          <DatePickerTrigger>
+            <DatePickerValue placeholder="Select" format="MM/DD/YYYY" />
+          </DatePickerTrigger>
+          <DatePickerContent />
+        </DatePicker>
+      </View>
+    </View>
+  );
+}
+```

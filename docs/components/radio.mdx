@@ -1,0 +1,376 @@
+---
+sidebar_position: 15
+title: Radio
+description: Radio button components for single selection
+---
+
+# Radio
+
+A radio button component for selecting one option from a set.
+
+## Installation
+
+```bash
+lunar-kit add radio
+# For radio groups
+lunar-kit add radio-group
+```
+
+## Usage
+
+### Radio (Standalone)
+
+```tsx
+import { Radio } from '@/components/ui/radio';
+
+const [checked, setChecked] = useState(false);
+
+<Radio checked={checked} onCheckedChange={setChecked}>
+  <Text>Option</Text>
+</Radio>
+```
+
+### RadioGroup
+
+```tsx
+import {
+  RadioGroup,
+  RadioGroupItem,
+  RadioGroupLabel,
+  RadioGroupDescription,
+} from '@/components/ui/radio-group';
+
+const [value, setValue] = useState('option1');
+
+<RadioGroup value={value} onValueChange={setValue}>
+  <RadioGroupItem value="option1">
+    <RadioGroupLabel>Option 1</RadioGroupLabel>
+  </RadioGroupItem>
+  <RadioGroupItem value="option2">
+    <RadioGroupLabel>Option 2</RadioGroupLabel>
+  </RadioGroupItem>
+  <RadioGroupItem value="option3">
+    <RadioGroupLabel>Option 3</RadioGroupLabel>
+  </RadioGroupItem>
+</RadioGroup>
+```
+
+### Sizes
+
+```tsx
+<RadioGroup value={value} onValueChange={setValue} size="sm">
+  {/* Small radio buttons */}
+</RadioGroup>
+
+<RadioGroup value={value} onValueChange={setValue} size="md">
+  {/* Medium (default) */}
+</RadioGroup>
+
+<RadioGroup value={value} onValueChange={setValue} size="lg">
+  {/* Large radio buttons */}
+</RadioGroup>
+```
+
+### Orientation
+
+```tsx
+// Vertical (default)
+<RadioGroup orientation="vertical" value={value} onValueChange={setValue}>
+  {/* Items stacked vertically */}
+</RadioGroup>
+
+// Horizontal
+<RadioGroup orientation="horizontal" value={value} onValueChange={setValue}>
+  {/* Items in a row */}
+</RadioGroup>
+```
+
+### With Description
+
+```tsx
+<RadioGroup value={value} onValueChange={setValue}>
+  <RadioGroupItem value="free">
+    <View>
+      <RadioGroupLabel>Free Plan</RadioGroupLabel>
+      <RadioGroupDescription>
+        Basic features for personal use
+      </RadioGroupDescription>
+    </View>
+  </RadioGroupItem>
+  
+  <RadioGroupItem value="pro">
+    <View>
+      <RadioGroupLabel>Pro Plan</RadioGroupLabel>
+      <RadioGroupDescription>
+        Advanced features for professionals
+      </RadioGroupDescription>
+    </View>
+  </RadioGroupItem>
+</RadioGroup>
+```
+
+### Disabled State
+
+```tsx
+// Disable entire group
+<RadioGroup value={value} onValueChange={setValue} disabled>
+  {/* All items disabled */}
+</RadioGroup>
+
+// Disable specific item
+<RadioGroup value={value} onValueChange={setValue}>
+  <RadioGroupItem value="option1">
+    <RadioGroupLabel>Available</RadioGroupLabel>
+  </RadioGroupItem>
+  <RadioGroupItem value="option2" disabled>
+    <RadioGroupLabel>Unavailable</RadioGroupLabel>
+  </RadioGroupItem>
+</RadioGroup>
+```
+
+## API Reference
+
+### Radio
+
+Standalone radio button.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `checked` | `boolean` | `false` | Whether checked |
+| `onCheckedChange` | `(checked: boolean) => void` | — | Change callback |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Radio size |
+| `disabled` | `boolean` | `false` | Disable the radio |
+| `value` | `string` | — | Value identifier |
+| `children` | `ReactNode` | — | Label content |
+| `className` | `string` | — | Additional classes |
+
+### RadioGroup
+
+Group container for radio items.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | — | Selected value |
+| `onValueChange` | `(value: string) => void` | — | Change callback |
+| `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | Layout direction |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size for all items |
+| `disabled` | `boolean` | `false` | Disable all items |
+| `children` | `ReactNode` | Required | RadioGroupItem children |
+| `className` | `string` | — | Additional classes |
+
+### RadioGroupItem
+
+Individual radio option.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | Required | Option value |
+| `disabled` | `boolean` | `false` | Disable this item |
+| `children` | `ReactNode` | — | Label content |
+| `className` | `string` | — | Additional classes |
+
+### RadioGroupLabel
+
+Label text for a radio item.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Label text |
+| `className` | `string` | — | Additional classes |
+
+### RadioGroupDescription
+
+Description text for a radio item.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Description text |
+| `className` | `string` | — | Additional classes |
+
+## Examples
+
+### Payment Method Selection
+
+```tsx
+export function PaymentMethodSelect() {
+  const [method, setMethod] = useState('card');
+
+  return (
+    <View className="gap-4">
+      <Text variant="label">Payment Method</Text>
+      <RadioGroup value={method} onValueChange={setMethod}>
+        <RadioGroupItem value="card">
+          <View className="flex-row items-center gap-3">
+            <CreditCard size={20} />
+            <View>
+              <RadioGroupLabel>Credit Card</RadioGroupLabel>
+              <RadioGroupDescription>
+                Visa, Mastercard, American Express
+              </RadioGroupDescription>
+            </View>
+          </View>
+        </RadioGroupItem>
+
+        <RadioGroupItem value="paypal">
+          <View className="flex-row items-center gap-3">
+            <DollarSign size={20} />
+            <View>
+              <RadioGroupLabel>PayPal</RadioGroupLabel>
+              <RadioGroupDescription>
+                Pay with your PayPal account
+              </RadioGroupDescription>
+            </View>
+          </View>
+        </RadioGroupItem>
+
+        <RadioGroupItem value="bank">
+          <View className="flex-row items-center gap-3">
+            <Building size={20} />
+            <View>
+              <RadioGroupLabel>Bank Transfer</RadioGroupLabel>
+              <RadioGroupDescription>
+                Direct bank transfer
+              </RadioGroupDescription>
+            </View>
+          </View>
+        </RadioGroupItem>
+      </RadioGroup>
+    </View>
+  );
+}
+```
+
+### Shipping Options
+
+```tsx
+export function ShippingOptions() {
+  const [shipping, setShipping] = useState('standard');
+
+  const options = [
+    { value: 'standard', label: 'Standard', price: 'Free', time: '5-7 days' },
+    { value: 'express', label: 'Express', price: '$9.99', time: '2-3 days' },
+    { value: 'overnight', label: 'Overnight', price: '$24.99', time: 'Next day' },
+  ];
+
+  return (
+    <RadioGroup value={shipping} onValueChange={setShipping}>
+      {options.map((option) => (
+        <RadioGroupItem key={option.value} value={option.value}>
+          <View className="flex-1 flex-row justify-between items-center">
+            <View>
+              <RadioGroupLabel>{option.label}</RadioGroupLabel>
+              <RadioGroupDescription>{option.time}</RadioGroupDescription>
+            </View>
+            <Text className="font-medium">{option.price}</Text>
+          </View>
+        </RadioGroupItem>
+      ))}
+    </RadioGroup>
+  );
+}
+```
+
+### Plan Selection
+
+```tsx
+export function PlanSelection() {
+  const [plan, setPlan] = useState('monthly');
+
+  return (
+    <RadioGroup
+      value={plan}
+      onValueChange={setPlan}
+      orientation="horizontal"
+    >
+      <Card
+        className={`flex-1 ${plan === 'monthly' ? 'border-primary' : ''}`}
+      >
+        <CardContent className="items-center py-4">
+          <RadioGroupItem value="monthly">
+            <View className="items-center">
+              <RadioGroupLabel>Monthly</RadioGroupLabel>
+              <Text variant="header" size="lg">$9</Text>
+              <Text variant="muted" size="sm">/month</Text>
+            </View>
+          </RadioGroupItem>
+        </CardContent>
+      </Card>
+
+      <Card
+        className={`flex-1 ${plan === 'yearly' ? 'border-primary' : ''}`}
+      >
+        <CardContent className="items-center py-4">
+          <RadioGroupItem value="yearly">
+            <View className="items-center">
+              <Badge variant="success" className="mb-2">Save 20%</Badge>
+              <RadioGroupLabel>Yearly</RadioGroupLabel>
+              <Text variant="header" size="lg">$86</Text>
+              <Text variant="muted" size="sm">/year</Text>
+            </View>
+          </RadioGroupItem>
+        </CardContent>
+      </Card>
+    </RadioGroup>
+  );
+}
+```
+
+### Form Integration
+
+```tsx
+import { Controller, useForm } from 'react-hook-form';
+
+export function FormWithRadio() {
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      gender: '',
+    },
+  });
+
+  return (
+    <Controller
+      control={control}
+      name="gender"
+      rules={{ required: 'Please select an option' }}
+      render={({ field: { value, onChange }, fieldState: { error } }) => (
+        <View className="gap-2">
+          <Text variant="label">Gender</Text>
+          <RadioGroup value={value} onValueChange={onChange}>
+            <RadioGroupItem value="male">
+              <RadioGroupLabel>Male</RadioGroupLabel>
+            </RadioGroupItem>
+            <RadioGroupItem value="female">
+              <RadioGroupLabel>Female</RadioGroupLabel>
+            </RadioGroupItem>
+            <RadioGroupItem value="other">
+              <RadioGroupLabel>Other</RadioGroupLabel>
+            </RadioGroupItem>
+          </RadioGroup>
+          {error && (
+            <Text className="text-destructive text-sm">{error.message}</Text>
+          )}
+        </View>
+      )}
+    />
+  );
+}
+```
+
+### Survey Question
+
+```tsx
+export function SurveyQuestion({ question, options, value, onChange }) {
+  return (
+    <View className="gap-4">
+      <Text variant="title" size="md">{question}</Text>
+      <RadioGroup value={value} onValueChange={onChange}>
+        {options.map((option) => (
+          <RadioGroupItem key={option.value} value={option.value}>
+            <RadioGroupLabel>{option.label}</RadioGroupLabel>
+          </RadioGroupItem>
+        ))}
+      </RadioGroup>
+    </View>
+  );
+}
+```

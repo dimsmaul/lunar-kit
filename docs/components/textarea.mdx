@@ -1,0 +1,341 @@
+---
+sidebar_position: 19
+title: Textarea
+description: A multi-line text input component
+---
+
+# Textarea
+
+A multi-line text input field for longer content.
+
+## Installation
+
+```bash
+lunar-kit add textarea
+```
+
+## Usage
+
+```tsx
+import { Textarea } from '@/components/ui/textarea';
+```
+
+### Basic Usage
+
+```tsx
+const [value, setValue] = useState('');
+
+<Textarea
+  value={value}
+  onChangeText={setValue}
+  placeholder="Enter your message..."
+/>
+```
+
+### With Label
+
+```tsx
+<Textarea
+  label="Description"
+  value={description}
+  onChangeText={setDescription}
+  placeholder="Enter a description..."
+/>
+```
+
+### With Error
+
+```tsx
+<Textarea
+  label="Bio"
+  value={bio}
+  onChangeText={setBio}
+  error="Bio is required"
+/>
+```
+
+### Custom Rows
+
+```tsx
+// Small (2 rows)
+<Textarea rows={2} placeholder="Short input..." />
+
+// Medium (4 rows - default)
+<Textarea rows={4} placeholder="Default size..." />
+
+// Large (8 rows)
+<Textarea rows={8} placeholder="Larger input..." />
+```
+
+### Disabled State
+
+```tsx
+<Textarea
+  label="Notes"
+  value="This cannot be edited"
+  editable={false}
+/>
+```
+
+### Character Count
+
+```tsx
+export function TextareaWithCount({ maxLength = 280 }) {
+  const [value, setValue] = useState('');
+
+  return (
+    <View className="gap-1">
+      <Textarea
+        value={value}
+        onChangeText={setValue}
+        placeholder="What's on your mind?"
+        maxLength={maxLength}
+      />
+      <Text
+        variant="muted"
+        size="sm"
+        align="right"
+        className={value.length >= maxLength ? 'text-destructive' : ''}
+      >
+        {value.length}/{maxLength}
+      </Text>
+    </View>
+  );
+}
+```
+
+## API Reference
+
+### Textarea
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | — | Input label |
+| `error` | `string` | — | Error message |
+| `rows` | `number` | `4` | Number of visible lines |
+| `containerClassName` | `string` | — | Classes for container |
+| `className` | `string` | — | Classes for textarea |
+
+All standard `TextInput` props are also supported.
+
+## Examples
+
+### Contact Form
+
+```tsx
+export function ContactForm() {
+  const [message, setMessage] = useState('');
+
+  return (
+    <View className="gap-4">
+      <Input
+        label="Name"
+        placeholder="Your name"
+      />
+      <Input
+        label="Email"
+        placeholder="your@email.com"
+        keyboardType="email-address"
+      />
+      <Textarea
+        label="Message"
+        value={message}
+        onChangeText={setMessage}
+        placeholder="How can we help you?"
+        rows={6}
+      />
+      <Button>Send Message</Button>
+    </View>
+  );
+}
+```
+
+### Review Form
+
+```tsx
+export function ReviewForm({ onSubmit }) {
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState('');
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Write a Review</CardTitle>
+      </CardHeader>
+      <CardContent className="gap-4">
+        <View>
+          <Text variant="label" size="sm" className="mb-2">Rating</Text>
+          <StarRating value={rating} onChange={setRating} />
+        </View>
+        <Textarea
+          label="Your Review"
+          value={review}
+          onChangeText={setReview}
+          placeholder="Share your experience..."
+          rows={5}
+        />
+      </CardContent>
+      <CardFooter>
+        <Button
+          disabled={!rating || !review}
+          onPress={() => onSubmit({ rating, review })}
+        >
+          Submit Review
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
+```
+
+### Notes Editor
+
+```tsx
+export function NotesEditor({ note, onSave }) {
+  const [title, setTitle] = useState(note?.title || '');
+  const [content, setContent] = useState(note?.content || '');
+
+  return (
+    <View className="flex-1 gap-4">
+      <Input
+        placeholder="Note title..."
+        value={title}
+        onChangeText={setTitle}
+        className="text-xl font-semibold border-0"
+      />
+      <Textarea
+        value={content}
+        onChangeText={setContent}
+        placeholder="Start writing..."
+        rows={20}
+        className="flex-1 border-0"
+      />
+      <Button onPress={() => onSave({ title, content })}>
+        Save Note
+      </Button>
+    </View>
+  );
+}
+```
+
+### Form Integration
+
+```tsx
+import { Controller, useForm } from 'react-hook-form';
+
+export function FormWithTextarea() {
+  const { control, handleSubmit } = useForm();
+
+  return (
+    <Controller
+      control={control}
+      name="description"
+      rules={{
+        required: 'Description is required',
+        minLength: {
+          value: 20,
+          message: 'Description must be at least 20 characters',
+        },
+      }}
+      render={({ field: { value, onChange }, fieldState: { error } }) => (
+        <Textarea
+          label="Description"
+          value={value}
+          onChangeText={onChange}
+          placeholder="Describe your item..."
+          error={error?.message}
+          rows={5}
+        />
+      )}
+    />
+  );
+}
+```
+
+### Feedback Form
+
+```tsx
+export function FeedbackForm() {
+  const [feedback, setFeedback] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = () => {
+    // Submit feedback
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <Banner variant="success" title="Thank you!">
+        Your feedback has been submitted.
+      </Banner>
+    );
+  }
+
+  return (
+    <View className="gap-4">
+      <Text variant="title">We'd love your feedback</Text>
+      <Text variant="muted">
+        Help us improve by sharing your thoughts.
+      </Text>
+      <Textarea
+        value={feedback}
+        onChangeText={setFeedback}
+        placeholder="What can we do better?"
+        rows={6}
+      />
+      <Button
+        disabled={!feedback.trim()}
+        onPress={handleSubmit}
+      >
+        Submit Feedback
+      </Button>
+    </View>
+  );
+}
+```
+
+### Auto-expanding Textarea
+
+```tsx
+export function AutoExpandingTextarea({ value, onChangeText, ...props }) {
+  const [height, setHeight] = useState(100);
+
+  return (
+    <TextInput
+      value={value}
+      onChangeText={onChangeText}
+      multiline
+      onContentSizeChange={(event) => {
+        setHeight(Math.max(100, event.nativeEvent.contentSize.height));
+      }}
+      style={{ minHeight: height }}
+      className="border border-input rounded-lg p-3 text-foreground"
+      {...props}
+    />
+  );
+}
+```
+
+## Styling
+
+### Custom Styles
+
+```tsx
+<Textarea
+  placeholder="Custom styled..."
+  className="border-2 border-primary rounded-xl"
+  containerClassName="bg-muted p-2 rounded-xl"
+/>
+```
+
+### Full Height
+
+```tsx
+<View className="flex-1">
+  <Textarea
+    className="flex-1"
+    placeholder="Takes full height..."
+  />
+</View>
+```

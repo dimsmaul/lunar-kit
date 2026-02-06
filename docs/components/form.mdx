@@ -1,0 +1,515 @@
+---
+sidebar_position: 13
+title: Form
+description: Form components with validation support using react-hook-form
+---
+
+# Form
+
+Building forms with React Hook Form integration and validation.
+
+## Installation
+
+```bash
+lunar-kit add form
+```
+
+## Dependencies
+
+```bash
+pnpm add react-hook-form @hookform/resolvers zod
+```
+
+## Usage
+
+```tsx
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormDescription,
+  FormMessage,
+  useFormField,
+} from '@/components/ui/form';
+```
+
+### Basic Usage
+
+```tsx
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const formSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
+type FormData = z.infer<typeof formSchema>;
+
+export function LoginForm() {
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+  };
+
+  return (
+    <Form {...form}>
+      <View className="gap-4">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <Input
+                value={field.value}
+                onChangeText={field.onChange}
+                onBlur={field.onBlur}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <Input
+                value={field.value}
+                onChangeText={field.onChange}
+                onBlur={field.onBlur}
+                secureTextEntry
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button onPress={form.handleSubmit(onSubmit)}>
+          Sign In
+        </Button>
+      </View>
+    </Form>
+  );
+}
+```
+
+### With Description
+
+```tsx
+<FormField
+  control={form.control}
+  name="username"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Username</FormLabel>
+      <Input
+        value={field.value}
+        onChangeText={field.onChange}
+      />
+      <FormDescription>
+        This is your public display name.
+      </FormDescription>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+```
+
+### With Checkbox
+
+```tsx
+<FormField
+  control={form.control}
+  name="terms"
+  render={({ field }) => (
+    <FormItem>
+      <Checkbox
+        checked={field.value}
+        onCheckedChange={field.onChange}
+      >
+        <CheckboxLabel>Accept terms and conditions</CheckboxLabel>
+      </Checkbox>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+```
+
+### With Select
+
+```tsx
+<FormField
+  control={form.control}
+  name="country"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Country</FormLabel>
+      <Select value={field.value} onValueChange={field.onChange}>
+        <SelectTrigger>
+          <SelectValue placeholder="Select country" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="us" label="United States" />
+          <SelectItem value="uk" label="United Kingdom" />
+          <SelectItem value="ca" label="Canada" />
+        </SelectContent>
+      </Select>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+```
+
+## API Reference
+
+### Form
+
+The form provider component (re-export of `FormProvider`).
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `...methods` | `UseFormReturn` | Required | React Hook Form methods |
+
+### FormField
+
+Controller component for form fields.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `control` | `Control` | Required | Form control from useForm |
+| `name` | `string` | Required | Field name |
+| `render` | `({ field, fieldState }) => ReactNode` | Required | Render function |
+
+### FormItem
+
+Container for a form field.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Field content |
+| `className` | `string` | — | Additional classes |
+
+### FormLabel
+
+Label for a form field.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Label text |
+| `className` | `string` | — | Additional classes |
+
+### FormDescription
+
+Helper text for a form field.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Description text |
+| `className` | `string` | — | Additional classes |
+
+### FormMessage
+
+Displays validation error messages.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | — | Custom message |
+| `className` | `string` | — | Additional classes |
+
+### useFormField
+
+Hook to access form field context.
+
+```tsx
+const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
+```
+
+## Validation Schemas
+
+### Using Zod
+
+```tsx
+import * as z from 'zod';
+
+const schema = z.object({
+  name: z.string().min(2, 'Name is too short'),
+  email: z.string().email('Invalid email'),
+  age: z.number().min(18, 'Must be 18 or older'),
+  password: z.string()
+    .min(8, 'At least 8 characters')
+    .regex(/[A-Z]/, 'Must contain uppercase')
+    .regex(/[0-9]/, 'Must contain number'),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ['confirmPassword'],
+});
+```
+
+### Using Yup
+
+```tsx
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+const schema = yup.object({
+  name: yup.string().required('Name is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
+});
+
+const form = useForm({
+  resolver: yupResolver(schema),
+});
+```
+
+## Examples
+
+### Registration Form
+
+```tsx
+const registrationSchema = z.object({
+  firstName: z.string().min(2, 'First name is required'),
+  lastName: z.string().min(2, 'Last name is required'),
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string(),
+  newsletter: z.boolean().default(false),
+  terms: z.boolean().refine((val) => val === true, {
+    message: 'You must accept the terms',
+  }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ['confirmPassword'],
+});
+
+export function RegistrationForm() {
+  const form = useForm({
+    resolver: zodResolver(registrationSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      newsletter: false,
+      terms: false,
+    },
+  });
+
+  const onSubmit = async (data) => {
+    await registerUser(data);
+  };
+
+  return (
+    <Form {...form}>
+      <View className="gap-4">
+        <View className="flex-row gap-4">
+          <View className="flex-1">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>First Name</FormLabel>
+                  <Input {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </View>
+          <View className="flex-1">
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <Input {...field} />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </View>
+        </View>
+
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <Input
+                {...field}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <Input {...field} secureTextEntry />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
+              <Input {...field} secureTextEntry />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="newsletter"
+          render={({ field }) => (
+            <FormItem>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              >
+                <CheckboxLabel>Subscribe to newsletter</CheckboxLabel>
+              </Checkbox>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="terms"
+          render={({ field }) => (
+            <FormItem>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              >
+                <CheckboxLabel>
+                  I accept the terms and conditions
+                </CheckboxLabel>
+              </Checkbox>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button
+          onPress={form.handleSubmit(onSubmit)}
+          loading={form.formState.isSubmitting}
+        >
+          Create Account
+        </Button>
+      </View>
+    </Form>
+  );
+}
+```
+
+### Profile Edit Form
+
+```tsx
+export function ProfileEditForm({ user }) {
+  const form = useForm({
+    defaultValues: {
+      name: user.name,
+      bio: user.bio,
+      website: user.website,
+    },
+  });
+
+  return (
+    <Form {...form}>
+      <View className="gap-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Display Name</FormLabel>
+              <Input {...field} />
+              <FormDescription>
+                This is how others will see you.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Bio</FormLabel>
+              <Textarea
+                value={field.value}
+                onChangeText={field.onChange}
+                rows={4}
+              />
+              <FormDescription>
+                Write a short bio about yourself.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="website"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Website</FormLabel>
+              <Input
+                {...field}
+                keyboardType="url"
+                autoCapitalize="none"
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button onPress={form.handleSubmit(onSubmit)}>
+          Save Changes
+        </Button>
+      </View>
+    </Form>
+  );
+}
+```
+
+## Tips
+
+1. **Use Zod for validation** — Type-safe schema validation
+2. **Set defaultValues** — Always provide default values to avoid controlled/uncontrolled warnings
+3. **Handle loading states** — Use `formState.isSubmitting` for button loading
+4. **Display errors** — Always include `<FormMessage />` for each field
+5. **Accessibility** — FormLabel automatically links to the input via nativeID

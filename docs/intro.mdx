@@ -1,0 +1,150 @@
+---
+sidebar_position: 1
+title: Introduction
+description: Welcome to Lunar Kit - Beautiful UI components for React Native with NativeWind
+---
+
+# Introduction
+
+Welcome to **Lunar Kit** 🌙 — a comprehensive UI component library for React Native applications, built with **NativeWind** (Tailwind CSS for React Native).
+
+## What is Lunar Kit?
+
+Lunar Kit is a collection of beautifully designed, accessible, and customizable UI components for React Native. It provides everything you need to build modern mobile applications with a consistent design system.
+
+### Key Features
+
+- 🎨 **Beautiful Design** — Clean, modern components following best practices
+- 🌙 **Dark Mode Support** — Built-in theme switching capabilities
+- 📱 **Cross Platform** — Works on iOS, Android, and Web
+- ⚡ **NativeWind Powered** — Leverage Tailwind CSS utility classes
+- 🔧 **Customizable** — Easy to extend and modify
+- 📦 **Copy-Paste Ready** — Components are added directly to your project
+- 🎯 **TypeScript First** — Full type safety throughout
+- ♿ **Accessible** — WCAG compliant components
+
+## Why Lunar Kit?
+
+Unlike traditional component libraries that are installed as npm packages, Lunar Kit follows the **copy-paste** approach (inspired by shadcn/ui). This means:
+
+1. **Full Control** — Components live in your project, so you can modify them freely
+2. **No Lock-in** — You're not dependent on library updates or breaking changes
+3. **Learn & Understand** — See exactly how each component is built
+4. **Customize Everything** — Change styles, behavior, or structure as needed
+
+## Philosophy
+
+Lunar Kit is built with these principles in mind:
+
+### Composition Over Configuration
+
+Components are designed to be composed together rather than configured through props. This gives you more flexibility and makes the code more readable.
+
+```tsx
+// ✅ Composition approach
+<Card>
+  <CardHeader>
+    <CardTitle>Welcome</CardTitle>
+    <CardDescription>Get started with Lunar Kit</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <Text>Your content here</Text>
+  </CardContent>
+</Card>
+```
+
+### Variants with CVA
+
+We use `class-variance-authority` (CVA) for handling component variants. This provides type-safe variant management with excellent developer experience.
+
+```tsx
+// Button variants example
+<Button variant="default">Primary</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+```
+
+### NativeWind Integration
+
+All styling is done through NativeWind, making it easy to customize using familiar Tailwind CSS classes.
+
+```tsx
+<Button className="mt-4 w-full">
+  Full Width Button
+</Button>
+```
+
+## Components
+
+Lunar Kit includes a comprehensive set of components:
+
+### Form Components
+- [Button](/docs/components/button) — Versatile button with multiple variants
+- [Input](/docs/components/input) — Text input with prefix/suffix support
+- [Textarea](/docs/components/textarea) — Multi-line text input
+- [Checkbox](/docs/components/checkbox) — Checkbox with label support
+- [Radio](/docs/components/radio) — Radio button components
+- [Select](/docs/components/select) — Dropdown select component
+- [Form](/docs/components/form) — Form wrapper with validation
+
+### Layout Components
+- [Card](/docs/components/card) — Container with header, content, footer
+- [Dialog](/docs/components/dialog) — Modal dialog with overlay
+- [Bottom Sheet](/docs/components/bottom-sheet) — Sliding bottom panel
+- [Banner](/docs/components/banner) — Alert/notification banner
+
+### Display Components
+- [Text](/docs/components/text) — Styled text with variants
+- [Avatar](/docs/components/avatar) — User avatar with fallback
+- [Badge](/docs/components/badge) — Label/tag component
+
+### Data Components
+- [Calendar](/docs/components/calendar) — Date selection calendar
+- [Date Picker](/docs/components/date-picker) — Date input with calendar
+- [Date Range Picker](/docs/components/date-range-picker) — Select date ranges
+
+### Navigation
+- [Tabs](/docs/components/tabs) — Tab navigation component
+
+### Advanced
+- [Accordion](/docs/components/accordion) — Collapsible content sections
+- [Select Sheet](/docs/components/select-sheet) — Bottom sheet picker
+
+## Quick Start
+
+Get started with Lunar Kit in just a few minutes:
+
+```bash
+# Create a new project with Lunar Kit
+pnpm create lunar-kit my-app
+cd my-app
+
+# Or add to existing project
+pnpm add -g @lunar-kit/cli
+lunar-kit init
+lunar-kit add button card
+```
+
+## Requirements
+
+- **React Native** >= 0.70.0
+- **Expo** SDK 49+ (recommended)
+- **NativeWind** >= 4.0.0
+- **Node.js** >= 18.0.0
+
+## Community
+
+- [GitHub Repository](https://github.com/yourusername/lunar-kit)
+- [Discord Community](https://discord.gg/your-invite)
+- [Report Issues](https://github.com/yourusername/lunar-kit/issues)
+
+## Credits
+
+Lunar Kit is inspired by:
+- [shadcn/ui](https://ui.shadcn.com/) — For the copy-paste component approach
+- [Radix UI](https://radix-ui.com/) — For accessibility patterns
+- [Tailwind CSS](https://tailwindcss.com/) — For the utility-first styling
+
+---
+
+Ready to get started? Head over to the [Installation](/docs/installation) guide!

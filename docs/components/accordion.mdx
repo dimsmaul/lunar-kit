@@ -1,0 +1,318 @@
+---
+sidebar_position: 1
+title: Accordion
+description: A collapsible content component for showing and hiding sections
+---
+
+# Accordion
+
+A vertically stacked set of interactive headings that each reveal a section of content.
+
+## Installation
+
+```bash
+lunar-kit add accordion
+```
+
+## Dependencies
+
+This component requires:
+- `react-native-reanimated`
+- `lucide-react-native`
+- `react-native-svg`
+
+```bash
+pnpm add react-native-reanimated lucide-react-native react-native-svg
+```
+
+## Usage
+
+```tsx
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/components/ui/accordion';
+```
+
+### Basic Usage
+
+```tsx
+import { useState } from 'react';
+
+export function AccordionDemo() {
+  const [value, setValue] = useState<string>('');
+
+  return (
+    <Accordion
+      type="single"
+      value={value}
+      onValueChange={setValue}
+      collapsible
+    >
+      <AccordionItem value="item-1">
+        <AccordionTrigger>Is it accessible?</AccordionTrigger>
+        <AccordionContent>
+          Yes. It adheres to the WAI-ARIA design pattern.
+        </AccordionContent>
+      </AccordionItem>
+
+      <AccordionItem value="item-2">
+        <AccordionTrigger>Is it styled?</AccordionTrigger>
+        <AccordionContent>
+          Yes. It comes with default styles that match your theme.
+        </AccordionContent>
+      </AccordionItem>
+
+      <AccordionItem value="item-3">
+        <AccordionTrigger>Is it animated?</AccordionTrigger>
+        <AccordionContent>
+          Yes. It uses react-native-reanimated for smooth animations.
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+```
+
+### Multiple Items Open
+
+Allow multiple accordion items to be open at the same time:
+
+```tsx
+export function AccordionMultiple() {
+  const [values, setValues] = useState<string[]>([]);
+
+  return (
+    <Accordion
+      type="multiple"
+      value={values}
+      onValueChange={setValues}
+    >
+      <AccordionItem value="item-1">
+        <AccordionTrigger>Section 1</AccordionTrigger>
+        <AccordionContent>
+          Content for section 1.
+        </AccordionContent>
+      </AccordionItem>
+
+      <AccordionItem value="item-2">
+        <AccordionTrigger>Section 2</AccordionTrigger>
+        <AccordionContent>
+          Content for section 2.
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+```
+
+### Variants
+
+The accordion supports multiple visual variants:
+
+```tsx
+// Default - with border
+<Accordion variant="default" {...props}>
+  {/* items */}
+</Accordion>
+
+// Bordered - thicker border
+<Accordion variant="bordered" {...props}>
+  {/* items */}
+</Accordion>
+
+// Separated - items visually separated
+<Accordion variant="separated" {...props}>
+  {/* items */}
+</Accordion>
+
+// Filled - muted background
+<Accordion variant="filled" {...props}>
+  {/* items */}
+</Accordion>
+
+// Ghost - no background or border
+<Accordion variant="ghost" {...props}>
+  {/* items */}
+</Accordion>
+```
+
+### Disabled Items
+
+Disable specific accordion items:
+
+```tsx
+<Accordion type="single" value={value} onValueChange={setValue}>
+  <AccordionItem value="item-1">
+    <AccordionTrigger>Active Item</AccordionTrigger>
+    <AccordionContent>This item can be opened.</AccordionContent>
+  </AccordionItem>
+
+  <AccordionItem value="item-2" disabled>
+    <AccordionTrigger>Disabled Item</AccordionTrigger>
+    <AccordionContent>This item cannot be opened.</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+### Default Open
+
+Set a default open item:
+
+```tsx
+const [value, setValue] = useState<string>('item-1');
+
+<Accordion type="single" value={value} onValueChange={setValue}>
+  <AccordionItem value="item-1">
+    <AccordionTrigger>Open by Default</AccordionTrigger>
+    <AccordionContent>This item is open by default.</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+### Custom Content
+
+Add any content inside the accordion:
+
+```tsx
+<Accordion type="single" value={value} onValueChange={setValue} collapsible>
+  <AccordionItem value="settings">
+    <AccordionTrigger>Settings</AccordionTrigger>
+    <AccordionContent>
+      <View className="gap-4">
+        <View className="flex-row justify-between items-center">
+          <Text>Notifications</Text>
+          <Switch value={notifications} onValueChange={setNotifications} />
+        </View>
+        <View className="flex-row justify-between items-center">
+          <Text>Dark Mode</Text>
+          <Switch value={darkMode} onValueChange={setDarkMode} />
+        </View>
+        <Button onPress={saveSettings}>Save Changes</Button>
+      </View>
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+## API Reference
+
+### Accordion
+
+The root component that wraps all accordion items.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `type` | `'single' \| 'multiple'` | `'single'` | Whether one or multiple items can be open |
+| `value` | `string \| string[]` | — | Controlled value |
+| `onValueChange` | `(value) => void` | — | Callback when value changes |
+| `collapsible` | `boolean` | `false` | Allow closing all items (single mode) |
+| `variant` | `'default' \| 'bordered' \| 'separated' \| 'filled' \| 'ghost'` | `'default'` | Visual variant |
+| `className` | `string` | — | Additional classes |
+
+### AccordionItem
+
+A single accordion item container.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | Required | Unique identifier |
+| `disabled` | `boolean` | `false` | Whether item is disabled |
+| `className` | `string` | — | Additional classes |
+
+### AccordionTrigger
+
+The clickable header that toggles the content.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Trigger content |
+| `className` | `string` | — | Additional classes |
+
+### AccordionContent
+
+The collapsible content section.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Content to show/hide |
+| `className` | `string` | — | Additional classes |
+
+## Styling
+
+### Custom Styles
+
+```tsx
+<Accordion
+  type="single"
+  value={value}
+  onValueChange={setValue}
+  className="rounded-xl overflow-hidden"
+>
+  <AccordionItem value="item-1" className="bg-blue-50 dark:bg-blue-950">
+    <AccordionTrigger className="px-6">
+      Custom Styled Item
+    </AccordionTrigger>
+    <AccordionContent className="px-6 pb-6">
+      Custom styled content area.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+## Accessibility
+
+- Uses proper ARIA attributes
+- Keyboard navigable
+- Focus management
+
+## Examples
+
+### FAQ Section
+
+```tsx
+const faqs = [
+  {
+    question: 'What payment methods do you accept?',
+    answer: 'We accept Visa, MasterCard, PayPal, and bank transfers.',
+  },
+  {
+    question: 'How long does shipping take?',
+    answer: 'Standard shipping takes 5-7 business days.',
+  },
+  {
+    question: 'Can I return items?',
+    answer: 'Yes, items can be returned within 30 days.',
+  },
+];
+
+export function FAQAccordion() {
+  const [value, setValue] = useState('');
+
+  return (
+    <View>
+      <Text variant="header" size="md" className="mb-4">
+        Frequently Asked Questions
+      </Text>
+      <Accordion
+        type="single"
+        value={value}
+        onValueChange={setValue}
+        collapsible
+        variant="separated"
+      >
+        {faqs.map((faq, index) => (
+          <AccordionItem key={index} value={`faq-${index}`}>
+            <AccordionTrigger>{faq.question}</AccordionTrigger>
+            <AccordionContent>
+              <Text className="text-muted-foreground">{faq.answer}</Text>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </View>
+  );
+}
+```

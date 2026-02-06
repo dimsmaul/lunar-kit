@@ -1,0 +1,269 @@
+---
+sidebar_position: 7
+title: Calendar
+description: A date selection calendar component
+---
+
+# Calendar
+
+A calendar component for selecting dates, with support for single date, month, and year selection.
+
+## Installation
+
+```bash
+lunar-kit add calendar
+```
+
+## Dependencies
+
+```bash
+pnpm add dayjs lucide-react-native react-native-svg
+```
+
+## Usage
+
+```tsx
+import { Calendar } from '@/components/ui/calendar';
+```
+
+### Basic Usage
+
+```tsx
+const [date, setDate] = useState<Date>();
+
+<Calendar
+  value={date}
+  onValueChange={setDate}
+/>
+```
+
+### Variants
+
+```tsx
+// Date picker (default)
+<Calendar variant="date" value={date} onValueChange={setDate} />
+
+// Month picker
+<Calendar variant="month" value={date} onValueChange={setDate} />
+
+// Year picker
+<Calendar variant="year" value={date} onValueChange={setDate} />
+```
+
+### Date Range Selection
+
+Select a range of dates:
+
+```tsx
+const [startDate, setStartDate] = useState<Date>();
+const [endDate, setEndDate] = useState<Date>();
+
+<Calendar
+  mode="range"
+  startDate={startDate}
+  endDate={endDate}
+  onRangeChange={(start, end) => {
+    setStartDate(start);
+    setEndDate(end);
+  }}
+/>
+```
+
+### With Min/Max Dates
+
+Restrict selectable dates:
+
+```tsx
+<Calendar
+  value={date}
+  onValueChange={setDate}
+  minDate={new Date(2024, 0, 1)}
+  maxDate={new Date(2024, 11, 31)}
+/>
+```
+
+### Maximum Days for Range
+
+Limit the number of days that can be selected in a range:
+
+```tsx
+<Calendar
+  mode="range"
+  startDate={startDate}
+  endDate={endDate}
+  onRangeChange={handleRangeChange}
+  maxDays={7}
+/>
+```
+
+## API Reference
+
+### Calendar
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `Date` | — | Selected date (single mode) |
+| `onValueChange` | `(date: Date) => void` | — | Callback when date changes |
+| `variant` | `'date' \| 'month' \| 'year'` | `'date'` | Picker variant |
+| `mode` | `'single' \| 'range'` | `'single'` | Selection mode |
+| `startDate` | `Date` | — | Range start date |
+| `endDate` | `Date` | — | Range end date |
+| `onRangeChange` | `(start, end) => void` | — | Callback for range changes |
+| `minDate` | `Date` | — | Minimum selectable date |
+| `maxDate` | `Date` | — | Maximum selectable date |
+| `maxDays` | `number` | — | Max days for range selection |
+| `className` | `string` | — | Additional classes |
+
+## Styling
+
+### Custom Styles
+
+```tsx
+<Calendar
+  value={date}
+  onValueChange={setDate}
+  className="rounded-xl border-2 border-primary"
+/>
+```
+
+## Examples
+
+### Date of Birth Picker
+
+```tsx
+export function DateOfBirthPicker() {
+  const [date, setDate] = useState<Date>();
+  const maxDate = new Date();
+  const minDate = new Date(1900, 0, 1);
+
+  return (
+    <View>
+      <Text variant="label" className="mb-2">Date of Birth</Text>
+      <Calendar
+        value={date}
+        onValueChange={setDate}
+        minDate={minDate}
+        maxDate={maxDate}
+      />
+    </View>
+  );
+}
+```
+
+### Event Date Picker
+
+```tsx
+export function EventDatePicker() {
+  const [date, setDate] = useState<Date>();
+  const today = new Date();
+
+  return (
+    <View>
+      <Text variant="label" className="mb-2">Event Date</Text>
+      <Calendar
+        value={date}
+        onValueChange={setDate}
+        minDate={today}
+      />
+      {date && (
+        <Text variant="muted" className="mt-2">
+          Selected: {date.toLocaleDateString()}
+        </Text>
+      )}
+    </View>
+  );
+}
+```
+
+### Booking Calendar
+
+```tsx
+export function BookingCalendar({ unavailableDates }) {
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
+
+  const handleRangeChange = (start: Date | undefined, end: Date | undefined) => {
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  return (
+    <View>
+      <Text variant="title" className="mb-4">Select Check-in & Check-out</Text>
+      <Calendar
+        mode="range"
+        startDate={startDate}
+        endDate={endDate}
+        onRangeChange={handleRangeChange}
+        minDate={new Date()}
+        maxDays={14}
+      />
+      {startDate && endDate && (
+        <View className="mt-4 p-4 bg-muted rounded-lg">
+          <Text>Check-in: {startDate.toLocaleDateString()}</Text>
+          <Text>Check-out: {endDate.toLocaleDateString()}</Text>
+        </View>
+      )}
+    </View>
+  );
+}
+```
+
+### Month/Year Selector
+
+```tsx
+export function MonthYearSelector() {
+  const [selectedMonth, setSelectedMonth] = useState<Date>();
+
+  return (
+    <View>
+      <Text variant="label" className="mb-2">Select Month</Text>
+      <Calendar
+        variant="month"
+        value={selectedMonth}
+        onValueChange={setSelectedMonth}
+      />
+    </View>
+  );
+}
+```
+
+### Inline Calendar
+
+```tsx
+export function InlineCalendar() {
+  const [date, setDate] = useState<Date>(new Date());
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Pick a Date</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Calendar
+          value={date}
+          onValueChange={setDate}
+        />
+      </CardContent>
+      <CardFooter>
+        <Button className="w-full">
+          Confirm: {date?.toLocaleDateString()}
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
+```
+
+## Navigation
+
+The calendar supports navigation between views:
+
+1. **Date View**: Click on the month name to switch to month view
+2. **Month View**: Click on the year to switch to year view
+3. **Year View**: Select a year to go back to month view
+
+Use the arrow buttons to navigate:
+- In date view: Previous/next month
+- In month view: Previous/next year
+- In year view: Previous/next 12 years

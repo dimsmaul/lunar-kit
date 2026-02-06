@@ -1,0 +1,369 @@
+---
+sidebar_position: 14
+title: Input
+description: A text input component with variants and adornments
+---
+
+# Input
+
+A text input field for collecting user input.
+
+## Installation
+
+```bash
+lunar-kit add input
+```
+
+## Usage
+
+```tsx
+import { Input } from '@/components/ui/input';
+```
+
+### Basic Usage
+
+```tsx
+const [value, setValue] = useState('');
+
+<Input
+  value={value}
+  onChangeText={setValue}
+  placeholder="Enter your name"
+/>
+```
+
+### Variants
+
+```tsx
+// Outline (default)
+<Input variant="outline" placeholder="Outline variant" />
+
+// Underline
+<Input variant="underline" placeholder="Underline variant" />
+```
+
+### Sizes
+
+```tsx
+<Input size="sm" placeholder="Small" />
+<Input size="md" placeholder="Medium (default)" />
+<Input size="lg" placeholder="Large" />
+```
+
+### With Prefix/Suffix
+
+```tsx
+import { Mail, Eye, Search, DollarSign } from 'lucide-react-native';
+
+// Prefix icon
+<Input
+  placeholder="Email"
+  prefix={<Mail size={18} color="#6b7280" />}
+/>
+
+// Suffix icon
+<Input
+  placeholder="Password"
+  secureTextEntry
+  suffix={<Eye size={18} color="#6b7280" />}
+/>
+
+// Both
+<Input
+  placeholder="Search..."
+  prefix={<Search size={18} color="#6b7280" />}
+  suffix={<Text className="text-muted-foreground text-sm">⌘K</Text>}
+/>
+
+// With text prefix
+<Input
+  placeholder="0.00"
+  prefix={<DollarSign size={18} color="#6b7280" />}
+/>
+```
+
+### Error State
+
+```tsx
+<Input
+  placeholder="Email"
+  error
+  value={email}
+  onChangeText={setEmail}
+/>
+```
+
+### Disabled State
+
+```tsx
+<Input
+  placeholder="Disabled input"
+  editable={false}
+  value="Cannot edit this"
+/>
+```
+
+## API Reference
+
+### Input
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'outline' \| 'underline'` | `'outline'` | Visual variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Input size |
+| `prefix` | `ReactNode` | — | Left side adornment |
+| `suffix` | `ReactNode` | — | Right side adornment |
+| `error` | `boolean` | `false` | Show error state |
+| `containerClassName` | `string` | — | Classes for container |
+| `inputClassName` | `string` | — | Classes for input |
+
+All standard `TextInput` props are also supported.
+
+## Styling
+
+### Custom Styles
+
+```tsx
+<Input
+  placeholder="Custom styled"
+  containerClassName="border-2 border-primary"
+  inputClassName="text-primary"
+/>
+```
+
+## Examples
+
+### Login Form
+
+```tsx
+export function LoginForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  return (
+    <View className="gap-4">
+      <Input
+        placeholder="Email address"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        prefix={<Mail size={18} color="#6b7280" />}
+      />
+
+      <Input
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry={!showPassword}
+        prefix={<Lock size={18} color="#6b7280" />}
+        suffix={
+          <Pressable onPress={() => setShowPassword(!showPassword)}>
+            {showPassword ? (
+              <EyeOff size={18} color="#6b7280" />
+            ) : (
+              <Eye size={18} color="#6b7280" />
+            )}
+          </Pressable>
+        }
+      />
+
+      <Button>Sign In</Button>
+    </View>
+  );
+}
+```
+
+### Search Input
+
+```tsx
+export function SearchInput({ onSearch }) {
+  const [query, setQuery] = useState('');
+
+  const handleSearch = () => {
+    onSearch(query);
+  };
+
+  return (
+    <Input
+      placeholder="Search..."
+      value={query}
+      onChangeText={setQuery}
+      onSubmitEditing={handleSearch}
+      returnKeyType="search"
+      prefix={<Search size={18} color="#6b7280" />}
+      suffix={
+        query.length > 0 && (
+          <Pressable onPress={() => setQuery('')}>
+            <X size={18} color="#6b7280" />
+          </Pressable>
+        )
+      }
+    />
+  );
+}
+```
+
+### Currency Input
+
+```tsx
+export function CurrencyInput({ value, onChange }) {
+  return (
+    <Input
+      placeholder="0.00"
+      value={value}
+      onChangeText={onChange}
+      keyboardType="decimal-pad"
+      prefix={<Text className="text-muted-foreground">$</Text>}
+    />
+  );
+}
+```
+
+### Phone Input
+
+```tsx
+export function PhoneInput({ value, onChange }) {
+  return (
+    <Input
+      placeholder="(123) 456-7890"
+      value={value}
+      onChangeText={onChange}
+      keyboardType="phone-pad"
+      prefix={
+        <View className="flex-row items-center gap-1">
+          <Text>🇺🇸</Text>
+          <Text className="text-muted-foreground">+1</Text>
+        </View>
+      }
+    />
+  );
+}
+```
+
+### With Validation
+
+```tsx
+export function ValidatedInput() {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+
+  const validate = (value: string) => {
+    setEmail(value);
+    if (value && !value.includes('@')) {
+      setError('Please enter a valid email');
+    } else {
+      setError('');
+    }
+  };
+
+  return (
+    <View className="gap-1">
+      <Input
+        placeholder="Email"
+        value={email}
+        onChangeText={validate}
+        error={!!error}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      {error && (
+        <Text className="text-destructive text-sm">{error}</Text>
+      )}
+    </View>
+  );
+}
+```
+
+### With Label
+
+```tsx
+export function LabeledInput({ label, error, ...props }) {
+  return (
+    <View className="gap-2">
+      <Text variant="label" size="sm">{label}</Text>
+      <Input error={!!error} {...props} />
+      {error && (
+        <Text className="text-destructive text-sm">{error}</Text>
+      )}
+    </View>
+  );
+}
+
+// Usage
+<LabeledInput
+  label="Email Address"
+  placeholder="you@example.com"
+  error={errors.email}
+/>
+```
+
+### Clearable Input
+
+```tsx
+export function ClearableInput({ value, onChangeText, ...props }) {
+  return (
+    <Input
+      value={value}
+      onChangeText={onChangeText}
+      suffix={
+        value?.length > 0 && (
+          <Pressable onPress={() => onChangeText('')}>
+            <X size={16} color="#6b7280" />
+          </Pressable>
+        )
+      }
+      {...props}
+    />
+  );
+}
+```
+
+### Password with Strength
+
+```tsx
+export function PasswordInput() {
+  const [password, setPassword] = useState('');
+  const [show, setShow] = useState(false);
+
+  const strength = useMemo(() => {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    return score;
+  }, [password]);
+
+  const strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500'];
+
+  return (
+    <View className="gap-2">
+      <Input
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry={!show}
+        suffix={
+          <Pressable onPress={() => setShow(!show)}>
+            {show ? <EyeOff size={18} /> : <Eye size={18} />}
+          </Pressable>
+        }
+      />
+      {password.length > 0 && (
+        <View className="flex-row gap-1">
+          {[0, 1, 2, 3].map((i) => (
+            <View
+              key={i}
+              className={`h-1 flex-1 rounded-full ${
+                i < strength ? strengthColors[strength - 1] : 'bg-muted'
+              }`}
+            />
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+```

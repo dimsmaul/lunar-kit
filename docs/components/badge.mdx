@@ -1,0 +1,174 @@
+---
+sidebar_position: 3
+title: Badge
+description: Display status, labels, or counts
+---
+
+# Badge
+
+Displays a badge or a label for status indication.
+
+## Installation
+
+```bash
+lunar-kit add badge
+```
+
+## Usage
+
+```tsx
+import { Badge } from '@/components/ui/badge';
+```
+
+### Basic Usage
+
+```tsx
+<Badge>Badge</Badge>
+```
+
+### Variants
+
+```tsx
+<Badge variant="default">Default</Badge>
+<Badge variant="secondary">Secondary</Badge>
+<Badge variant="success">Success</Badge>
+<Badge variant="warning">Warning</Badge>
+<Badge variant="destructive">Destructive</Badge>
+<Badge variant="outline">Outline</Badge>
+<Badge variant="muted">Muted</Badge>
+```
+
+### Sizes
+
+```tsx
+<Badge size="sm">Small</Badge>
+<Badge size="md">Medium</Badge>  {/* Default */}
+<Badge size="lg">Large</Badge>
+```
+
+## API Reference
+
+### Badge
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `string` | Required | Badge text |
+| `variant` | `'default' \| 'secondary' \| 'success' \| 'warning' \| 'destructive' \| 'outline' \| 'muted'` | `'default'` | Visual variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Badge size |
+| `className` | `string` | — | Additional classes for container |
+| `textClassName` | `string` | — | Additional classes for text |
+
+## Styling
+
+### Custom Colors
+
+```tsx
+<Badge className="bg-purple-500" textClassName="text-white">
+  Custom
+</Badge>
+```
+
+### With Icon
+
+```tsx
+<View className="flex-row items-center gap-1">
+  <Badge variant="success">
+    <View className="flex-row items-center gap-1">
+      <Check size={12} color="white" />
+      <Text className="text-white text-sm">Verified</Text>
+    </View>
+  </Badge>
+</View>
+```
+
+## Examples
+
+### Status Badges
+
+```tsx
+export function OrderStatus({ status }) {
+  const variants = {
+    pending: 'warning',
+    processing: 'secondary',
+    completed: 'success',
+    cancelled: 'destructive',
+  };
+
+  return (
+    <Badge variant={variants[status]}>
+      {status.charAt(0).toUpperCase() + status.slice(1)}
+    </Badge>
+  );
+}
+```
+
+### Notification Count
+
+```tsx
+export function NotificationBadge({ count }) {
+  if (count === 0) return null;
+
+  return (
+    <Badge variant="destructive" size="sm">
+      {count > 99 ? '99+' : count}
+    </Badge>
+  );
+}
+```
+
+### Tag List
+
+```tsx
+export function TagList({ tags }) {
+  return (
+    <View className="flex-row flex-wrap gap-2">
+      {tags.map((tag) => (
+        <Badge key={tag} variant="outline">
+          {tag}
+        </Badge>
+      ))}
+    </View>
+  );
+}
+```
+
+### Product Card with Badge
+
+```tsx
+export function ProductCard({ product }) {
+  return (
+    <Card>
+      <View className="relative">
+        <Image source={{ uri: product.image }} className="w-full h-48" />
+        {product.isNew && (
+          <Badge variant="default" className="absolute top-2 left-2">
+            New
+          </Badge>
+        )}
+        {product.discount > 0 && (
+          <Badge variant="destructive" className="absolute top-2 right-2">
+            -{product.discount}%
+          </Badge>
+        )}
+      </View>
+      <CardContent>
+        <Text>{product.name}</Text>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+### Feature Tags
+
+```tsx
+export function FeatureTags() {
+  return (
+    <View className="flex-row flex-wrap gap-2">
+      <Badge variant="success">Free Shipping</Badge>
+      <Badge variant="warning">Limited Stock</Badge>
+      <Badge variant="secondary">Best Seller</Badge>
+    </View>
+  );
+}
+```
