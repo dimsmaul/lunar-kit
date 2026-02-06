@@ -1,11 +1,7 @@
 import fs from 'fs-extra';
 import path from 'node:path';
-import { LOCAL_COMPONENTS_PATH } from '@lunar-kit/core';
-
-// Tidak perlu define lagi, import dari core
-// const COMPONENTS_SOURCE = ...
-
-const SOURCE = path.join(__dirname, '../..', 'src');
+import { LOCAL_COMPONENTS_PATH, LOCAL_SOURCE_PATH } from '@lunar-kit/core';
+// import { LOCAL_COMPONENTS_PATH, LOCAL_SOURCE_PATH } from '@lunar-kit/core';
 
 /**
  * @Create src/ structure
@@ -291,12 +287,12 @@ export default function LoginScreen() {
 
 export async function setupDarkModeSrc(projectPath: string, navigation: string) {
   const themeProvider = fs.readFileSync(
-    path.join(SOURCE, 'providers', 'theme-provider.tsx'),
+    path.join(LOCAL_SOURCE_PATH, 'providers', 'theme-provider.tsx'),
   );
 
   // Store
   const themeStore = fs.readFileSync(
-    path.join(SOURCE, 'stores', 'theme.ts'),
+    path.join(LOCAL_SOURCE_PATH, 'stores', 'theme.ts'),
   );
   
   // update export theme.ts on stores/index.ts
@@ -309,24 +305,24 @@ export async function setupDarkModeSrc(projectPath: string, navigation: string) 
   let toolbarContent: Buffer;
   if (navigation === 'expo-router') {
     toolbarContent = fs.readFileSync(
-      path.join(SOURCE, 'hooks', 'useToolbar.tsx'),
+      path.join(LOCAL_SOURCE_PATH, 'hooks', 'useToolbar.tsx'),
     )
   } else {
     toolbarContent = fs.readFileSync(
-      path.join(SOURCE, 'hooks', 'useToolbar.react-navigation.tsx'),
+      path.join(LOCAL_SOURCE_PATH, 'hooks', 'useToolbar.react-navigation.tsx'),
     )
   }
 
   const themeContent = fs.readFileSync(
-    path.join(SOURCE, 'hooks', 'useTheme.ts'),
+    path.join(LOCAL_SOURCE_PATH, 'hooks', 'useTheme.ts'),
   );
 
   const themeColor = fs.readFileSync(
-    path.join(SOURCE, 'hooks', 'useThemeColors.ts'),
+    path.join(LOCAL_SOURCE_PATH, 'hooks', 'useThemeColors.ts'),
   );
 
   const libTheme = fs.readFileSync(
-    path.join(SOURCE, 'lib', 'theme.ts'),
+    path.join(LOCAL_SOURCE_PATH, 'lib', 'theme.ts'),
   );
 
   await fs.ensureDir(path.join(projectPath, 'src', 'providers'));
@@ -406,7 +402,7 @@ export async function setupNativeWind(projectPath: string) {
 
   // Read config dari CLI source (bukan core)
   const tailwindConfig = fs.readFileSync(
-    path.join(SOURCE, 'tailwind.config.js'),
+    path.join(LOCAL_SOURCE_PATH, 'tailwind.config.js'),
   );
 
   await fs.writeFile(path.join(projectPath, 'tailwind.config.js'), tailwindConfig);
@@ -442,10 +438,10 @@ module.exports = withNativeWind(config, {
 
   // Read utils dari CLI source
   const utilsContent = fs.readFileSync(
-    path.join(SOURCE, 'lib', 'utils.ts'),
+    path.join(LOCAL_SOURCE_PATH, 'lib', 'utils.ts'),
   );
   const colorsContent = fs.readFileSync(
-    path.join(SOURCE, 'lib', 'theme.ts'),
+    path.join(LOCAL_SOURCE_PATH, 'lib', 'theme.ts'),
   );
 
   await fs.writeFile(path.join(projectPath, 'src', 'lib', 'utils.ts'), utilsContent);

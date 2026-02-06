@@ -191,8 +191,8 @@ importers:
   packages/create-lunar-kit:
     dependencies:
       '@lunar-kit/core':
-        specifier: 0.1.0
-        version: 0.1.0
+        specifier: 0.1.2
+        version: 0.1.2
       chalk:
         specifier: ^5.4.1
         version: 5.6.2
@@ -1122,6 +1122,9 @@ packages:
 
   '@lunar-kit/core@0.1.0':
     resolution: {integrity: sha512-CW9rUo1cf9Ye0zBCwWCk5CYhzwHCage6J+SUoeibViBhW+YC9rTHh6GmyAUV+IzvUeeIveaVx8tLIUtnZf++5w==}
+
+  '@lunar-kit/core@0.1.2':
+    resolution: {integrity: sha512-rE4L1mNF4QfWGitKghuwIMlO7WbLHo0Wa+c03+Bj5rzsdAdVL7Km0aVCziPjn0fXf1vpJwHGx0BYwC+FwsO7nQ==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -5517,6 +5520,8 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.5
 
   '@lunar-kit/core@0.1.0': {}
+
+  '@lunar-kit/core@0.1.2': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
