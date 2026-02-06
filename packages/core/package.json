@@ -1,6 +1,6 @@
 {
   "name": "@lunar-kit/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared registry and components for Lunar Kit",
   "type": "module",
   "main": "./dist/index.js",
