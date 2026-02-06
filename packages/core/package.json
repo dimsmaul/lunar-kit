@@ -10,7 +10,13 @@
   "files": [
     "dist",
     "src/registry",
-    "src/components"
+    "src/components",
+    "src/providers",
+    "src/hooks",
+    "src/stores",
+    "src/lib",
+    "src/navigation",
+    "src/tailwind.config.js"
   ],
   "keywords": [
     "react-native",
