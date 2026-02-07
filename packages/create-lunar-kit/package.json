@@ -9,8 +9,7 @@
   },
   "type": "module",
   "files": [
-    "dist",
-    "templates"
+    "dist"k
   ],
   "scripts": {
     "build": "tsup",
