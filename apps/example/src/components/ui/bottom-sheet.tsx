@@ -15,16 +15,12 @@ import Animated, {
   withSpring,
   runOnJS,
   clamp,
-  interpolate,
-  Extrapolation,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Text } from './text';
-import { Check } from 'lucide-react-native';
 import { Checkbox } from './checkbox';
-import { RadioGroupItem } from './radio-group';
 import { Radio } from './radio';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -210,7 +206,7 @@ export function BottomSheetContent({ children, className }: BottomSheetContentPr
   const { open, onOpenChange, snapPoints, currentSnapPoint: defaultSnapPoint, variant } = useBottomSheet();
 
   const [visible, setVisible] = React.useState(false);
-  const [currentSnapIndex, setCurrentSnapIndex] = React.useState(defaultSnapPoint);
+  const currentSnapIndex = useSharedValue(defaultSnapPoint);
 
   const snapHeights = React.useMemo(() => {
     return snapPoints.map((point) => {
@@ -219,93 +215,111 @@ export function BottomSheetContent({ children, className }: BottomSheetContentPr
     });
   }, [snapPoints]);
 
-  const animatedPosition = useSharedValue(0);
+  const animatedHeight = useSharedValue(snapHeights[defaultSnapPoint]);
+  const dismissTranslateY = useSharedValue(SCREEN_HEIGHT);
   const backdropOpacity = useSharedValue(0);
 
   const handleClose = React.useCallback(() => {
     onOpenChange(false);
   }, [onOpenChange]);
 
-  const handleSnapChange = React.useCallback((newIndex: number) => {
-    setCurrentSnapIndex(newIndex);
-  }, []);
-
   const findClosestSnapPoint = (position: number, velocity: number) => {
     'worklet';
 
-    const currentHeight = snapHeights[currentSnapIndex];
+    const idx = currentSnapIndex.value;
+    const currentHeight = snapHeights[idx];
 
     if (Math.abs(velocity) > VELOCITY_THRESHOLD) {
-      if (velocity < 0 && currentSnapIndex < snapHeights.length - 1) {
-        return currentSnapIndex + 1;
-      } else if (velocity > 0 && currentSnapIndex > 0) {
-        return currentSnapIndex - 1;
+      if (velocity < 0 && idx < snapHeights.length - 1) {
+        return idx + 1;
+      } else if (velocity > 0 && idx > 0) {
+        return idx - 1;
       }
     }
 
     const threshold = currentHeight * 0.3;
 
-    if (position < -threshold && currentSnapIndex < snapHeights.length - 1) {
-      return currentSnapIndex + 1;
-    } else if (position > threshold && currentSnapIndex > 0) {
-      return currentSnapIndex - 1;
+    if (position < -threshold && idx < snapHeights.length - 1) {
+      return idx + 1;
+    } else if (position > threshold && idx > 0) {
+      return idx - 1;
     }
 
-    return currentSnapIndex;
+    return idx;
   };
 
   const panGesture = Gesture.Pan()
     .onUpdate((event) => {
       const dy = event.translationY;
-      const currentHeight = snapHeights[currentSnapIndex];
-      const maxHeight = snapHeights[snapHeights.length - 1];
+      const idx = currentSnapIndex.value;
+      const currentHeight = snapHeights[idx];
 
       if (dy < 0) {
-        if (currentSnapIndex < snapHeights.length - 1) {
-          const maxDrag = -(maxHeight - currentHeight);
-          animatedPosition.value = clamp(dy, maxDrag, 0);
+        // Swiping up
+        if (idx < snapHeights.length - 1) {
+          const nextHeight = snapHeights[idx + 1];
+          const maxDrag = nextHeight - currentHeight;
+          const progress = clamp(Math.abs(dy) / maxDrag, 0, 1);
+          animatedHeight.value = currentHeight + progress * (nextHeight - currentHeight);
         } else {
-          animatedPosition.value = dy * 0.15;
+          // At highest snap, rubber-band
+          animatedHeight.value = currentHeight + Math.abs(dy) * 0.15;
         }
       } else {
-        if (currentSnapIndex > 0) {
-          animatedPosition.value = dy;
+        // Swiping down
+        if (idx > 0) {
+          // Between snap points: shrink height toward previous snap
+          const prevHeight = snapHeights[idx - 1];
+          const maxDrag = currentHeight - prevHeight;
+          const progress = clamp(dy / maxDrag, 0, 1);
+          animatedHeight.value = currentHeight - progress * (currentHeight - prevHeight);
         } else {
+          // At lowest snap: dismiss gesture with rubber-band
           const rubberband = Math.min(dy / (currentHeight * 0.5), 1);
-          animatedPosition.value = dy * (1 - rubberband * 0.7);
+          dismissTranslateY.value = dy * (1 - rubberband * 0.7);
         }
       }
     })
     .onEnd((event) => {
       const dy = event.translationY;
       const vy = event.velocityY;
-      const currentHeight = snapHeights[currentSnapIndex];
+      const idx = currentSnapIndex.value;
+      const currentHeight = snapHeights[idx];
 
-      if (currentSnapIndex === 0 && (dy > currentHeight * 0.4 || vy > 1000)) {
-        animatedPosition.value = withSpring(SCREEN_HEIGHT, SPRING_CONFIG);
+      // Dismiss: only when at lowest snap point
+      if (idx === 0 && (dy > currentHeight * 0.4 || vy > 1000)) {
+        dismissTranslateY.value = withSpring(SCREEN_HEIGHT, SPRING_CONFIG);
         backdropOpacity.value = withSpring(0, SPRING_CONFIG);
         runOnJS(handleClose)();
         return;
       }
 
       const targetIndex = findClosestSnapPoint(dy, vy);
+      const targetHeight = snapHeights[targetIndex];
 
-      if (targetIndex !== currentSnapIndex) {
-        runOnJS(handleSnapChange)(targetIndex);
-      }
+      // Update snap index
+      currentSnapIndex.value = targetIndex;
 
-      animatedPosition.value = withSpring(0, SPRING_CONFIG);
+      // Spring height directly to target — no index dependency in style!
+      animatedHeight.value = withSpring(targetHeight, SPRING_CONFIG);
+
+      // Reset dismiss translateY
+      dismissTranslateY.value = withSpring(0, SPRING_CONFIG);
     });
 
   React.useEffect(() => {
     if (open) {
       setVisible(true);
-      setCurrentSnapIndex(defaultSnapPoint);
+      currentSnapIndex.value = defaultSnapPoint;
+      animatedHeight.value = snapHeights[defaultSnapPoint];
 
-      animatedPosition.value = withSpring(0, SPRING_CONFIG);
+      // Slide in from bottom
+      dismissTranslateY.value = SCREEN_HEIGHT;
+      dismissTranslateY.value = withSpring(0, SPRING_CONFIG);
       backdropOpacity.value = withSpring(1, SPRING_CONFIG);
     } else {
-      animatedPosition.value = withSpring(SCREEN_HEIGHT, SPRING_CONFIG);
+      // Slide out to bottom
+      dismissTranslateY.value = withSpring(SCREEN_HEIGHT, SPRING_CONFIG);
       backdropOpacity.value = withSpring(0, SPRING_CONFIG);
 
       const timer = setTimeout(() => {
@@ -320,34 +334,10 @@ export function BottomSheetContent({ children, className }: BottomSheetContentPr
     opacity: backdropOpacity.value,
   }));
 
-  const sheetAnimatedStyle = useAnimatedStyle(() => {
-    const currentHeight = snapHeights[currentSnapIndex];
-    const position = animatedPosition.value;
-
-    let height = currentHeight;
-
-    if (position < 0 && currentSnapIndex < snapHeights.length - 1) {
-      const nextHeight = snapHeights[currentSnapIndex + 1];
-      const maxDrag = nextHeight - currentHeight;
-
-      const progress = clamp(Math.abs(position) / maxDrag, 0, 1);
-      height = interpolate(
-        progress,
-        [0, 1],
-        [currentHeight, nextHeight],
-        Extrapolation.CLAMP
-      );
-    }
-
-    return {
-      height,
-      transform: [
-        {
-          translateY: position > 0 ? position : position * 0.1,
-        },
-      ],
-    };
-  });
+  const sheetAnimatedStyle = useAnimatedStyle(() => ({
+    height: animatedHeight.value,
+    transform: [{ translateY: dismissTranslateY.value }],
+  }));
 
   if (!visible) return null;
 
