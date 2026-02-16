@@ -69,6 +69,10 @@ export function usePreview() {
       path: '/preview/select-sheet',
       name: 'Select Sheet',
     },
+    {
+      path: '/preview/keyboard-avoiding-view',
+      name: 'Keyboard Avoiding View',
+    },
   ]
 
   const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
