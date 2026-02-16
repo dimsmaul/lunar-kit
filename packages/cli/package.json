@@ -43,12 +43,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/lunar-kit.git",
+    "url": "https://github.com/dimsmaul/lunar-kit.git",
     "directory": "packages/cli"
   },
-  "homepage": "https://github.com/yourusername/lunar-kit#readme",
+  "homepage": "https://github.com/dimsmaul/lunar-kit#readme",
   "bugs": {
-    "url": "https://github.com/yourusername/lunar-kit/issues"
+    "url": "https://github.com/dimsmaul/lunar-kit/issues"
   },
   "engines": {
     "node": ">=18.0.0"
