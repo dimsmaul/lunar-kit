@@ -15,6 +15,7 @@ import {
   generateGlobalHook,
   generateGlobalStore,
 } from './commands/generate-global.js';
+import { generateLocale, addLocaleEntry } from './commands/localization.js';
 
 const program = new Command();
 
@@ -34,9 +35,13 @@ program
 // Add UI components
 program
   .command('add <component>')
-  .description('Add a UI component to your project')
+  .description('Add a UI component or locale entry to your project')
   .action(async (component) => {
-    await addComponent(component);
+    if (component === 'locale') {
+      await addLocaleEntry();
+    } else {
+      await addComponent(component);
+    }
   });
 
 // Generate commands
@@ -119,6 +124,15 @@ generate
     await generateGlobalStore(name);
   });
 
+// Locale
+generate
+  .command('locale <lang>')
+  .alias('lo')
+  .description('Generate a new locale file (e.g., zh, ja, ko)')
+  .action(async (lang) => {
+    await generateLocale(lang);
+  });
+
   program.configureHelp({
   formatHelp: () => {
     return `
@@ -127,6 +141,7 @@ ${chalk.bold('Usage:')} lunar <command> [options]
 ${chalk.bold('Commands:')}
   ${chalk.green('init')}                                          Initialize Lunar Kit in your project
   ${chalk.green('add')} <component>                               Add a UI component to your project
+  ${chalk.green('add')} locale                                    Add a translation entry to all locale files
   ${chalk.green('generate|g')} [options] <schematic> [path]        Generate a Lunar Kit element.
     ${chalk.dim('Schematics available:')}
       ┌───────────────┬─────────────┬──────────────────────────────────────────────┐
@@ -146,13 +161,18 @@ ${chalk.bold('Commands:')}
       │ component     │ co          │ Generate a global component                  │
       │ hook          │ ho          │ Generate a global hook                       │
       │ store         │ st          │ Generate a global store                      │
+      ├───────────────┼─────────────┼──────────────────────────────────────────────┤
+      │ ${chalk.cyan('Localization')}  │             │                                              │
+      │ locale        │ lo          │ Generate a new locale file                   │
       └───────────────┴─────────────┴──────────────────────────────────────────────┘
 
 ${chalk.bold('Examples:')}
   ${chalk.dim('$ lunar init')}
   ${chalk.dim('$ lunar add button')}
+  ${chalk.dim('$ lunar add locale')}
   ${chalk.dim('$ lunar g mod auth/login')}
   ${chalk.dim('$ lunar g mod:vi auth/login-screen')}
+  ${chalk.dim('$ lunar g locale zh')}
   ${chalk.dim('$ lunar g tabs shop')}
 `;
   }

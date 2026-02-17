@@ -501,9 +501,10 @@ export async function updatePackageJson(projectPath: string, navigation: string,
     '@react-native-async-storage/async-storage': '^2.2.0',
     'lucide-react-native': '^0.562.0',
     'react-native-gesture-handler': '^2.28.0',
-    'react-native-reanimated': '~3.10.1',
+    'react-native-reanimated': '~4.1.1',
     'react-native-safe-area-context': '^5.6.2',
-    'react-native-worklets': '^0.7.0',
+    'react-native-screens': '~4.16.0',
+    'react-native-worklets': '0.5.1',
     'zustand': '^5.0.3',
   };
 
@@ -514,6 +515,14 @@ export async function updatePackageJson(projectPath: string, navigation: string,
   if (navigation === 'react-navigation') {
     pkg.dependencies['@react-navigation/native'] = '^7.0.14';
     pkg.dependencies['@react-navigation/native-stack'] = '^7.1.10';
+  }
+
+  if (features.includes('api')) {
+    pkg.dependencies['axios'] = '^1.9.0';
+  }
+
+  if (features.includes('env')) {
+    pkg.dependencies['expo-constants'] = '~18.0.8';
   }
 
   if (features.includes('forms')) {
@@ -536,7 +545,7 @@ export async function updatePackageJson(projectPath: string, navigation: string,
  * Create kit.config.json
  */
 export async function createConfig(projectPath: string, navigation: string, features: string[], packageManager: string) {
-  const config = {
+  const config: Record<string, any> = {
     navigation,
     features,
     architecture: 'modular',
@@ -557,5 +566,100 @@ export async function createConfig(projectPath: string, navigation: string, feat
     autoBarrelExport: true,
   };
 
+  if (features.includes('localization')) {
+    config.localization = {
+      defaultLocale: 'en',
+      locales: ['en'],
+      localesDir: 'src/locales',
+    };
+  }
+
   await fs.writeJson(path.join(projectPath, 'kit.config.json'), config, { spaces: 2 });
+}
+
+/**
+ * Setup localization (i18n)
+ */
+export async function setupLocalizationSrc(projectPath: string) {
+  const localesDir = path.join(projectPath, 'src', 'locales');
+  await fs.ensureDir(localesDir);
+
+  // Copy locale index (useTranslation hook + t() function)
+  const indexContent = fs.readFileSync(
+    path.join(LOCAL_SOURCE_PATH, 'locales', 'index.ts'),
+  );
+  await fs.writeFile(path.join(localesDir, 'index.ts'), indexContent);
+
+  // Copy default English translations
+  const enContent = fs.readFileSync(
+    path.join(LOCAL_SOURCE_PATH, 'locales', 'en.ts'),
+  );
+  await fs.writeFile(path.join(localesDir, 'en.ts'), enContent);
+
+  // Copy locale store
+  const storeContent = fs.readFileSync(
+    path.join(LOCAL_SOURCE_PATH, 'locales', 'locale-store.ts'),
+  );
+  await fs.writeFile(
+    path.join(projectPath, 'src', 'stores', 'locale.ts'),
+    storeContent,
+  );
+
+  // Register English locale in index.ts
+  const indexPath = path.join(localesDir, 'index.ts');
+  let indexFile = await fs.readFile(indexPath, 'utf-8');
+  indexFile += `\nregisterLocale('en', () => import('./en'));\n`;
+  await fs.writeFile(indexPath, indexFile);
+}
+
+/**
+ * Setup environment config (.env)
+ */
+export async function setupEnvConfig(projectPath: string) {
+  // Create .env file
+  const envContent = `# App Environment
+EXPO_PUBLIC_APP_ENV=development
+EXPO_PUBLIC_API_URL=http://localhost:3000
+`;
+  await fs.writeFile(path.join(projectPath, '.env'), envContent);
+
+  // Create .env.example
+  const envExampleContent = `# Copy this file to .env and fill in your values
+EXPO_PUBLIC_APP_ENV=development
+EXPO_PUBLIC_API_URL=http://localhost:3000
+`;
+  await fs.writeFile(path.join(projectPath, '.env.example'), envExampleContent);
+
+  // Copy env.ts utility
+  const envTsContent = fs.readFileSync(
+    path.join(LOCAL_SOURCE_PATH, 'templates', 'env.ts'),
+  );
+  await fs.writeFile(
+    path.join(projectPath, 'src', 'lib', 'env.ts'),
+    envTsContent,
+  );
+
+  // Add .env to .gitignore if it exists
+  const gitignorePath = path.join(projectPath, '.gitignore');
+  if (fs.existsSync(gitignorePath)) {
+    let gitignore = await fs.readFile(gitignorePath, 'utf-8');
+    if (!gitignore.includes('.env')) {
+      gitignore += '\n# Environment\n.env\n.env.local\n';
+      await fs.writeFile(gitignorePath, gitignore);
+    }
+  }
+}
+
+/**
+ * Setup API client (axios)
+ */
+export async function setupApiClient(projectPath: string) {
+  // Copy api.ts
+  const apiContent = fs.readFileSync(
+    path.join(LOCAL_SOURCE_PATH, 'templates', 'api.ts'),
+  );
+  await fs.writeFile(
+    path.join(projectPath, 'src', 'lib', 'api.ts'),
+    apiContent,
+  );
 }
