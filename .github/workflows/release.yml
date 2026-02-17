@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - 'v*'
+      - 'core-v*'
+      - 'cli-v*'
+      - 'create-v*'
 
 jobs:
   publish:
@@ -16,41 +19,46 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: 9
+          bun-version: latest
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Build core
-        run: pnpm --filter @lunar-kit/core build
+        run: bun run --filter @lunar-kit/core build
 
       - name: Build CLI
-        run: pnpm --filter @lunar-kit/cli build
+        run: bun run --filter @lunar-kit/cli build
 
       - name: Build create-lunar-kit
-        run: pnpm --filter create-lunar-kit build
+        run: bun run --filter create-lunar-kit build
 
       - name: Publish @lunar-kit/core
-        run: pnpm --filter @lunar-kit/core publish --no-git-checks --access public
+        if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/tags/core-v')
+        run: npm publish --filter @lunar-kit/core --access public
+        working-directory: packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @lunar-kit/cli
-        run: pnpm --filter @lunar-kit/cli publish --no-git-checks --access public
+        if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/tags/cli-v')
+        run: npm publish --access public
+        working-directory: packages/cli
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish create-lunar-kit
-        run: pnpm --filter create-lunar-kit publish --no-git-checks --access public
+        if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/tags/create-v')
+        run: npm publish --access public
+        working-directory: packages/create-lunar-kit
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

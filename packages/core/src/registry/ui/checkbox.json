@@ -8,7 +8,7 @@
   ],
   "files": [
     {
-      "path": "components/ui/checkbox.tsx",
+      "path": "/src/components/ui/checkbox.tsx",
       "type": "component"
     }
   ],

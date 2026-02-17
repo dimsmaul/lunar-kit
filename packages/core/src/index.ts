@@ -5,7 +5,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export const REGISTRY_URL = 'https://raw.githubusercontent.com/yourusername/lunar-kit/main/packages/core/src/registry';
+export const REGISTRY_URL = 'https://raw.githubusercontent.com/dimsmaul/lunar-kit/main/packages/core/src/registry';
 
 // Path untuk registry yang ter-bundle di npm package
 export const LOCAL_REGISTRY_PATH = path.join(__dirname, '..', 'src', 'registry');

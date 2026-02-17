@@ -9,7 +9,7 @@
   ],
   "files": [
     {
-      "path": "components/ui/radio-group.tsx",
+      "path": "/src/components/ui/radio-group.tsx",
       "type": "registry:ui"
     }
   ],

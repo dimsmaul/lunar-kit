@@ -1,0 +1,25 @@
+{
+  "name": "keyboard-avoiding-view",
+  "type": "registry:ui",
+  "dependencies": [],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "/src/components/ui/keyboard-avoiding-view.tsx",
+      "type": "component"
+    }
+  ],
+  "meta": {
+    "description": "A custom KeyboardAvoidingView built on ScrollView with automatic input scrolling. Does not use React Native's built-in KeyboardAvoidingView.",
+    "features": [
+      "ScrollView-based keyboard avoidance",
+      "Auto-scroll to focused TextInput",
+      "Animated bottom padding transition",
+      "Works on both iOS and Android",
+      "Configurable extra scroll height and offset",
+      "Includes KeyboardSpacer utility component",
+      "No external dependencies"
+    ]
+  }
+}

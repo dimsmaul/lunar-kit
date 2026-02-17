@@ -9,7 +9,7 @@
   ],
   "files": [
     {
-      "path": "components/ui/select.tsx",
+      "path": "/src/components/ui/select.tsx",
       "type": "component"
     }
   ],
