@@ -75,14 +75,21 @@ jobs:
           VERSION=${{ steps.check.outputs.version }}
           echo "📦 Syncing all packages to version $VERSION"
 
+          # Update version in all package.json
           for pkg in packages/core packages/cli packages/create-lunar-kit; do
             jq --arg v "$VERSION" '.version = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
-            echo "  ✅ $pkg/package.json → $VERSION"
+            echo "  ✅ $pkg/package.json version → $VERSION"
+          done
+
+          # Update @lunar-kit/core dependency in cli and create-lunar-kit
+          for pkg in packages/cli packages/create-lunar-kit; do
+            jq --arg v "$VERSION" '.dependencies["@lunar-kit/core"] = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
+            echo "  🔗 $pkg @lunar-kit/core dep → $VERSION"
           done
 
           echo ""
           echo "Verification:"
-          grep -r '"version"' packages/core/package.json packages/cli/package.json packages/create-lunar-kit/package.json
+          grep -r '"version"\|@lunar-kit/core' packages/core/package.json packages/cli/package.json packages/create-lunar-kit/package.json
 
       - name: Build core
         if: steps.check.outputs.should_release == 'true'
