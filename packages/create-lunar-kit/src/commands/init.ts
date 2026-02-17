@@ -17,6 +17,11 @@ export async function createSrcStructure(projectPath: string, navigation: string
     'src/types',
   ];
 
+  // Add screens directory for React Navigation projects
+  if (navigation === 'react-navigation') {
+    dirs.push('src/screens');
+  }
+
   for (const dir of dirs) {
     await fs.ensureDir(path.join(projectPath, dir));
   }
@@ -243,6 +248,8 @@ export default function HomeScreen() {
   );
 }`;
 
+  // Ensure screens directory exists before writing
+  await fs.ensureDir(path.join(projectPath, 'src', 'screens'));
   await fs.writeFile(path.join(projectPath, 'src', 'screens', 'HomeScreen.tsx'), homeContent);
 
   // Update Main.tsx to use Navigation
@@ -494,27 +501,24 @@ export async function updatePackageJson(projectPath: string, navigation: string,
     '@react-native-async-storage/async-storage': '^2.2.0',
     'lucide-react-native': '^0.562.0',
     'react-native-gesture-handler': '^2.28.0',
-    'react-native-reanimated': '^4.1.6',
+    'react-native-reanimated': '~4.1.1',
     'react-native-safe-area-context': '^5.6.2',
-    'react-native-worklets': '^0.5.1',
+    'react-native-screens': '~4.16.0',
+    'react-native-worklets': '0.5.1',
     'zustand': '^5.0.3',
   };
 
   if (navigation === 'expo-router') {
-    pkg.dependencies['expo-router'] = '^6.0.22';
-    pkg.dependencies['react-native-screens'] = '~4.16.0';
-    pkg.dependencies['react-native-safe-area-context'] = '^5.6.2';
+    pkg.dependencies['expo-router'] = '^6.0.23';
   }
 
   if (navigation === 'react-navigation') {
     pkg.dependencies['@react-navigation/native'] = '^7.0.14';
     pkg.dependencies['@react-navigation/native-stack'] = '^7.1.10';
-    pkg.dependencies['react-native-screens'] = '~4.4.0';
-    pkg.dependencies['react-native-safe-area-context'] = '4.16.0';
   }
 
   if (features.includes('forms')) {
-    pkg.dependencies['react-hook-form'] = '^7.54.2';
+    pkg.dependencies['react-hook-form'] = '^7.71.1';
     pkg.dependencies['@hookform/resolvers'] = '^5.2.2';
     pkg.dependencies['zod'] = '^4.3.6';
   }
@@ -522,7 +526,7 @@ export async function updatePackageJson(projectPath: string, navigation: string,
   pkg.devDependencies = {
     ...pkg.devDependencies,
     'tailwindcss': '3.4.17',
-    '@expo/metro-config': '^0.20.3',
+    '@expo/metro-config': '^54.0.14',
     'react-native-css-interop': '^0.2.1',
   };
 
