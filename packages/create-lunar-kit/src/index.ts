@@ -8,7 +8,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { renderLogo } from './assets/logo';
-import { createConfig, createSrcStructure, setupAppEntry, setupAuthSrc, setupDarkModeSrc, setupExpoRouterSrc, setupFormsSrc, setupNativeWind, setupReactNavigationSrc, setupStateSrc, updatePackageJson } from './commands/init';
+import { createConfig, createSrcStructure, setupAppEntry, setupAuthSrc, setupDarkModeSrc, setupExpoRouterSrc, setupFormsSrc, setupNativeWind, setupReactNavigationSrc, setupStateSrc, updatePackageJson, setupLocalizationSrc, setupEnvConfig, setupApiClient } from './commands/init';
 import { closeInitProject } from './res/close';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -48,11 +48,11 @@ program
         name: 'features',
         message: 'Select features to include:',
         choices: [
-          // TODO: need to add these features
-          { title: 'Authentication screens', value: 'auth', selected: false },
-          // { title: 'Dark mode support', value: 'dark-mode', selected: true },
-          { title: 'Form validation (react-hook-form)', value: 'forms', selected: false },
-          // { title: 'State management (Zustand)', value: 'state', selected: false },
+          { title: '🌍 Localization (i18n)', value: 'localization', selected: false },
+          { title: '🔐 Environment config (.env)', value: 'env', selected: false },
+          { title: '📡 API client (axios)', value: 'api', selected: false },
+          { title: '🔑 Authentication screens', value: 'auth', selected: false },
+          { title: '📝 Form validation (react-hook-form)', value: 'forms', selected: false },
         ],
       },
       {
@@ -60,6 +60,7 @@ program
         name: 'packageManager',
         message: 'Which package manager?',
         choices: [
+          { title: 'bun', value: 'bun' },
           { title: 'pnpm', value: 'pnpm' },
           { title: 'npm', value: 'npm' },
           { title: 'yarn', value: 'yarn' },
@@ -120,22 +121,27 @@ program
         await setupAuthSrc(projectPath, navigation);
       }
 
-      // if (features.includes('dark-mode')) {
-      //   spinner.text = 'Setting up dark mode...';
-      // }
       await setupDarkModeSrc(projectPath, navigation);
 
-      // TODO: enable when dark mode feature is added
       if (features.includes('forms')) {
         spinner.text = 'Setting up forms...';
         await setupFormsSrc(projectPath);
       }
 
-      // TODO: enable when state management feature is added
-      // if (features.includes('state')) {
-      //   spinner.text = 'Setting up state management...';
-        // await setupStateSrc(projectPath);
-      // }
+      if (features.includes('localization')) {
+        spinner.text = 'Setting up localization...';
+        await setupLocalizationSrc(projectPath);
+      }
+
+      if (features.includes('env')) {
+        spinner.text = 'Setting up environment config...';
+        await setupEnvConfig(projectPath);
+      }
+
+      if (features.includes('api')) {
+        spinner.text = 'Setting up API client...';
+        await setupApiClient(projectPath);
+      }
 
       // 6. Setup NativeWind configs
       await setupNativeWind(projectPath);
@@ -150,7 +156,7 @@ program
       // 9. Install dependencies
       spinner.text = `Installing dependencies with ${packageManager}...`;
       
-      const installCmd = packageManager === 'yarn' ? 'yarn' : packageManager;
+      const installCmd = packageManager === 'yarn' ? 'yarn' : packageManager === 'bun' ? 'bun' : packageManager;
       const installArgs = packageManager === 'npm' ? ['install'] : packageManager === 'yarn' ? [] : ['install'];
       
       await execa(installCmd, installArgs, { cwd: projectPath });

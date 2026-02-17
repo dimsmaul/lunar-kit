@@ -1,11 +1,24 @@
 import fs from 'fs-extra';
 import path from 'node:path';
-import { LOCAL_COMPONENTS_PATH, LOCAL_SOURCE_PATH } from '@lunar-kit/core';
-// import { LOCAL_COMPONENTS_PATH, LOCAL_SOURCE_PATH } from '@lunar-kit/core';
+import { LOCAL_COMPONENTS_PATH, LOCAL_SOURCE_PATH, LOCAL_TEMPLATES_PATH } from '@lunar-kit/core';
 
 /**
- * @Create src/ structure
+ * Helper: copy a template file from core to the target project
  */
+function copyTemplate(templatePath: string, destPath: string) {
+  const content = fs.readFileSync(path.join(LOCAL_TEMPLATES_PATH, templatePath));
+  fs.writeFileSync(destPath, content);
+}
+
+function copySource(sourcePath: string, destPath: string) {
+  const content = fs.readFileSync(path.join(LOCAL_SOURCE_PATH, sourcePath));
+  fs.writeFileSync(destPath, content);
+}
+
+// ============================================================
+// Project Structure
+// ============================================================
+
 export async function createSrcStructure(projectPath: string, navigation: string) {
   const dirs = [
     'src/modules',
@@ -32,243 +45,86 @@ export async function createSrcStructure(projectPath: string, navigation: string
   await createBarrelExport(path.join(projectPath, 'src/stores'), 'index.ts');
 }
 
-/**
- * @Setup app entry point
- */
-export async function createBarrelExport(dir: string, filename: string) {
+async function createBarrelExport(dir: string, filename: string) {
   const content = `// Auto-generated barrel export\n// This file is managed by Lunar Kit CLI\n`;
   await fs.writeFile(path.join(dir, filename), content);
 }
 
-/**
- * @Setup app entry point
- */
+// ============================================================
+// App Entry Point
+// ============================================================
+
 export async function setupAppEntry(projectPath: string, navigation: string) {
   if (navigation === 'expo-router') {
-    // ============================================
-    // EXPO ROUTER SETUP
-    // ============================================
-    
-    // 1. Delete App.tsx if exists (not needed for expo-router)
-    const appTsxPath = path.join(projectPath, 'App.tsx');
-    if (fs.existsSync(appTsxPath)) {
-      await fs.remove(appTsxPath);
+    // Delete App.tsx and index files (not needed for expo-router)
+    for (const file of ['App.tsx', 'index.ts', 'index.js']) {
+      const filePath = path.join(projectPath, file);
+      if (fs.existsSync(filePath)) await fs.remove(filePath);
     }
 
-    // 2. Delete index.ts if exists (conflicts with expo-router)
-    const indexPath = path.join(projectPath, 'index.ts');
-    if (fs.existsSync(indexPath)) {
-      await fs.remove(indexPath);
-    }
-
-    const indexJsPath = path.join(projectPath, 'index.js');
-    if (fs.existsSync(indexJsPath)) {
-      await fs.remove(indexJsPath);
-    }
-
-    // 3. Update package.json to use expo-router entry
+    // Update package.json to use expo-router entry
     const pkgPath = path.join(projectPath, 'package.json');
     const pkg = await fs.readJson(pkgPath);
     pkg.main = 'expo-router/entry';
     await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 
   } else {
-    // TODO: need to fix
-    // ============================================
-    // REACT NAVIGATION OR NO NAVIGATION SETUP
-    // ============================================
-    
-    // 1. Delete index.ts if exists
-    const indexPath = path.join(projectPath, 'index.ts');
-    if (fs.existsSync(indexPath)) {
-      await fs.remove(indexPath);
+    // Delete index files
+    for (const file of ['index.ts', 'index.js']) {
+      const filePath = path.join(projectPath, file);
+      if (fs.existsSync(filePath)) await fs.remove(filePath);
     }
 
-    const indexJsPath = path.join(projectPath, 'index.js');
-    if (fs.existsSync(indexJsPath)) {
-      await fs.remove(indexJsPath);
-    }
+    // Copy App.tsx entry point
+    copyTemplate('scaffolding/App.tsx', path.join(projectPath, 'App.tsx'));
 
-    // 2. Create App.tsx as entry point with proper export
-    const appContent = `import Main from './src/Main';
-
-export default function App() {
-  return <Main />;
-}`;
-
-    await fs.writeFile(path.join(projectPath, 'App.tsx'), appContent);
-
-    // 3. Update package.json to remove main field (use Expo default)
+    // Update package.json — remove main field
     const pkgPath = path.join(projectPath, 'package.json');
     const pkg = await fs.readJson(pkgPath);
-    
-    // Remove main field, let Expo find App.tsx automatically
-    if (pkg.main) {
-      delete pkg.main;
-    }
-    
+    if (pkg.main) delete pkg.main;
     await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 
-    // 4. Update app.json to set entryPoint
+    // Update app.json entryPoint
     const appJsonPath = path.join(projectPath, 'app.json');
     if (fs.existsSync(appJsonPath)) {
       const appJson = await fs.readJson(appJsonPath);
-      if (!appJson.expo) {
-        appJson.expo = {};
-      }
+      if (!appJson.expo) appJson.expo = {};
       appJson.expo.entryPoint = './App.tsx';
       await fs.writeJson(appJsonPath, appJson, { spaces: 2 });
     }
 
-    // 5. Create src/Main.tsx
-    const mainContent = `import './global.css';
-import { StatusBar } from 'expo-status-bar';
-import { View, Text } from 'react-native';
-import { Button } from './components/ui/button';
-
-export default function Main() {
-  return (
-    <View className="flex-1 items-center justify-center">
-      <Text className="text-3xl font-bold text-slate-900 mb-2">
-        🌙 Lunar Kit
-      </Text>
-      <Text className="text-slate-600 mb-8">
-        Your app is ready!
-      </Text>
-      <Button onPress={() => alert('Hello Lunar Kit!')}>
-        Get Started
-      </Button>
-      <StatusBar style="auto" />
-    </View>
-  );
-}`;
-
-    await fs.writeFile(path.join(projectPath, 'src', 'Main.tsx'), mainContent);
+    // Copy Main.tsx (basic version, may be overwritten by react-navigation setup)
+    copyTemplate('scaffolding/Main.tsx', path.join(projectPath, 'src', 'Main.tsx'));
   }
 }
 
-/**
- * @Setup NativeWind
- */
+// ============================================================
+// Navigation Setup
+// ============================================================
+
 export async function setupExpoRouterSrc(projectPath: string) {
-  // Create app/ folder for expo-router
   const appDir = path.join(projectPath, 'app');
   await fs.ensureDir(appDir);
 
-  // Create _layout.tsx
-  const layoutContent = `import React from 'react';
-import '../src/global.css';
-import { Stack } from 'expo-router';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ThemeProvider } from '@/providers/theme-provider';
-import { useColorScheme } from 'nativewind';
-import { useThemeColors } from '@/hooks/useThemeColors';
-
-export default function RootLayout() {
-  const { colorScheme } = useColorScheme();
-  const { colors } = useThemeColors()
-  return (<GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider>
-        <Stack screenOptions={{
-          headerShown: false,
-          contentStyle: {
-            backgroundColor: colors.background,
-            
-          },
-        }} key={colorScheme} />
-      </ThemeProvider>
-    </GestureHandlerRootView>
-);
-}`;
-
-  await fs.writeFile(path.join(appDir, '_layout.tsx'), layoutContent);
-
-  // Create index.tsx (home screen)
-  const indexContent = `import React from 'react';
-import { View, Text } from 'react-native';
-import { Button } from '@/components/ui/button';
-
-export default function IndexScreen() {
-  return (
-    <View className="flex-1 items-center justify-center">
-      <Text className="text-3xl font-bold text-slate-900 mb-2">
-        🌙 Lunar Kit
-      </Text>
-      <Text className="text-slate-600 mb-8">
-        Your app is ready!
-      </Text>
-      <Button onPress={() => alert('Hello Lunar Kit!')}>
-        Get Started
-      </Button>
-    </View>
-  );
-}`;
-
-  await fs.writeFile(path.join(appDir, 'index.tsx'), indexContent);
+  copyTemplate('expo-router/_layout.tsx', path.join(appDir, '_layout.tsx'));
+  copyTemplate('expo-router/index.tsx', path.join(appDir, 'index.tsx'));
 }
 
 export async function setupReactNavigationSrc(projectPath: string) {
-  // Create navigation setup in src/
-  const navContent = `import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from './screens/HomeScreen';
+  // Copy Navigation.tsx
+  copyTemplate('react-navigation/Navigation.tsx', path.join(projectPath, 'src', 'Navigation.tsx'));
 
-const Stack = createNativeStackNavigator();
-
-export default function Navigation() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}`;
-
-  await fs.writeFile(path.join(projectPath, 'src', 'Navigation.tsx'), navContent);
-
-  // Create HomeScreen
-  const homeContent = `import React from 'react';
-import { View, Text } from 'react-native';
-import { Button } from '../components/ui/button';
-
-export default function HomeScreen() {
-  return (
-    <View className="flex-1 items-center justify-center">
-      <Text className="text-3xl font-bold text-slate-900 mb-2">
-        🌙 Lunar Kit
-      </Text>
-      <Text className="text-slate-600 mb-8">
-        Your app is ready!
-      </Text>
-      <Button onPress={() => alert('Hello Lunar Kit!')}>
-        Get Started
-      </Button>
-    </View>
-  );
-}`;
-
-  // Ensure screens directory exists before writing
+  // Copy HomeScreen.tsx
   await fs.ensureDir(path.join(projectPath, 'src', 'screens'));
-  await fs.writeFile(path.join(projectPath, 'src', 'screens', 'HomeScreen.tsx'), homeContent);
+  copyTemplate('react-navigation/HomeScreen.tsx', path.join(projectPath, 'src', 'screens', 'HomeScreen.tsx'));
 
-  // Update Main.tsx to use Navigation
-  const mainContent = `import React from 'react';
-import './global.css';
-import { StatusBar } from 'expo-status-bar';
-import Navigation from './Navigation';
-
-export default function Main() {
-  return (
-    <>
-      <Navigation />
-      <StatusBar style="auto" />
-    </>
-  );
-}`;
-
-  await fs.writeFile(path.join(projectPath, 'src', 'Main.tsx'), mainContent);
+  // Overwrite Main.tsx with react-navigation version
+  copyTemplate('scaffolding/Main.react-navigation.tsx', path.join(projectPath, 'src', 'Main.tsx'));
 }
+
+// ============================================================
+// Feature Setup
+// ============================================================
 
 export async function setupAuthSrc(projectPath: string, navigation: string) {
   const authDir = navigation === 'expo-router' 
@@ -276,218 +132,79 @@ export async function setupAuthSrc(projectPath: string, navigation: string) {
     : path.join(projectPath, 'src', 'screens', 'auth');
   
   await fs.ensureDir(authDir);
-  
-  const loginScreen = `import { View, Text } from 'react-native';
-import { Button } from '@/src/components/ui/button';
-
-export default function LoginScreen() {
-  return (
-    <View className="flex-1 items-center justify-center p-4">
-      <Text className="text-2xl font-bold mb-4">Login</Text>
-      <Button className="w-full">Sign In</Button>
-    </View>
-  );
-}`;
-
-  await fs.writeFile(path.join(authDir, 'login.tsx'), loginScreen);
+  copyTemplate('auth/login.tsx', path.join(authDir, 'login.tsx'));
 }
 
 export async function setupDarkModeSrc(projectPath: string, navigation: string) {
-  const themeProvider = fs.readFileSync(
-    path.join(LOCAL_SOURCE_PATH, 'providers', 'theme-provider.tsx'),
-  );
+  // Provider
+  await fs.ensureDir(path.join(projectPath, 'src', 'providers'));
+  copySource('providers/theme-provider.tsx', path.join(projectPath, 'src', 'providers', 'theme-provider.tsx'));
 
   // Store
-  const themeStore = fs.readFileSync(
-    path.join(LOCAL_SOURCE_PATH, 'stores', 'theme.ts'),
-  );
-  
-  // update export theme.ts on stores/index.ts
+  await fs.ensureDir(path.join(projectPath, 'src', 'stores'));
+  copySource('stores/theme.ts', path.join(projectPath, 'src', 'stores', 'theme.ts'));
+
+  // Update barrel export
   const storesIndexPath = path.join(projectPath, 'src', 'stores', 'index.ts');
-  let storesIndexContent = `// Auto-generated barrel export\n// This file is managed by Lunar Kit CLI\n`;
-  storesIndexContent += `export * from './theme';\n`;
+  const storesIndexContent = `// Auto-generated barrel export\n// This file is managed by Lunar Kit CLI\nexport * from './theme';\n`;
   await fs.writeFile(storesIndexPath, storesIndexContent);
 
   // Hooks
-  let toolbarContent: Buffer;
-  if (navigation === 'expo-router') {
-    toolbarContent = fs.readFileSync(
-      path.join(LOCAL_SOURCE_PATH, 'hooks', 'useToolbar.tsx'),
-    )
-  } else {
-    toolbarContent = fs.readFileSync(
-      path.join(LOCAL_SOURCE_PATH, 'hooks', 'useToolbar.react-navigation.tsx'),
-    )
-  }
-
-  const themeContent = fs.readFileSync(
-    path.join(LOCAL_SOURCE_PATH, 'hooks', 'useTheme.ts'),
-  );
-
-  const themeColor = fs.readFileSync(
-    path.join(LOCAL_SOURCE_PATH, 'hooks', 'useThemeColors.ts'),
-  );
-
-  const libTheme = fs.readFileSync(
-    path.join(LOCAL_SOURCE_PATH, 'lib', 'theme.ts'),
-  );
-
-  await fs.ensureDir(path.join(projectPath, 'src', 'providers'));
-  await fs.writeFile(path.join(projectPath, 'src', 'providers', 'theme-provider.tsx'), themeProvider);
-
-  await fs.ensureDir(path.join(projectPath, 'src', 'stores'));
-  await fs.writeFile(path.join(projectPath, 'src', 'stores', 'theme.ts'), themeStore);
-
-  // Hooks
   await fs.ensureDir(path.join(projectPath, 'src', 'hooks'));
-  await fs.writeFile(path.join(projectPath, 'src', 'hooks', 'useToolbar.tsx'), toolbarContent);
-  await fs.writeFile(path.join(projectPath, 'src', 'hooks', 'useTheme.ts'), themeContent);
-  await fs.writeFile(path.join(projectPath, 'src', 'hooks', 'useThemeColors.ts'), themeColor);
+  const toolbarSource = navigation === 'expo-router'
+    ? 'hooks/useToolbar.tsx'
+    : 'hooks/useToolbar.react-navigation.tsx';
+  copySource(toolbarSource, path.join(projectPath, 'src', 'hooks', 'useToolbar.tsx'));
+  copySource('hooks/useTheme.ts', path.join(projectPath, 'src', 'hooks', 'useTheme.ts'));
+  copySource('hooks/useThemeColors.ts', path.join(projectPath, 'src', 'hooks', 'useThemeColors.ts'));
 
+  // Lib
   await fs.ensureDir(path.join(projectPath, 'src', 'lib'));
-  await fs.writeFile(path.join(projectPath, 'src', 'lib', 'theme.ts'), libTheme);
+  copySource('lib/theme.ts', path.join(projectPath, 'src', 'lib', 'theme.ts'));
 }
 
 export async function setupFormsSrc(projectPath: string) {
-  // Add example form hook
-  const hookContent = `import { useState } from 'react';
-
-export function useForm<T>(initialValues: T) {
-  const [values, setValues] = useState<T>(initialValues);
-  const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
-
-  const handleChange = (name: keyof T, value: any) => {
-    setValues(prev => ({ ...prev, [name]: value }));
-  };
-
-  const validate = (validationRules: Partial<Record<keyof T, (value: any) => string | undefined>>) => {
-    const newErrors: Partial<Record<keyof T, string>> = {};
-    
-    Object.keys(validationRules).forEach((key) => {
-      const error = validationRules[key as keyof T]?.(values[key as keyof T]);
-      if (error) {
-        newErrors[key as keyof T] = error;
-      }
-    });
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  return { values, errors, handleChange, validate };
-}`;
-
-  await fs.writeFile(path.join(projectPath, 'src', 'hooks', 'useForm.ts'), hookContent);
+  await fs.ensureDir(path.join(projectPath, 'src', 'hooks'));
+  copyTemplate('forms/useForm.ts', path.join(projectPath, 'src', 'hooks', 'useForm.ts'));
 }
 
 export async function setupStateSrc(projectPath: string) {
-  const storeContent = `import { create } from 'zustand';
-
-interface AppState {
-  user: null | { id: string; name: string };
-  setUser: (user: AppState['user']) => void;
-  logout: () => void;
-}
-
-export const useAppStore = create<AppState>((set) => ({
-  user: null,
-  setUser: (user) => set({ user }),
-  logout: () => set({ user: null }),
-}));`;
-
   await fs.ensureDir(path.join(projectPath, 'src', 'stores'));
-  await fs.writeFile(path.join(projectPath, 'src', 'stores', 'app.ts'), storeContent);
+  copyTemplate('state/app-store.ts', path.join(projectPath, 'src', 'stores', 'app.ts'));
 }
+
+// ============================================================
+// NativeWind Setup
+// ============================================================
 
 export async function setupNativeWind(projectPath: string) {
-  // Create global.css in src/
-  const globalCss = `@tailwind base;
-@tailwind components;
-@tailwind utilities;`;
+  // Config files
+  copyTemplate('config/global.css', path.join(projectPath, 'src', 'global.css'));
+  copyTemplate('config/metro.config.js', path.join(projectPath, 'metro.config.js'));
+  copyTemplate('config/babel.config.js', path.join(projectPath, 'babel.config.js'));
+  copyTemplate('config/nativewind-env.d.ts', path.join(projectPath, 'nativewind-env.d.ts'));
+  copyTemplate('config/tsconfig.json', path.join(projectPath, 'tsconfig.json'));
 
-  await fs.writeFile(path.join(projectPath, 'src', 'global.css'), globalCss);
+  // Copy tailwind.config.js from core source
+  copySource('tailwind.config.js', path.join(projectPath, 'tailwind.config.js'));
 
-  // Read config dari CLI source (bukan core)
-  const tailwindConfig = fs.readFileSync(
-    path.join(LOCAL_SOURCE_PATH, 'tailwind.config.js'),
-  );
+  // Copy lib utilities from core source
+  await fs.ensureDir(path.join(projectPath, 'src', 'lib'));
+  copySource('lib/utils.ts', path.join(projectPath, 'src', 'lib', 'utils.ts'));
+  copySource('lib/theme.ts', path.join(projectPath, 'src', 'lib', 'theme.ts'));
 
-  await fs.writeFile(path.join(projectPath, 'tailwind.config.js'), tailwindConfig);
-
-  // Create metro.config.js
-  const metroConfig = `const { getDefaultConfig } = require('expo/metro-config');
-const { withNativeWind } = require('nativewind/metro');
-
-const config = getDefaultConfig(__dirname);
-
-module.exports = withNativeWind(config, {
-  input: './src/global.css',
-});`;
-
-  await fs.writeFile(path.join(projectPath, 'metro.config.js'), metroConfig);
-
-  // Create babel.config.js
-  const babelConfig = `module.exports = function (api) {
-  api.cache(true);
-  return {
-    presets: [
-      ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
-      'nativewind/babel'
-    ],
-  };
-};`;
-
-  await fs.writeFile(path.join(projectPath, 'babel.config.js'), babelConfig);
-
-  // Create nativewind-env.d.ts
-  const nativewindEnv = `/// <reference types="nativewind/types" />`;
-  await fs.writeFile(path.join(projectPath, 'nativewind-env.d.ts'), nativewindEnv);
-
-  // Read utils dari CLI source
-  const utilsContent = fs.readFileSync(
-    path.join(LOCAL_SOURCE_PATH, 'lib', 'utils.ts'),
-  );
-  const colorsContent = fs.readFileSync(
-    path.join(LOCAL_SOURCE_PATH, 'lib', 'theme.ts'),
-  );
-
-  await fs.writeFile(path.join(projectPath, 'src', 'lib', 'utils.ts'), utilsContent);
-  await fs.writeFile(path.join(projectPath, 'src', 'lib', 'theme.ts'), colorsContent);
-
-  // ✅ PAKAI LOCAL_COMPONENTS_PATH dari @lunar-kit/core
-  const buttonContent = fs.readFileSync(
-    path.join(LOCAL_COMPONENTS_PATH, 'ui', 'button.tsx'),
-  );
-  const textContent = fs.readFileSync(
-    path.join(LOCAL_COMPONENTS_PATH, 'ui', 'text.tsx'),
-  );
-
+  // Copy base UI components from core
+  await fs.ensureDir(path.join(projectPath, 'src', 'components', 'ui'));
+  const buttonContent = fs.readFileSync(path.join(LOCAL_COMPONENTS_PATH, 'ui', 'button.tsx'));
+  const textContent = fs.readFileSync(path.join(LOCAL_COMPONENTS_PATH, 'ui', 'text.tsx'));
   await fs.writeFile(path.join(projectPath, 'src', 'components', 'ui', 'button.tsx'), buttonContent);
   await fs.writeFile(path.join(projectPath, 'src', 'components', 'ui', 'text.tsx'), textContent);
-
-  // Create tsconfig path aliases
-  const tsconfigContent = `{
-  "extends": "expo/tsconfig.base",
-  "compilerOptions": {
-    "strict": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"],
-      "@modules/*": ["./src/modules/*"],
-      "@components/*": ["./src/components/*"],
-      "@hooks/*": ["./src/hooks/*"],
-      "@stores/*": ["./src/stores/*"],
-      "@lib/*": ["./src/lib/*"]
-    }
-  }
-}`;
-
-  await fs.writeFile(path.join(projectPath, 'tsconfig.json'), tsconfigContent);
 }
 
-/**
- * Feature setup: update package.json
- */
+// ============================================================
+// Dependencies
+// ============================================================
+
 export async function updatePackageJson(projectPath: string, navigation: string, features: string[]) {
   const pkgPath = path.join(projectPath, 'package.json');
   const pkg = await fs.readJson(pkgPath);
@@ -501,9 +218,10 @@ export async function updatePackageJson(projectPath: string, navigation: string,
     '@react-native-async-storage/async-storage': '^2.2.0',
     'lucide-react-native': '^0.562.0',
     'react-native-gesture-handler': '^2.28.0',
-    'react-native-reanimated': '~3.10.1',
+    'react-native-reanimated': '~4.1.1',
     'react-native-safe-area-context': '^5.6.2',
-    'react-native-worklets': '^0.7.0',
+    'react-native-screens': '~4.16.0',
+    'react-native-worklets': '0.5.1',
     'zustand': '^5.0.3',
   };
 
@@ -514,6 +232,14 @@ export async function updatePackageJson(projectPath: string, navigation: string,
   if (navigation === 'react-navigation') {
     pkg.dependencies['@react-navigation/native'] = '^7.0.14';
     pkg.dependencies['@react-navigation/native-stack'] = '^7.1.10';
+  }
+
+  if (features.includes('api')) {
+    pkg.dependencies['axios'] = '^1.9.0';
+  }
+
+  if (features.includes('env')) {
+    pkg.dependencies['expo-constants'] = '~18.0.8';
   }
 
   if (features.includes('forms')) {
@@ -532,11 +258,12 @@ export async function updatePackageJson(projectPath: string, navigation: string,
   await fs.writeJson(pkgPath, pkg, { spaces: 2 });
 }
 
-/**
- * Create kit.config.json
- */
+// ============================================================
+// Config
+// ============================================================
+
 export async function createConfig(projectPath: string, navigation: string, features: string[], packageManager: string) {
-  const config = {
+  const config: Record<string, any> = {
     navigation,
     features,
     architecture: 'modular',
@@ -557,5 +284,72 @@ export async function createConfig(projectPath: string, navigation: string, feat
     autoBarrelExport: true,
   };
 
+  if (features.includes('localization')) {
+    config.localization = {
+      defaultLocale: 'en',
+      locales: ['en'],
+      localesDir: 'src/locales',
+    };
+  }
+
   await fs.writeJson(path.join(projectPath, 'kit.config.json'), config, { spaces: 2 });
+}
+
+// ============================================================
+// Localization
+// ============================================================
+
+export async function setupLocalizationSrc(projectPath: string) {
+  const localesDir = path.join(projectPath, 'src', 'locales');
+  await fs.ensureDir(localesDir);
+
+  // Copy locale files from core
+  copySource('locales/index.ts', path.join(localesDir, 'index.ts'));
+  copySource('locales/en.ts', path.join(localesDir, 'en.ts'));
+
+  // Copy locale store
+  await fs.ensureDir(path.join(projectPath, 'src', 'stores'));
+  copySource('locales/locale-store.ts', path.join(projectPath, 'src', 'stores', 'locale.ts'));
+
+  // Register English locale in index.ts
+  const indexPath = path.join(localesDir, 'index.ts');
+  let indexFile = await fs.readFile(indexPath, 'utf-8');
+  indexFile += `\nregisterLocale('en', () => import('./en'));\n`;
+  await fs.writeFile(indexPath, indexFile);
+}
+
+// ============================================================
+// Environment Config
+// ============================================================
+
+export async function setupEnvConfig(projectPath: string) {
+  // Create .env files
+  const envContent = `# App Environment\nEXPO_PUBLIC_APP_ENV=development\nEXPO_PUBLIC_API_URL=http://localhost:3000\n`;
+  await fs.writeFile(path.join(projectPath, '.env'), envContent);
+
+  const envExampleContent = `# Copy this file to .env and fill in your values\nEXPO_PUBLIC_APP_ENV=development\nEXPO_PUBLIC_API_URL=http://localhost:3000\n`;
+  await fs.writeFile(path.join(projectPath, '.env.example'), envExampleContent);
+
+  // Copy env.ts utility from core templates
+  await fs.ensureDir(path.join(projectPath, 'src', 'lib'));
+  copyTemplate('env.ts', path.join(projectPath, 'src', 'lib', 'env.ts'));
+
+  // Add .env to .gitignore
+  const gitignorePath = path.join(projectPath, '.gitignore');
+  if (fs.existsSync(gitignorePath)) {
+    let gitignore = await fs.readFile(gitignorePath, 'utf-8');
+    if (!gitignore.includes('.env')) {
+      gitignore += '\n# Environment\n.env\n.env.local\n';
+      await fs.writeFile(gitignorePath, gitignore);
+    }
+  }
+}
+
+// ============================================================
+// API Client
+// ============================================================
+
+export async function setupApiClient(projectPath: string) {
+  await fs.ensureDir(path.join(projectPath, 'src', 'lib'));
+  copyTemplate('api.ts', path.join(projectPath, 'src', 'lib', 'api.ts'));
 }
