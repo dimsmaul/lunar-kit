@@ -14,7 +14,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "bun run build"
   },
   "keywords": [
     "react-native",

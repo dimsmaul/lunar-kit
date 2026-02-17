@@ -10,33 +10,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [20]
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: 9
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          bun-version: latest
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Build core
-        run: pnpm --filter @lunar-kit/core build
+        run: bun run --filter @lunar-kit/core build
 
       - name: Build CLI
-        run: pnpm --filter @lunar-kit/cli build
+        run: bun run --filter @lunar-kit/cli build
 
       - name: Build create-lunar-kit
-        run: pnpm --filter create-lunar-kit build
+        run: bun run --filter create-lunar-kit build
