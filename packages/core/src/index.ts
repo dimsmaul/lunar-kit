@@ -11,6 +11,7 @@ export const REGISTRY_URL = 'https://raw.githubusercontent.com/dimsmaul/lunar-ki
 export const LOCAL_REGISTRY_PATH = path.join(__dirname, '..', 'src', 'registry');
 export const LOCAL_COMPONENTS_PATH = path.join(__dirname, '..', 'src', 'components');
 export const LOCAL_SOURCE_PATH = path.join(__dirname, '..', 'src');
+export const LOCAL_TEMPLATES_PATH = path.join(__dirname, '..', 'src', 'templates');
 
 // Export registry utilities
 // export * from './registry';
