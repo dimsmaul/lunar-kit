@@ -5,6 +5,7 @@ import {
   Modal,
   LayoutRectangle,
   ScrollView,
+  StyleSheet,
   useWindowDimensions,
   Platform,
   StatusBar,
@@ -16,8 +17,77 @@ import Animated, {
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Text } from './text';
+
+const dropdownContentVariants = cva(
+  'rounded-lg border border-border bg-background p-1',
+  {
+    variants: {
+      size: {
+        sm: 'min-w-32',
+        md: 'min-w-40',
+        lg: 'min-w-56',
+      },
+      shadow: {
+        none: '',
+        sm: 'shadow-sm',
+        md: 'shadow-md',
+        lg: 'shadow-lg',
+      },
+    },
+    defaultVariants: {
+      size: 'md',
+      shadow: 'md',
+    },
+  },
+);
+
+const dropdownItemVariants = cva(
+  'flex-row items-center gap-2 rounded-md px-3 py-2.5',
+  {
+    variants: {
+      variant: {
+        default: 'active:bg-foreground/10',
+        destructive: 'active:bg-destructive/10',
+      },
+      disabled: {
+        true: 'opacity-50',
+        false: '',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      disabled: false,
+    },
+  },
+);
+
+const dropdownItemTextVariants = cva('', {
+  variants: {
+    variant: {
+      default: 'text-foreground',
+      destructive: 'text-destructive',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+});
+
+const dropdownLabelVariants = cva('px-3 py-2', {
+  variants: {
+    // bisa tambah variant nanti, e.g. inset
+    inset: {
+      true: 'pl-8',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    inset: false,
+  },
+});
 
 interface DropdownMenuProps {
   children: React.ReactNode;
@@ -30,7 +100,8 @@ interface DropdownMenuTriggerProps {
   asChild?: boolean;
 }
 
-interface DropdownMenuContentProps {
+interface DropdownMenuContentProps
+  extends VariantProps<typeof dropdownContentVariants> {
   children: React.ReactNode;
   className?: string;
   align?: 'start' | 'center' | 'end';
@@ -38,7 +109,8 @@ interface DropdownMenuContentProps {
   sideOffset?: number;
 }
 
-interface DropdownMenuItemProps {
+interface DropdownMenuItemProps
+  extends Omit<VariantProps<typeof dropdownItemVariants>, 'disabled'> {
   children: React.ReactNode;
   className?: string;
   textClassName?: string;
@@ -49,7 +121,8 @@ interface DropdownMenuItemProps {
   rightIcon?: React.ReactNode;
 }
 
-interface DropdownMenuLabelProps {
+interface DropdownMenuLabelProps
+  extends VariantProps<typeof dropdownLabelVariants> {
   children: React.ReactNode;
   className?: string;
   textClassName?: string;
@@ -89,19 +162,12 @@ export function DropdownMenu({
   const open = isControlled ? !!openProp : uncontrolledOpen;
 
   const handleOpenChange = (next: boolean) => {
-    if (!isControlled) {
-      setUncontrolledOpen(next);
-    }
+    if (!isControlled) setUncontrolledOpen(next);
     onOpenChangeProp?.(next);
   };
 
   const value = React.useMemo(
-    () => ({
-      open,
-      onOpenChange: handleOpenChange,
-      triggerLayout,
-      setTriggerLayout,
-    }),
+    () => ({ open, onOpenChange: handleOpenChange, triggerLayout, setTriggerLayout }),
     [open, triggerLayout],
   );
 
@@ -112,10 +178,7 @@ export function DropdownMenu({
   );
 }
 
-export function DropdownMenuTrigger({
-  children,
-  asChild,
-}: DropdownMenuTriggerProps) {
+export function DropdownMenuTrigger({ children, asChild }: DropdownMenuTriggerProps) {
   const { open, onOpenChange, setTriggerLayout } = useDropdownMenu();
   const triggerRef = React.useRef<View>(null);
 
@@ -124,13 +187,11 @@ export function DropdownMenuTrigger({
       onOpenChange(!open);
       return;
     }
-
     triggerRef.current.measureInWindow((x, y, width, height) => {
       const adjustedY =
         Platform.OS === 'android' && StatusBar.currentHeight
           ? y - StatusBar.currentHeight
           : y;
-
       setTriggerLayout({ x, y: adjustedY, width, height });
       onOpenChange(!open);
     });
@@ -138,23 +199,18 @@ export function DropdownMenuTrigger({
 
   if (asChild && React.isValidElement(children)) {
     const child = children as React.ReactElement<any>;
-    const childProps: any = {
+    return React.cloneElement(child, {
       ref: (node: any) => {
         const { ref } = child as any;
         if (typeof ref === 'function') ref(node);
         else if (ref && typeof ref === 'object') (ref as any).current = node;
-
         (triggerRef as any).current = node;
       },
       onPress: (...args: any[]) => {
-        if (child.props.onPress) {
-          child.props.onPress(...args);
-        }
+        child.props.onPress?.(...args);
         handlePress();
       },
-    };
-
-    return React.cloneElement(child, childProps);
+    });
   }
 
   return (
@@ -170,6 +226,8 @@ export function DropdownMenuContent({
   align = 'start',
   side = 'bottom',
   sideOffset = 4,
+  size,
+  shadow,
 }: DropdownMenuContentProps) {
   const { open, onOpenChange, triggerLayout } = useDropdownMenu();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -177,10 +235,7 @@ export function DropdownMenuContent({
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.95);
   const [visible, setVisible] = React.useState(false);
-  const [contentSize, setContentSize] = React.useState({
-    width: 0,
-    height: 0,
-  });
+  const [contentSize, setContentSize] = React.useState({ width: 0, height: 0 });
 
   React.useEffect(() => {
     if (open) {
@@ -190,9 +245,7 @@ export function DropdownMenuContent({
     } else {
       opacity.value = withTiming(0, { duration: 120 });
       scale.value = withTiming(0.98, { duration: 120 }, (finished) => {
-        if (finished) {
-          runOnJS(setVisible)(false);
-        }
+        if (finished) runOnJS(setVisible)(false);
       });
     }
   }, [open]);
@@ -211,46 +264,28 @@ export function DropdownMenuContent({
     const spaceBelow = windowHeight - (y + height + sideOffset);
     const spaceAbove = y - sideOffset;
 
-    const shouldOpenBelow =
-      side === 'bottom'
-        ? spaceBelow >= contentSize.height || spaceBelow >= windowHeight / 3
-        : false;
-
-    if (shouldOpenBelow) {
-      style.top = y + height + sideOffset;
-    } else if (side === 'top') {
+    if (side === 'top') {
       style.top = Math.max(8, y - contentSize.height - sideOffset);
+    } else if (spaceBelow >= contentSize.height || spaceBelow >= spaceAbove) {
+      style.top = y + height + sideOffset;
     } else {
-      if (spaceBelow >= contentSize.height || spaceBelow >= spaceAbove) {
-        style.top = y + height + sideOffset;
-      } else {
-        style.top = Math.max(8, y - contentSize.height - sideOffset);
-      }
+      style.top = Math.max(8, y - contentSize.height - sideOffset);
     }
 
     switch (align) {
       case 'start':
-        style.left = Math.max(
-          8,
-          Math.min(x, windowWidth - contentSize.width - 8),
-        );
+        style.left = Math.max(8, Math.min(x, windowWidth - contentSize.width - 8));
         break;
       case 'center':
         style.left = Math.max(
           8,
-          Math.min(
-            x + width / 2 - contentSize.width / 2,
-            windowWidth - contentSize.width - 8,
-          ),
+          Math.min(x + width / 2 - contentSize.width / 2, windowWidth - contentSize.width - 8),
         );
         break;
       case 'end':
         style.left = Math.max(
           8,
-          Math.min(
-            x + width - contentSize.width,
-            windowWidth - contentSize.width - 8,
-          ),
+          Math.min(x + width - contentSize.width, windowWidth - contentSize.width - 8),
         );
         break;
     }
@@ -258,61 +293,49 @@ export function DropdownMenuContent({
     return style;
   };
 
-  const handleClose = () => onOpenChange(false);
-
   return (
     <Modal
       visible={visible}
       transparent
       animationType="none"
-      onRequestClose={handleClose}
+      statusBarTranslucent
+      onRequestClose={() => onOpenChange(false)}
     >
-      <View style={{ flex: 1, zIndex: 999 }}>
+      <View style={{ flex: 1 }} pointerEvents="box-none">
         {/* Backdrop */}
         <Pressable
-          style={{ flex: 1 }}
-          onPress={handleClose}
+          style={StyleSheet.absoluteFillObject}
+          onPress={() => onOpenChange(false)}
           android_disableSound
+        />
+
+        {/* Content — sibling dari backdrop */}
+        <Animated.View
+          style={[
+            { position: 'absolute', elevation: 8, zIndex: 999, minWidth: 160 },
+            animatedStyle,
+            getPositionStyle(),
+          ]}
+          onLayout={(e) =>
+            setContentSize({
+              width: e.nativeEvent.layout.width,
+              height: e.nativeEvent.layout.height,
+            })
+          }
         >
-          {/* Wrapper untuk dropdown supaya event di dalam tidak bubble ke backdrop */}
-          <View pointerEvents="box-none" style={{ zIndex: 999 }}>
-            <Animated.View
-              style={[
-                {
-                  position: 'absolute',
-                  zIndex: 999,
-                  minWidth: 160,
-                },
-                animatedStyle,
-                getPositionStyle(),
-              ]}
-              onLayout={(e) => {
-                setContentSize({
-                  width: e.nativeEvent.layout.width,
-                  height: e.nativeEvent.layout.height,
-                });
-              }}
+          <Pressable
+            onPress={(e) => e.stopPropagation()}
+            className={cn(dropdownContentVariants({ size, shadow }), className)}
+          >
+            <ScrollView
+              bounces={false}
+              style={{ maxHeight: windowHeight * 0.4 }}
+              showsVerticalScrollIndicator={false}
             >
-              <Pressable
-                onPress={(e) => {
-                  e.stopPropagation();
-                }}
-                className={cn(
-                  'rounded-lg bg-popover p-1 border border-border bg-background',
-                  className,
-                )}
-              >
-                <ScrollView
-                  bounces={false}
-                  style={{ maxHeight: windowHeight * 0.4 }}
-                  showsVerticalScrollIndicator={false}
-                >
-                  {children}
-                </ScrollView>
-              </Pressable>
-            </Animated.View>
-          </View>
-        </Pressable>
+              {children}
+            </ScrollView>
+          </Pressable>
+        </Animated.View>
       </View>
     </Modal>
   );
@@ -336,13 +359,14 @@ export function DropdownMenuItem({
     onOpenChange(false);
   };
 
+  const variant = destructive ? 'destructive' : 'default';
+
   return (
     <Pressable
       onPress={handlePress}
       disabled={disabled}
       className={cn(
-        'flex-row items-center gap-2 rounded-md px-3 py-2.5 active:bg-foreground/10',
-        disabled && 'opacity-50',
+        dropdownItemVariants({ variant, disabled }),
         className,
       )}
     >
@@ -352,10 +376,7 @@ export function DropdownMenuItem({
         {typeof children === 'string' ? (
           <Text
             size="sm"
-            className={cn(
-              destructive ? 'text-destructive' : 'text-foreground',
-              textClassName,
-            )}
+            className={cn(dropdownItemTextVariants({ variant }), textClassName)}
           >
             {children}
           </Text>
@@ -373,15 +394,12 @@ export function DropdownMenuLabel({
   children,
   className,
   textClassName,
+  inset,
 }: DropdownMenuLabelProps) {
   return (
-    <View className={cn('px-3 py-2', className)}>
+    <View className={cn(dropdownLabelVariants({ inset }), className)}>
       {typeof children === 'string' ? (
-        <Text
-          size="sm"
-          variant="title"
-          className={cn('text-foreground', textClassName)}
-        >
+        <Text size="sm" variant="title" className={cn('text-foreground', textClassName)}>
           {children}
         </Text>
       ) : (

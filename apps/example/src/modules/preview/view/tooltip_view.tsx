@@ -46,7 +46,7 @@ export default function TooltipView() {
           <Button variant="ghost">?</Button>
         </TooltipTrigger>
         <TooltipContent side="left" className="max-w-48">
-          <Text size="sm" className="text-popover-foreground">
+          <Text size="sm" className="text-foreground">
             Deskripsi panjang bisa masuk sini
           </Text>
         </TooltipContent>
