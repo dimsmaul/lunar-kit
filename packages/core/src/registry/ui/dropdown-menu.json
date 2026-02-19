@@ -1,0 +1,29 @@
+{
+  "name": "dropdown-menu",
+  "type": "registry:ui",
+  "description": "A dropdown menu component for contextual actions",
+  "files": [
+    {
+      "path": "/src/components/ui/dropdown-menu.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [],
+  "registryDependencies": [
+    "text"
+  ],
+  "meta": {
+    "description": "A dropdown menu component that displays a list of actions or options. Uses Modal for proper overlay and supports compound component pattern.",
+    "features": [
+      "Compound components: Menu, Trigger, Content, Item, Label, Separator, Group",
+      "3 alignment options: start, center, end",
+      "Auto-flips vertical position when near screen edge",
+      "Animated spring entry and fade exit",
+      "Destructive variant for dangerous actions",
+      "Left and right icon support on items",
+      "Auto-close on item press",
+      "Scrollable content for long menus",
+      "Dark mode support via NativeWind"
+    ]
+  }
+}

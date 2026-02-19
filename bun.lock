@@ -34,8 +34,10 @@
         "zustand": "^5.0.3",
       },
       "devDependencies": {
+        "@babel/plugin-transform-react-jsx": "^7.28.6",
         "@expo/metro-config": "^54.0.14",
         "@types/react": "~19.1.0",
+        "babel-preset-expo": "^54.0.10",
         "react-native-css-interop": "^0.2.1",
         "tailwindcss": "3.4.17",
         "typescript": "~5.9.2",
@@ -64,14 +66,10 @@
     },
     "packages/cli": {
       "name": "@lunar-kit/cli",
-      "version": "0.1.2",
-      "bin": {
-        "lk": "./dist/index.js",
-        "lunar": "./dist/index.js",
-        "lunar-kit": "./dist/index.js",
-      },
+      "version": "0.1.3",
+      "bin": "./dist/index.js",
       "dependencies": {
-        "@lunar-kit/core": "0.1.0",
+        "@lunar-kit/core": "0.1.7",
         "axios": "^1.13.2",
         "chalk": "^5.6.2",
         "commander": "^14.0.2",
@@ -88,7 +86,7 @@
     },
     "packages/core": {
       "name": "@lunar-kit/core",
-      "version": "0.1.2",
+      "version": "0.1.4",
       "devDependencies": {
         "@types/node": "^22.10.5",
         "tsup": "^8.5.1",
@@ -97,12 +95,12 @@
     },
     "packages/create-lunar-kit": {
       "name": "create-lunar-kit",
-      "version": "0.1.3",
+      "version": "0.1.5",
       "bin": {
         "create-lunar-kit": "./dist/index.js",
       },
       "dependencies": {
-        "@lunar-kit/core": "0.1.2",
+        "@lunar-kit/core": "0.1.7",
         "chalk": "^5.4.1",
         "commander": "^12.1.0",
         "execa": "^9.6.1",
@@ -1753,7 +1751,7 @@
 
     "@jest/types/chalk": ["chalk@4.1.2", "", { "dependencies": { "ansi-styles": "^4.1.0", "supports-color": "^7.1.0" } }, "sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA=="],
 
-    "@lunar-kit/cli/@lunar-kit/core": ["@lunar-kit/core@0.1.0", "", {}, "sha512-CW9rUo1cf9Ye0zBCwWCk5CYhzwHCage6J+SUoeibViBhW+YC9rTHh6GmyAUV+IzvUeeIveaVx8tLIUtnZf++5w=="],
+    "@lunar-kit/cli/@lunar-kit/core": ["@lunar-kit/core@0.1.7", "", {}, "sha512-OuGsaoaCVDE2z9wOERFeGT2FU/yTCcolc/NueYj/7JP0XP5jUz+dM3v1GgeA6keaxkjeGgv7WVS8D4HaIa8zKg=="],
 
     "@radix-ui/react-collection/@radix-ui/react-slot": ["@radix-ui/react-slot@1.2.3", "", { "dependencies": { "@radix-ui/react-compose-refs": "1.1.2" }, "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-aeNmHnBxbi2St0au6VBVC7JXFlhLlOnvIIlePNniyUNAClzmtAUEY8/pBiK3iHjufOlwA+c20/8jngo7xcrg8A=="],
 
@@ -1784,6 +1782,8 @@
     "compression/negotiator": ["negotiator@0.6.4", "", {}, "sha512-myRT3DiWPHqho5PrJaIRyaMv2kgYf0mUVgBNOYMuCH5Ki1yEiQaf/ZJuQ62nvpc44wL5WDbTX7yGJi1Neevw8w=="],
 
     "connect/debug": ["debug@2.6.9", "", { "dependencies": { "ms": "2.0.0" } }, "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA=="],
+
+    "create-lunar-kit/@lunar-kit/core": ["@lunar-kit/core@0.1.7", "", {}, "sha512-OuGsaoaCVDE2z9wOERFeGT2FU/yTCcolc/NueYj/7JP0XP5jUz+dM3v1GgeA6keaxkjeGgv7WVS8D4HaIa8zKg=="],
 
     "create-lunar-kit/commander": ["commander@12.1.0", "", {}, "sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA=="],
 
