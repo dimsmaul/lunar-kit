@@ -8,7 +8,9 @@
       "type": "component"
     }
   ],
-  "dependencies": [],
+  "dependencies": [
+    "react-native-reanimated"
+  ],
   "registryDependencies": [
     "text"
   ],

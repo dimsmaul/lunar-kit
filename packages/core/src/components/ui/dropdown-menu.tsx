@@ -298,7 +298,7 @@ export function DropdownMenuContent({
                   e.stopPropagation();
                 }}
                 className={cn(
-                  'rounded-lg bg-popover p-1 shadow-lg border border-border',
+                  'rounded-lg bg-popover p-1 border border-border bg-background',
                   className,
                 )}
               >
@@ -380,7 +380,7 @@ export function DropdownMenuLabel({
         <Text
           size="sm"
           variant="title"
-          className={cn('text-popover-foreground', textClassName)}
+          className={cn('text-foreground', textClassName)}
         >
           {children}
         </Text>
