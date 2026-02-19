@@ -13,10 +13,28 @@ import Animated, {
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Text } from './text';
 
 type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
+
+const tooltipContentVariants = cva(
+  'rounded-md border border-border bg-background px-3 py-1.5',
+  {
+    variants: {
+      shadow: {
+        none: '',
+        sm: 'shadow-sm',
+        md: 'shadow-md',
+        lg: 'shadow-lg',
+      },
+    },
+    defaultVariants: {
+      shadow: 'sm',
+    },
+  },
+);
 
 interface TooltipProps {
   children: React.ReactNode;
@@ -27,7 +45,7 @@ interface TooltipTriggerProps {
   asChild?: boolean;
 }
 
-interface TooltipContentProps {
+interface TooltipContentProps extends VariantProps<typeof tooltipContentVariants> {
   children: React.ReactNode;
   className?: string;
   side?: TooltipPlacement;
@@ -47,10 +65,6 @@ function useTooltip() {
   return context;
 }
 
-// ---------------------------------------------------------------------------
-// Root
-// ---------------------------------------------------------------------------
-
 export function Tooltip({ children }: TooltipProps) {
   const [open, setOpen] = React.useState(false);
   const [triggerLayout, setTriggerLayout] = React.useState<LayoutRectangle | null>(null);
@@ -66,10 +80,6 @@ export function Tooltip({ children }: TooltipProps) {
     </TooltipContext.Provider>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Trigger
-// ---------------------------------------------------------------------------
 
 export function TooltipTrigger({ children, asChild }: TooltipTriggerProps) {
   const { open, onOpenChange, setTriggerLayout } = useTooltip();
@@ -119,15 +129,12 @@ export function TooltipTrigger({ children, asChild }: TooltipTriggerProps) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Content
-// ---------------------------------------------------------------------------
-
 export function TooltipContent({
   children,
   className,
   side = 'bottom',
   sideOffset = 8,
+  shadow,
 }: TooltipContentProps) {
   const { open, onOpenChange, triggerLayout } = useTooltip();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -139,12 +146,10 @@ export function TooltipContent({
   const [visible, setVisible] = React.useState(false);
   const [contentSize, setContentSize] = React.useState({ width: 0, height: 0 });
 
-  // Initial offset direction per side
   const ANIM_OFFSET = 6;
 
   React.useEffect(() => {
     if (open) {
-      // Set initial offset based on side, then animate to 0
       switch (side) {
         case 'top':    translateY.value = ANIM_OFFSET;  translateX.value = 0; break;
         case 'bottom': translateY.value = -ANIM_OFFSET; translateX.value = 0; break;
@@ -187,51 +192,31 @@ export function TooltipContent({
         style.top = Math.max(8, y - contentSize.height - sideOffset);
         style.left = Math.max(
           8,
-          Math.min(
-            x + width / 2 - contentSize.width / 2,
-            windowWidth - contentSize.width - 8,
-          ),
+          Math.min(x + width / 2 - contentSize.width / 2, windowWidth - contentSize.width - 8),
         );
         break;
-
       case 'bottom':
-        style.top = Math.min(
-          y + height + sideOffset,
-          windowHeight - contentSize.height - 8,
-        );
+        style.top = Math.min(y + height + sideOffset, windowHeight - contentSize.height - 8);
         style.left = Math.max(
           8,
-          Math.min(
-            x + width / 2 - contentSize.width / 2,
-            windowWidth - contentSize.width - 8,
-          ),
+          Math.min(x + width / 2 - contentSize.width / 2, windowWidth - contentSize.width - 8),
         );
         break;
-
       case 'left':
         style.top = Math.max(
           8,
-          Math.min(
-            y + height / 2 - contentSize.height / 2,
-            windowHeight - contentSize.height - 8,
-          ),
+          Math.min(y + height / 2 - contentSize.height / 2, windowHeight - contentSize.height - 8),
         );
-        // Kalau tidak cukup di kiri, auto flip ke kanan
         style.left =
           x - contentSize.width - sideOffset >= 8
             ? x - contentSize.width - sideOffset
             : x + width + sideOffset;
         break;
-
       case 'right':
         style.top = Math.max(
           8,
-          Math.min(
-            y + height / 2 - contentSize.height / 2,
-            windowHeight - contentSize.height - 8,
-          ),
+          Math.min(y + height / 2 - contentSize.height / 2, windowHeight - contentSize.height - 8),
         );
-        // Kalau tidak cukup di kanan, auto flip ke kiri
         style.left =
           x + width + sideOffset + contentSize.width <= windowWidth - 8
             ? x + width + sideOffset
@@ -251,7 +236,6 @@ export function TooltipContent({
       onRequestClose={() => onOpenChange(false)}
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
-        {/* Backdrop */}
         <Pressable
           style={StyleSheet.absoluteFillObject}
           onPress={() => onOpenChange(false)}
@@ -260,11 +244,7 @@ export function TooltipContent({
 
         <Animated.View
           style={[
-            {
-              position: 'absolute',
-              zIndex: 999,
-              elevation: 8, 
-            },
+            { position: 'absolute', zIndex: 999, elevation: 8 },
             animatedStyle,
             getPositionStyle(),
           ]}
@@ -276,12 +256,7 @@ export function TooltipContent({
           }
         >
           <Pressable onPress={(e) => e.stopPropagation()}>
-            <View
-              className={cn(
-                'rounded-md bg-background px-3 py-1.5 shadow-sm border border-border',
-                className,
-              )}
-            >
+            <View className={cn(tooltipContentVariants({ shadow }), className)}>
               {typeof children === 'string' ? (
                 <Text size="sm" className="text-foreground">
                   {children}
