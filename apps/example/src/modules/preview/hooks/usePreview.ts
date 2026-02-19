@@ -73,6 +73,14 @@ export function usePreview() {
       path: '/preview/keyboard-avoiding-view',
       name: 'Keyboard Avoiding View',
     },
+    {
+      path: '/preview/dropdown-menu',
+      name: 'Dropdown Menu',
+    },
+    {
+      path: '/preview/tooltip',
+      name: 'Tooltip',
+    },
   ]
 
   const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));

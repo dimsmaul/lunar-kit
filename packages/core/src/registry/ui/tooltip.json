@@ -1,0 +1,28 @@
+{
+  "name": "tooltip",
+  "type": "registry:ui",
+  "description": "A tooltip component that displays contextual information on press",
+  "files": [
+    {
+      "path": "/src/components/ui/tooltip.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [
+    "react-native-reanimated"
+  ],
+  "registryDependencies": [
+    "text"
+  ],
+  "meta": {
+    "description": "A tooltip component that shows contextual information when a trigger element is pressed. Uses compound component pattern.",
+    "features": [
+      "4 placement options: top, bottom, left, right",
+      "Animated entry and exit transitions",
+      "Auto-repositioning within window bounds",
+      "Dark mode support via NativeWind",
+      "Configurable offset distance",
+      "String or custom content support"
+    ]
+  }
+}
