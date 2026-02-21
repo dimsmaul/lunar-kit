@@ -2,7 +2,9 @@
   "name": "@lunar-kit/cli",
   "version": "0.1.3",
   "description": "CLI for Lunar Kit",
-  "bin": "./dist/index.js",
+  "bin": {
+    "lunar": "./dist/index.js"
+  },
   "type": "module",
   "scripts": {
     "build": "tsup",

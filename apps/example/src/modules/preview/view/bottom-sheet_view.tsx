@@ -1,4 +1,4 @@
-import { BottomSheet, BottomSheetBody, BottomSheetClose, BottomSheetContent, BottomSheetDescription, BottomSheetFooter, BottomSheetHeader, BottomSheetList, BottomSheetTitle, BottomSheetTrigger } from '@/components/ui/bottom-sheet';
+import { BottomSheet, BottomSheetBody, BottomSheetClose, BottomSheetContent, BottomSheetDescription, BottomSheetDragArea, BottomSheetFooter, BottomSheetHeader, BottomSheetList, BottomSheetTitle, BottomSheetTrigger } from '@/components/ui/bottom-sheet';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { useToolbar } from '@/hooks/useToolbar';
@@ -31,12 +31,14 @@ export default function BottomSheetView() {
           </BottomSheetTrigger>
 
           <BottomSheetContent>
-            <BottomSheetHeader>
-              <BottomSheetTitle>Filter Options</BottomSheetTitle>
-              <BottomSheetDescription>
-                Select your preferences below
-              </BottomSheetDescription>
-            </BottomSheetHeader>
+            <BottomSheetDragArea>
+              <BottomSheetHeader>
+                <BottomSheetTitle>Filter Options</BottomSheetTitle>
+                <BottomSheetDescription>
+                  Select your preferences below
+                </BottomSheetDescription>
+              </BottomSheetHeader>
+            </BottomSheetDragArea>
 
             <BottomSheetBody scrollable>
               <Text>Content here...</Text>
