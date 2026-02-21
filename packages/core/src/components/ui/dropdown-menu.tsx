@@ -2,12 +2,12 @@ import * as React from 'react';
 import {
   View,
   Pressable,
-  Modal,
   LayoutRectangle,
   ScrollView,
   StyleSheet,
   useWindowDimensions,
   Platform,
+  Modal,
   StatusBar,
 } from 'react-native';
 import Animated, {
@@ -21,6 +21,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Text } from './text';
 
+
 const dropdownContentVariants = cva(
   'rounded-lg border border-border bg-background p-1',
   {
@@ -33,8 +34,8 @@ const dropdownContentVariants = cva(
       shadow: {
         none: '',
         sm: 'shadow-sm',
-        md: 'shadow-md',
-        lg: 'shadow-lg',
+        md: 'shadow-sm',
+        lg: 'shadow-sm',
       },
     },
     defaultVariants: {
@@ -78,7 +79,6 @@ const dropdownItemTextVariants = cva('', {
 
 const dropdownLabelVariants = cva('px-3 py-2', {
   variants: {
-    // bisa tambah variant nanti, e.g. inset
     inset: {
       true: 'pl-8',
       false: '',
@@ -167,7 +167,12 @@ export function DropdownMenu({
   };
 
   const value = React.useMemo(
-    () => ({ open, onOpenChange: handleOpenChange, triggerLayout, setTriggerLayout }),
+    () => ({
+      open,
+      onOpenChange: handleOpenChange,
+      triggerLayout,
+      setTriggerLayout,
+    }),
     [open, triggerLayout],
   );
 
@@ -178,7 +183,10 @@ export function DropdownMenu({
   );
 }
 
-export function DropdownMenuTrigger({ children, asChild }: DropdownMenuTriggerProps) {
+export function DropdownMenuTrigger({
+  children,
+  asChild,
+}: DropdownMenuTriggerProps) {
   const { open, onOpenChange, setTriggerLayout } = useDropdownMenu();
   const triggerRef = React.useRef<View>(null);
 
@@ -187,11 +195,13 @@ export function DropdownMenuTrigger({ children, asChild }: DropdownMenuTriggerPr
       onOpenChange(!open);
       return;
     }
+
     triggerRef.current.measureInWindow((x, y, width, height) => {
       const adjustedY =
         Platform.OS === 'android' && StatusBar.currentHeight
-          ? y - StatusBar.currentHeight
+          ? y + StatusBar.currentHeight
           : y;
+
       setTriggerLayout({ x, y: adjustedY, width, height });
       onOpenChange(!open);
     });
@@ -274,18 +284,27 @@ export function DropdownMenuContent({
 
     switch (align) {
       case 'start':
-        style.left = Math.max(8, Math.min(x, windowWidth - contentSize.width - 8));
+        style.left = Math.max(
+          8,
+          Math.min(x, windowWidth - contentSize.width - 8),
+        );
         break;
       case 'center':
         style.left = Math.max(
           8,
-          Math.min(x + width / 2 - contentSize.width / 2, windowWidth - contentSize.width - 8),
+          Math.min(
+            x + width / 2 - contentSize.width / 2,
+            windowWidth - contentSize.width - 8,
+          ),
         );
         break;
       case 'end':
         style.left = Math.max(
           8,
-          Math.min(x + width - contentSize.width, windowWidth - contentSize.width - 8),
+          Math.min(
+            x + width - contentSize.width,
+            windowWidth - contentSize.width - 8,
+          ),
         );
         break;
     }
@@ -302,17 +321,22 @@ export function DropdownMenuContent({
       onRequestClose={() => onOpenChange(false)}
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
-        {/* Backdrop */}
+        {/* Backdrop transparan */}
         <Pressable
           style={StyleSheet.absoluteFillObject}
           onPress={() => onOpenChange(false)}
           android_disableSound
         />
 
-        {/* Content — sibling dari backdrop */}
+        {/* Content */}
         <Animated.View
           style={[
-            { position: 'absolute', elevation: 8, zIndex: 999, minWidth: 160 },
+            {
+              position: 'absolute',
+              elevation: 8,
+              zIndex: 999,
+              minWidth: 160,
+            },
             animatedStyle,
             getPositionStyle(),
           ]}
@@ -341,6 +365,7 @@ export function DropdownMenuContent({
   );
 }
 
+
 export function DropdownMenuItem({
   children,
   className,
@@ -365,10 +390,7 @@ export function DropdownMenuItem({
     <Pressable
       onPress={handlePress}
       disabled={disabled}
-      className={cn(
-        dropdownItemVariants({ variant, disabled }),
-        className,
-      )}
+      className={cn(dropdownItemVariants({ variant, disabled }), className)}
     >
       {leftIcon && <View className="w-5 items-center">{leftIcon}</View>}
 
@@ -390,6 +412,7 @@ export function DropdownMenuItem({
   );
 }
 
+
 export function DropdownMenuLabel({
   children,
   className,
@@ -399,7 +422,11 @@ export function DropdownMenuLabel({
   return (
     <View className={cn(dropdownLabelVariants({ inset }), className)}>
       {typeof children === 'string' ? (
-        <Text size="sm" variant="title" className={cn('text-foreground', textClassName)}>
+        <Text
+          size="sm"
+          variant="title"
+          className={cn('text-foreground', textClassName)}
+        >
           {children}
         </Text>
       ) : (
@@ -409,9 +436,11 @@ export function DropdownMenuLabel({
   );
 }
 
+
 export function DropdownMenuSeparator() {
   return <View className="my-1 h-px bg-border" />;
 }
+
 
 export function DropdownMenuGroup({ children }: DropdownMenuGroupProps) {
   return <View>{children}</View>;

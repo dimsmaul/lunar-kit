@@ -1,4 +1,3 @@
-// components/ui/bottom-sheet.tsx
 import * as React from 'react';
 import {
   Modal,
@@ -13,10 +12,12 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
+  Easing,
   runOnJS,
   clamp,
 } from 'react-native-reanimated';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Text } from './text';
@@ -25,6 +26,7 @@ import { Radio } from './radio';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const VELOCITY_THRESHOLD = 300;
+
 const SPRING_CONFIG = {
   damping: 50,
   stiffness: 400,
@@ -34,39 +36,31 @@ const SPRING_CONFIG = {
   restDisplacementThreshold: 0.01,
 };
 
-// Bottom Sheet Variants
-const bottomSheetVariants = cva(
-  'rounded-t-3xl shadow-2xl h-full',
-  {
-    variants: {
-      variant: {
-        default: 'bg-card',
-        filled: 'bg-muted',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-    },
-  }
-);
+const CLOSE_TIMING_CONFIG = {
+  duration: 280,
+  easing: Easing.out(Easing.ease),
+};
 
-// Drag Handle Variants
-const dragHandleVariants = cva(
-  'w-12 h-1.5 rounded-full',
-  {
-    variants: {
-      variant: {
-        default: 'bg-muted-foreground/30',
-        filled: 'bg-muted-foreground/50',
-      },
+const bottomSheetVariants = cva('rounded-t-3xl shadow-2xl h-full', {
+  variants: {
+    variant: {
+      default: 'bg-card',
+      filled: 'bg-muted',
     },
-    defaultVariants: {
-      variant: 'default',
-    },
-  }
-);
+  },
+  defaultVariants: { variant: 'default' },
+});
 
-// List Item Variants
+const dragHandleVariants = cva('w-12 h-1.5 rounded-full', {
+  variants: {
+    variant: {
+      default: 'bg-muted-foreground/30',
+      filled: 'bg-muted-foreground/50',
+    },
+  },
+  defaultVariants: { variant: 'default' },
+});
+
 const listItemVariants = cva(
   'flex-row items-center justify-between px-4 py-3 border-b border-border',
   {
@@ -76,10 +70,8 @@ const listItemVariants = cva(
         false: 'bg-transparent',
       },
     },
-    defaultVariants: {
-      selected: false,
-    },
-  }
+    defaultVariants: { selected: false },
+  },
 );
 
 interface BottomSheetProps extends VariantProps<typeof bottomSheetVariants> {
@@ -145,6 +137,11 @@ interface BottomSheetListItemProps {
   className?: string;
 }
 
+interface BottomSheetDragAreaProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
 const BottomSheetContext = React.createContext<{
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -152,6 +149,10 @@ const BottomSheetContext = React.createContext<{
   currentSnapPoint: number;
   variant: 'default' | 'filled';
 } | null>(null);
+
+const BottomSheetInternalContext = React.createContext<{
+  panGesture: ReturnType<typeof Gesture.Pan> | null;
+}>({ panGesture: null });
 
 function useBottomSheet() {
   const context = React.useContext(BottomSheetContext);
@@ -182,7 +183,7 @@ export function BottomSheet({
         onOpenChange,
         snapPoints,
         currentSnapPoint: defaultSnapPoint,
-        variant: sheetVariant
+        variant: sheetVariant,
       }}
     >
       {children}
@@ -190,7 +191,11 @@ export function BottomSheet({
   );
 }
 
-export function BottomSheetTrigger({ children }: { children: React.ReactNode }) {
+export function BottomSheetTrigger({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { onOpenChange } = useBottomSheet();
 
   if (React.isValidElement(children)) {
@@ -202,10 +207,20 @@ export function BottomSheetTrigger({ children }: { children: React.ReactNode }) 
   return <Pressable onPress={() => onOpenChange(true)}>{children}</Pressable>;
 }
 
-export function BottomSheetContent({ children, className }: BottomSheetContentProps) {
-  const { open, onOpenChange, snapPoints, currentSnapPoint: defaultSnapPoint, variant } = useBottomSheet();
+export function BottomSheetContent({
+  children,
+  className,
+}: BottomSheetContentProps) {
+  const {
+    open,
+    onOpenChange,
+    snapPoints,
+    currentSnapPoint: defaultSnapPoint,
+    variant,
+  } = useBottomSheet();
 
   const [visible, setVisible] = React.useState(false);
+
   const currentSnapIndex = useSharedValue(defaultSnapPoint);
 
   const snapHeights = React.useMemo(() => {
@@ -219,92 +234,100 @@ export function BottomSheetContent({ children, className }: BottomSheetContentPr
   const dismissTranslateY = useSharedValue(SCREEN_HEIGHT);
   const backdropOpacity = useSharedValue(0);
 
+  const dragContext = useSharedValue({
+    startHeight: 0,
+    startTranslateY: 0,
+    isAtLowest: false,
+  });
+
   const handleClose = React.useCallback(() => {
     onOpenChange(false);
   }, [onOpenChange]);
 
-  const findClosestSnapPoint = (position: number, velocity: number) => {
-    'worklet';
-
-    const idx = currentSnapIndex.value;
-    const currentHeight = snapHeights[idx];
-
-    if (Math.abs(velocity) > VELOCITY_THRESHOLD) {
-      if (velocity < 0 && idx < snapHeights.length - 1) {
-        return idx + 1;
-      } else if (velocity > 0 && idx > 0) {
-        return idx - 1;
-      }
-    }
-
-    const threshold = currentHeight * 0.3;
-
-    if (position < -threshold && idx < snapHeights.length - 1) {
-      return idx + 1;
-    } else if (position > threshold && idx > 0) {
-      return idx - 1;
-    }
-
-    return idx;
-  };
-
   const panGesture = Gesture.Pan()
+    .minDistance(1)
+    .activateAfterLongPress(0)
+    .onBegin(() => {
+      dragContext.value = {
+        startHeight: animatedHeight.value,
+        startTranslateY: dismissTranslateY.value,
+        isAtLowest: currentSnapIndex.value === 0,
+      };
+    })
     .onUpdate((event) => {
       const dy = event.translationY;
+      const { startHeight, isAtLowest } = dragContext.value;
       const idx = currentSnapIndex.value;
-      const currentHeight = snapHeights[idx];
 
       if (dy < 0) {
-        // Swiping up
         if (idx < snapHeights.length - 1) {
           const nextHeight = snapHeights[idx + 1];
-          const maxDrag = nextHeight - currentHeight;
-          const progress = clamp(Math.abs(dy) / maxDrag, 0, 1);
-          animatedHeight.value = currentHeight + progress * (nextHeight - currentHeight);
+          animatedHeight.value = clamp(startHeight - dy, startHeight, nextHeight);
         } else {
-          // At highest snap, rubber-band
-          animatedHeight.value = currentHeight + Math.abs(dy) * 0.15;
+          animatedHeight.value = startHeight + Math.abs(dy) * 0.12;
         }
       } else {
-        // Swiping down
-        if (idx > 0) {
-          // Between snap points: shrink height toward previous snap
-          const prevHeight = snapHeights[idx - 1];
-          const maxDrag = currentHeight - prevHeight;
-          const progress = clamp(dy / maxDrag, 0, 1);
-          animatedHeight.value = currentHeight - progress * (currentHeight - prevHeight);
+        if (isAtLowest) {
+          dismissTranslateY.value = clamp(dy, 0, SCREEN_HEIGHT);
+          const progress = clamp(dy / snapHeights[0], 0, 1);
+          backdropOpacity.value = 1 - progress * 0.6;
         } else {
-          // At lowest snap: dismiss gesture with rubber-band
-          const rubberband = Math.min(dy / (currentHeight * 0.5), 1);
-          dismissTranslateY.value = dy * (1 - rubberband * 0.7);
+          const lowestHeight = snapHeights[0];
+          const newHeight = clamp(startHeight - dy, lowestHeight, startHeight);
+          animatedHeight.value = newHeight;
+
+          if (newHeight <= lowestHeight + 2) {
+            const overDrag = startHeight - dy - lowestHeight;
+            const excessDrag = clamp(-overDrag, 0, SCREEN_HEIGHT);
+            dismissTranslateY.value = excessDrag;
+            const progress = clamp(excessDrag / lowestHeight, 0, 1);
+            backdropOpacity.value = 1 - progress * 0.6;
+          }
         }
       }
     })
     .onEnd((event) => {
-      const dy = event.translationY;
       const vy = event.velocityY;
-      const idx = currentSnapIndex.value;
-      const currentHeight = snapHeights[idx];
 
-      // Dismiss: only when at lowest snap point
-      if (idx === 0 && (dy > currentHeight * 0.4 || vy > 1000)) {
-        dismissTranslateY.value = withSpring(SCREEN_HEIGHT, SPRING_CONFIG);
-        backdropOpacity.value = withSpring(0, SPRING_CONFIG);
-        runOnJS(handleClose)();
+      let targetIndex = 0;
+      let closestDist = Math.abs(snapHeights[0] - animatedHeight.value);
+      for (let i = 1; i < snapHeights.length; i++) {
+        const dist = Math.abs(snapHeights[i] - animatedHeight.value);
+        if (dist < closestDist) {
+          closestDist = dist;
+          targetIndex = i;
+        }
+      }
+
+      if (vy > VELOCITY_THRESHOLD && targetIndex > 0) {
+        targetIndex -= 1;
+      } else if (vy < -VELOCITY_THRESHOLD && targetIndex < snapHeights.length - 1) {
+        targetIndex += 1;
+      }
+
+      const shouldDismiss =
+        dismissTranslateY.value > snapHeights[0] * 0.35 ||
+        (vy > 800 && targetIndex === 0);
+
+      if (shouldDismiss) {
+        currentSnapIndex.value = 0;
+        animatedHeight.value = withTiming(snapHeights[0], { duration: 150 });
+        dismissTranslateY.value = withTiming(
+          SCREEN_HEIGHT,
+          CLOSE_TIMING_CONFIG,
+          () => { runOnJS(handleClose)(); },
+        );
+        backdropOpacity.value = withTiming(0, { duration: 250 });
         return;
       }
 
-      const targetIndex = findClosestSnapPoint(dy, vy);
-      const targetHeight = snapHeights[targetIndex];
-
-      // Update snap index
       currentSnapIndex.value = targetIndex;
-
-      // Spring height directly to target — no index dependency in style!
-      animatedHeight.value = withSpring(targetHeight, SPRING_CONFIG);
-
-      // Reset dismiss translateY
-      dismissTranslateY.value = withSpring(0, SPRING_CONFIG);
+      animatedHeight.value = withSpring(snapHeights[targetIndex], {
+        ...SPRING_CONFIG,
+        velocity: Math.abs(vy),
+      });
+      dismissTranslateY.value = withSpring(0, { ...SPRING_CONFIG });
+      backdropOpacity.value = withSpring(1, SPRING_CONFIG);
     });
 
   React.useEffect(() => {
@@ -312,20 +335,13 @@ export function BottomSheetContent({ children, className }: BottomSheetContentPr
       setVisible(true);
       currentSnapIndex.value = defaultSnapPoint;
       animatedHeight.value = snapHeights[defaultSnapPoint];
-
-      // Slide in from bottom
       dismissTranslateY.value = SCREEN_HEIGHT;
       dismissTranslateY.value = withSpring(0, SPRING_CONFIG);
       backdropOpacity.value = withSpring(1, SPRING_CONFIG);
     } else {
-      // Slide out to bottom
-      dismissTranslateY.value = withSpring(SCREEN_HEIGHT, SPRING_CONFIG);
-      backdropOpacity.value = withSpring(0, SPRING_CONFIG);
-
-      const timer = setTimeout(() => {
-        setVisible(false);
-      }, 300);
-
+      dismissTranslateY.value = withTiming(SCREEN_HEIGHT, CLOSE_TIMING_CONFIG);
+      backdropOpacity.value = withTiming(0, { duration: 250 });
+      const timer = setTimeout(() => setVisible(false), 300);
       return () => clearTimeout(timer);
     }
   }, [open, defaultSnapPoint]);
@@ -342,57 +358,77 @@ export function BottomSheetContent({ children, className }: BottomSheetContentPr
   if (!visible) return null;
 
   return (
-    <Modal visible={visible} transparent animationType="none" onRequestClose={handleClose}>
-      <View style={{ flex: 1 }}>
-        {/* Backdrop */}
-        <Animated.View
-          style={[
-            {
-              flex: 1,
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            },
-            backdropAnimatedStyle,
-          ]}
-        >
-          <Pressable onPress={handleClose} style={{ flex: 1 }} />
-        </Animated.View>
+    <BottomSheetInternalContext.Provider value={{ panGesture }}>
+      <Modal
+        visible={visible}
+        transparent
+        animationType="none"
+        statusBarTranslucent
+        onRequestClose={handleClose}
+      >
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <View style={{ flex: 1 }}>
+            {/* Backdrop */}
+            <Animated.View
+              style={[
+                { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+                backdropAnimatedStyle,
+              ]}
+            >
+              <Pressable onPress={handleClose} style={{ flex: 1 }} />
+            </Animated.View>
 
-        {/* Bottom Sheet */}
-        <Animated.View
-          style={[
-            {
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-            },
-            sheetAnimatedStyle,
-          ]}
-        >
-          <View className={cn(bottomSheetVariants({ variant }), className)}>
-            {/* Drag Handle */}
-            <GestureDetector gesture={panGesture}>
-              <Animated.View className="items-center py-3">
-                <View className={cn(dragHandleVariants({ variant }))} />
-              </Animated.View>
-            </GestureDetector>
+            {/* Bottom Sheet */}
+            <Animated.View
+              style={[
+                { position: 'absolute', bottom: 0, left: 0, right: 0 },
+                sheetAnimatedStyle,
+              ]}
+            >
+              <View className={cn(bottomSheetVariants({ variant }), className)}>
+                {/* Default drag handle */}
+                <GestureDetector gesture={panGesture}>
+                  <Animated.View className="items-center py-3">
+                    <View className={cn(dragHandleVariants({ variant }))} />
+                  </Animated.View>
+                </GestureDetector>
 
-            {/* Content */}
-            <View className="flex-1 pb-20">
-              {children}
-            </View>
+                <View className="flex-1 pb-20">{children}</View>
+              </View>
+            </Animated.View>
           </View>
-        </Animated.View>
-      </View>
-    </Modal>
+        </GestureHandlerRootView>
+      </Modal>
+    </BottomSheetInternalContext.Provider>
   );
 }
 
-export function BottomSheetHeader({ children, className }: BottomSheetHeaderProps) {
+export function BottomSheetDragArea({
+  children,
+  className,
+}: BottomSheetDragAreaProps) {
+  const { panGesture } = React.useContext(BottomSheetInternalContext);
+
+  if (!panGesture) return <>{children}</>;
+
+  return (
+    <GestureDetector gesture={panGesture}>
+      <Animated.View className={className}>{children}</Animated.View>
+    </GestureDetector>
+  );
+}
+
+export function BottomSheetHeader({
+  children,
+  className,
+}: BottomSheetHeaderProps) {
   return <View className={cn('px-4 pb-2', className)}>{children}</View>;
 }
 
-export function BottomSheetTitle({ children, className }: BottomSheetTitleProps) {
+export function BottomSheetTitle({
+  children,
+  className,
+}: BottomSheetTitleProps) {
   return (
     <Text variant="header" size="md" className={className}>
       {children}
@@ -400,7 +436,10 @@ export function BottomSheetTitle({ children, className }: BottomSheetTitleProps)
   );
 }
 
-export function BottomSheetDescription({ children, className }: BottomSheetDescriptionProps) {
+export function BottomSheetDescription({
+  children,
+  className,
+}: BottomSheetDescriptionProps) {
   return (
     <Text variant="muted" size="sm" className={cn('mt-2', className)}>
       {children}
@@ -408,7 +447,11 @@ export function BottomSheetDescription({ children, className }: BottomSheetDescr
   );
 }
 
-export function BottomSheetBody({ children, className, scrollable }: BottomSheetBodyProps) {
+export function BottomSheetBody({
+  children,
+  className,
+  scrollable,
+}: BottomSheetBodyProps) {
   if (!scrollable) {
     return <View className={cn('flex-1 px-4', className)}>{children}</View>;
   }
@@ -465,17 +508,15 @@ export function BottomSheetList<T>({
       onSelect?.(item);
     } else if (variant === 'multiple') {
       const isSelected = internalSelectedValues.includes(itemValue);
-      let newSelected: any[];
-
-      if (isSelected) {
-        newSelected = internalSelectedValues.filter((v) => v !== itemValue);
-      } else {
-        newSelected = [...internalSelectedValues, itemValue];
-      }
+      const newSelected = isSelected
+        ? internalSelectedValues.filter((v) => v !== itemValue)
+        : [...internalSelectedValues, itemValue];
 
       setInternalSelectedValues(newSelected);
 
-      const selectedItems = data.filter((d) => newSelected.includes(finalGetItemValue(d)));
+      const selectedItems = data.filter((d) =>
+        newSelected.includes(finalGetItemValue(d)),
+      );
       onSelect?.(selectedItems as T[]);
     } else {
       onSelect?.(item);
@@ -484,12 +525,8 @@ export function BottomSheetList<T>({
 
   const isItemSelected = (item: T) => {
     const itemValue = finalGetItemValue(item);
-
-    if (variant === 'select') {
-      return selectedValue === itemValue;
-    } else if (variant === 'multiple') {
-      return internalSelectedValues.includes(itemValue);
-    }
+    if (variant === 'select') return selectedValue === itemValue;
+    if (variant === 'multiple') return internalSelectedValues.includes(itemValue);
     return false;
   };
 
@@ -506,21 +543,12 @@ export function BottomSheetList<T>({
         className={cn(listItemVariants({ selected: isSelected }))}
       >
         <View className="flex-row items-center gap-3 flex-1">
-          {variant === 'select' && (
-            <Radio checked={isSelected} />
-          )}
-
-          {variant === 'multiple' && (
-            <Checkbox checked={isSelected} />
-          )}
-
+          {variant === 'select' && <Radio checked={isSelected} />}
+          {variant === 'multiple' && <Checkbox checked={isSelected} />}
           <Text
-            variant={isSelected ? 'default' : 'default'}
+            variant="default"
             size="md"
-            className={cn(
-              'flex-1',
-              isSelected && 'text-primary font-semibold'
-            )}
+            className={cn('flex-1', isSelected && 'text-primary font-semibold')}
           >
             {itemLabel}
           </Text>
@@ -550,7 +578,10 @@ export function BottomSheetList<T>({
   );
 }
 
-export function BottomSheetListItem({ children, className }: BottomSheetListItemProps) {
+export function BottomSheetListItem({
+  children,
+  className,
+}: BottomSheetListItemProps) {
   return (
     <View className={cn('px-4 py-3 border-b border-border', className)}>
       {children}
@@ -558,12 +589,15 @@ export function BottomSheetListItem({ children, className }: BottomSheetListItem
   );
 }
 
-export function BottomSheetFooter({ children, className }: BottomSheetFooterProps) {
+export function BottomSheetFooter({
+  children,
+  className,
+}: BottomSheetFooterProps) {
   return (
     <View
       className={cn(
         'absolute bottom-0 left-0 right-0 bg-card px-4 py-4 border-t border-border',
-        className
+        className,
       )}
     >
       {children}
@@ -571,7 +605,11 @@ export function BottomSheetFooter({ children, className }: BottomSheetFooterProp
   );
 }
 
-export function BottomSheetClose({ children }: { children: React.ReactNode }) {
+export function BottomSheetClose({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { onOpenChange } = useBottomSheet();
 
   if (React.isValidElement(children)) {
@@ -580,5 +618,7 @@ export function BottomSheetClose({ children }: { children: React.ReactNode }) {
     });
   }
 
-  return <Pressable onPress={() => onOpenChange(false)}>{children}</Pressable>;
+  return (
+    <Pressable onPress={() => onOpenChange(false)}>{children}</Pressable>
+  );
 }

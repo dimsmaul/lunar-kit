@@ -2,12 +2,12 @@ import * as React from 'react';
 import {
   View,
   Pressable,
-  Modal,
   LayoutRectangle,
   ScrollView,
   StyleSheet,
   useWindowDimensions,
   Platform,
+  Modal,
   StatusBar,
 } from 'react-native';
 import Animated, {
@@ -21,6 +21,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Text } from './text';
 
+
 const dropdownContentVariants = cva(
   'rounded-lg border border-border bg-background p-1',
   {
@@ -33,8 +34,8 @@ const dropdownContentVariants = cva(
       shadow: {
         none: '',
         sm: 'shadow-sm',
-        md: 'shadow-md',
-        lg: 'shadow-lg',
+        md: 'shadow-sm',
+        lg: 'shadow-sm',
       },
     },
     defaultVariants: {
@@ -78,7 +79,6 @@ const dropdownItemTextVariants = cva('', {
 
 const dropdownLabelVariants = cva('px-3 py-2', {
   variants: {
-    // bisa tambah variant nanti, e.g. inset
     inset: {
       true: 'pl-8',
       false: '',
@@ -132,6 +132,19 @@ interface DropdownMenuGroupProps {
   children: React.ReactNode;
 }
 
+interface DropdownMenuSubProps {
+  children: React.ReactNode;
+  trigger: React.ReactNode;
+}
+
+interface DropdownMenuSubContentProps
+  extends VariantProps<typeof dropdownContentVariants> {
+  children: React.ReactNode;
+  className?: string;
+  sideOffset?: number;
+}
+
+
 type Ctx = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -167,7 +180,12 @@ export function DropdownMenu({
   };
 
   const value = React.useMemo(
-    () => ({ open, onOpenChange: handleOpenChange, triggerLayout, setTriggerLayout }),
+    () => ({
+      open,
+      onOpenChange: handleOpenChange,
+      triggerLayout,
+      setTriggerLayout,
+    }),
     [open, triggerLayout],
   );
 
@@ -178,7 +196,10 @@ export function DropdownMenu({
   );
 }
 
-export function DropdownMenuTrigger({ children, asChild }: DropdownMenuTriggerProps) {
+export function DropdownMenuTrigger({
+  children,
+  asChild,
+}: DropdownMenuTriggerProps) {
   const { open, onOpenChange, setTriggerLayout } = useDropdownMenu();
   const triggerRef = React.useRef<View>(null);
 
@@ -187,11 +208,13 @@ export function DropdownMenuTrigger({ children, asChild }: DropdownMenuTriggerPr
       onOpenChange(!open);
       return;
     }
+
     triggerRef.current.measureInWindow((x, y, width, height) => {
       const adjustedY =
         Platform.OS === 'android' && StatusBar.currentHeight
-          ? y - StatusBar.currentHeight
+          ? y + StatusBar.currentHeight
           : y;
+
       setTriggerLayout({ x, y: adjustedY, width, height });
       onOpenChange(!open);
     });
@@ -274,18 +297,27 @@ export function DropdownMenuContent({
 
     switch (align) {
       case 'start':
-        style.left = Math.max(8, Math.min(x, windowWidth - contentSize.width - 8));
+        style.left = Math.max(
+          8,
+          Math.min(x, windowWidth - contentSize.width - 8),
+        );
         break;
       case 'center':
         style.left = Math.max(
           8,
-          Math.min(x + width / 2 - contentSize.width / 2, windowWidth - contentSize.width - 8),
+          Math.min(
+            x + width / 2 - contentSize.width / 2,
+            windowWidth - contentSize.width - 8,
+          ),
         );
         break;
       case 'end':
         style.left = Math.max(
           8,
-          Math.min(x + width - contentSize.width, windowWidth - contentSize.width - 8),
+          Math.min(
+            x + width - contentSize.width,
+            windowWidth - contentSize.width - 8,
+          ),
         );
         break;
     }
@@ -302,14 +334,282 @@ export function DropdownMenuContent({
       onRequestClose={() => onOpenChange(false)}
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
-        {/* Backdrop */}
+        {/* Backdrop transparan */}
         <Pressable
           style={StyleSheet.absoluteFillObject}
           onPress={() => onOpenChange(false)}
           android_disableSound
         />
 
-        {/* Content — sibling dari backdrop */}
+        {/* Content */}
+        <Animated.View
+          style={[
+            {
+              position: 'absolute',
+              elevation: 8,
+              zIndex: 999,
+              minWidth: 160,
+            },
+            animatedStyle,
+            getPositionStyle(),
+          ]}
+          onLayout={(e) =>
+            setContentSize({
+              width: e.nativeEvent.layout.width,
+              height: e.nativeEvent.layout.height,
+            })
+          }
+        >
+          <Pressable
+            onPress={(e) => e.stopPropagation()}
+            className={cn(dropdownContentVariants({ size, shadow }), className)}
+          >
+            <ScrollView
+              bounces={false}
+              style={{ maxHeight: windowHeight * 0.4 }}
+              showsVerticalScrollIndicator={false}
+            >
+              {children}
+            </ScrollView>
+          </Pressable>
+        </Animated.View>
+      </View>
+    </Modal>
+  );
+}
+
+
+export function DropdownMenuItem({
+  children,
+  className,
+  textClassName,
+  onPress,
+  disabled = false,
+  destructive = false,
+  leftIcon,
+  rightIcon,
+}: DropdownMenuItemProps) {
+  const { onOpenChange } = useDropdownMenu();
+
+  const handlePress = () => {
+    if (disabled) return;
+    onPress?.();
+    onOpenChange(false);
+  };
+
+  const variant = destructive ? 'destructive' : 'default';
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      disabled={disabled}
+      className={cn(dropdownItemVariants({ variant, disabled }), className)}
+    >
+      {leftIcon && <View className="w-5 items-center">{leftIcon}</View>}
+
+      <View className="flex-1">
+        {typeof children === 'string' ? (
+          <Text
+            size="sm"
+            className={cn(dropdownItemTextVariants({ variant }), textClassName)}
+          >
+            {children}
+          </Text>
+        ) : (
+          children
+        )}
+      </View>
+
+      {rightIcon && <View className="w-5 items-center">{rightIcon}</View>}
+    </Pressable>
+  );
+}
+
+
+export function DropdownMenuLabel({
+  children,
+  className,
+  textClassName,
+  inset,
+}: DropdownMenuLabelProps) {
+  return (
+    <View className={cn(dropdownLabelVariants({ inset }), className)}>
+      {typeof children === 'string' ? (
+        <Text
+          size="sm"
+          variant="title"
+          className={cn('text-foreground', textClassName)}
+        >
+          {children}
+        </Text>
+      ) : (
+        children
+      )}
+    </View>
+  );
+}
+
+
+export function DropdownMenuSeparator() {
+  return <View className="my-1 h-px bg-border" />;
+}
+
+
+export function DropdownMenuGroup({ children }: DropdownMenuGroupProps) {
+  return <View>{children}</View>;
+}
+
+// ─── DropdownMenuSub ──────────────────────────────────────────────────────────
+// Context terpisah agar tidak konflik dengan parent
+
+type SubCtx = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  triggerLayout: LayoutRectangle | null;
+  setTriggerLayout: (layout: LayoutRectangle) => void;
+};
+
+const DropdownMenuSubContext = React.createContext<SubCtx | null>(null);
+
+function useDropdownMenuSub() {
+  const context = React.useContext(DropdownMenuSubContext);
+  if (!context) throw new Error('Must be used within DropdownMenuSub');
+  return context;
+}
+
+export function DropdownMenuSub({ children, trigger }: DropdownMenuSubProps) {
+  const { onOpenChange: closeParent } = useDropdownMenu();
+  const [open, setOpen] = React.useState(false);
+  const [triggerLayout, setTriggerLayout] = React.useState<LayoutRectangle | null>(null);
+  const triggerRef = React.useRef<View>(null);
+
+  const handleTriggerPress = () => {
+    triggerRef.current?.measureInWindow((x, y, width, height) => {
+      const adjustedY =
+        Platform.OS === 'android' && StatusBar.currentHeight
+          ? y + StatusBar.currentHeight
+          : y;
+      setTriggerLayout({ x, y: adjustedY, width, height });
+      setOpen(true);
+    });
+  };
+
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next);
+    // Tutup parent juga saat sub ditutup via item press
+    if (!next) closeParent(false);
+  };
+
+  const value = React.useMemo(
+    () => ({ open, onOpenChange: handleOpenChange, triggerLayout, setTriggerLayout }),
+    [open, triggerLayout],
+  );
+
+  return (
+    <DropdownMenuSubContext.Provider value={value}>
+      {/* Trigger row — tampil sebagai item di dalam parent dropdown */}
+      <Pressable
+        ref={triggerRef}
+        onPress={(e) => {
+          e.stopPropagation();
+          handleTriggerPress();
+        }}
+        className={cn(dropdownItemVariants({ variant: 'default', disabled: false }))}
+      >
+        <View className="flex-1">
+          {typeof trigger === 'string' ? (
+            <Text size="sm" className="text-foreground">{trigger}</Text>
+          ) : (
+            trigger
+          )}
+        </View>
+        {/* Chevron kanan sebagai indikator ada sub-menu */}
+        <View className="w-5 items-center">
+          <Text size="sm" className="text-muted-foreground">›</Text>
+        </View>
+      </Pressable>
+
+      {children}
+    </DropdownMenuSubContext.Provider>
+  );
+}
+
+// ─── DropdownMenuSubContent ───────────────────────────────────────────────────
+
+export function DropdownMenuSubContent({
+  children,
+  className,
+  sideOffset = 4,
+  size,
+  shadow,
+}: DropdownMenuSubContentProps) {
+  const { open, onOpenChange, triggerLayout } = useDropdownMenuSub();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+
+  const opacity = useSharedValue(0);
+  const scale = useSharedValue(0.95);
+  const [visible, setVisible] = React.useState(false);
+  const [contentSize, setContentSize] = React.useState({ width: 0, height: 0 });
+
+  React.useEffect(() => {
+    if (open) {
+      setVisible(true);
+      opacity.value = withTiming(1, { duration: 120 });
+      scale.value = withSpring(1, { damping: 15, stiffness: 150 });
+    } else {
+      opacity.value = withTiming(0, { duration: 120 });
+      scale.value = withTiming(0.98, { duration: 120 }, (finished) => {
+        if (finished) runOnJS(setVisible)(false);
+      });
+    }
+  }, [open]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ scale: scale.value }],
+  }));
+
+  if (!visible || !triggerLayout) return null;
+
+  const getPositionStyle = () => {
+    const { x, y, width, height } = triggerLayout;
+    const style: Record<string, number> = {};
+
+    // ✅ Muncul di kanan trigger row, fallback ke kiri kalau tidak muat
+    const spaceRight = windowWidth - (x + width + sideOffset);
+    const spaceLeft = x - sideOffset;
+
+    if (spaceRight >= contentSize.width || spaceRight >= spaceLeft) {
+      style.left = x + width + sideOffset;
+    } else {
+      style.left = Math.max(8, x - contentSize.width - sideOffset);
+    }
+
+    // Sejajarkan vertikal dengan trigger row
+    const idealTop = y;
+    style.top = Math.max(
+      8,
+      Math.min(idealTop, windowHeight - contentSize.height - 8),
+    );
+
+    return style;
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="none"
+      statusBarTranslucent
+      onRequestClose={() => onOpenChange(false)}
+    >
+      <View style={{ flex: 1 }} pointerEvents="box-none">
+        <Pressable
+          style={StyleSheet.absoluteFillObject}
+          onPress={() => onOpenChange(false)}
+          android_disableSound
+        />
+
         <Animated.View
           style={[
             { position: 'absolute', elevation: 8, zIndex: 999, minWidth: 160 },
@@ -339,80 +639,4 @@ export function DropdownMenuContent({
       </View>
     </Modal>
   );
-}
-
-export function DropdownMenuItem({
-  children,
-  className,
-  textClassName,
-  onPress,
-  disabled = false,
-  destructive = false,
-  leftIcon,
-  rightIcon,
-}: DropdownMenuItemProps) {
-  const { onOpenChange } = useDropdownMenu();
-
-  const handlePress = () => {
-    if (disabled) return;
-    onPress?.();
-    onOpenChange(false);
-  };
-
-  const variant = destructive ? 'destructive' : 'default';
-
-  return (
-    <Pressable
-      onPress={handlePress}
-      disabled={disabled}
-      className={cn(
-        dropdownItemVariants({ variant, disabled }),
-        className,
-      )}
-    >
-      {leftIcon && <View className="w-5 items-center">{leftIcon}</View>}
-
-      <View className="flex-1">
-        {typeof children === 'string' ? (
-          <Text
-            size="sm"
-            className={cn(dropdownItemTextVariants({ variant }), textClassName)}
-          >
-            {children}
-          </Text>
-        ) : (
-          children
-        )}
-      </View>
-
-      {rightIcon && <View className="w-5 items-center">{rightIcon}</View>}
-    </Pressable>
-  );
-}
-
-export function DropdownMenuLabel({
-  children,
-  className,
-  textClassName,
-  inset,
-}: DropdownMenuLabelProps) {
-  return (
-    <View className={cn(dropdownLabelVariants({ inset }), className)}>
-      {typeof children === 'string' ? (
-        <Text size="sm" variant="title" className={cn('text-foreground', textClassName)}>
-          {children}
-        </Text>
-      ) : (
-        children
-      )}
-    </View>
-  );
-}
-
-export function DropdownMenuSeparator() {
-  return <View className="my-1 h-px bg-border" />;
-}
-
-export function DropdownMenuGroup({ children }: DropdownMenuGroupProps) {
-  return <View>{children}</View>;
 }
