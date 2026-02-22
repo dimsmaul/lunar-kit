@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Text } from '@/components/ui/text';
 import { useToolbar } from '@/hooks/useToolbar';
+import { Pencil, Trash } from 'lucide-react-native';
 import React from 'react';
 import { View } from 'react-native';
 
@@ -22,10 +23,11 @@ export default function DropdownMenuView() {
 
         <DropdownMenuContent side='bottom' align='center'>
           <DropdownMenuLabel>General</DropdownMenuLabel>
-          <DropdownMenuItem onPress={() => console.log('Edit')}>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem leftIcon={<Pencil />} onPress={() => console.log('Edit')}>
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem destructive onPress={() => console.log('Delete')}>
+          <DropdownMenuItem destructive leftIcon={<Trash />} onPress={() => console.log('Delete')}>
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

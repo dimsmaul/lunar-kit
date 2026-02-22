@@ -20,10 +20,11 @@ import Animated, {
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Text } from './text';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 
 const dropdownContentVariants = cva(
-  'rounded-lg border border-border bg-background p-1',
+  'rounded-lg border border-border bg-background',
   {
     variants: {
       size: {
@@ -46,7 +47,7 @@ const dropdownContentVariants = cva(
 );
 
 const dropdownItemVariants = cva(
-  'flex-row items-center gap-2 rounded-md px-3 py-2.5',
+  'flex-row items-center gap-2 rounded-md px-3 py-2.5 m-0.5',
   {
     variants: {
       variant: {
@@ -135,6 +136,8 @@ interface DropdownMenuGroupProps {
 interface DropdownMenuSubProps {
   children: React.ReactNode;
   trigger: React.ReactNode;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
 interface DropdownMenuSubContentProps
@@ -334,14 +337,11 @@ export function DropdownMenuContent({
       onRequestClose={() => onOpenChange(false)}
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
-        {/* Backdrop transparan */}
         <Pressable
           style={StyleSheet.absoluteFillObject}
           onPress={() => onOpenChange(false)}
           android_disableSound
         />
-
-        {/* Content */}
         <Animated.View
           style={[
             {
@@ -390,6 +390,7 @@ export function DropdownMenuItem({
   rightIcon,
 }: DropdownMenuItemProps) {
   const { onOpenChange } = useDropdownMenu();
+  const { colors } = useThemeColors();
 
   const handlePress = () => {
     if (disabled) return;
@@ -398,6 +399,15 @@ export function DropdownMenuItem({
   };
 
   const variant = destructive ? 'destructive' : 'default';
+  const iconColor = destructive ? colors.destructive : colors.foreground;
+
+  const renderIcon = (icon: React.ReactNode) => {
+    if (!React.isValidElement(icon)) return icon;
+    return React.cloneElement(icon as React.ReactElement<any>, {
+      size: (icon as React.ReactElement<any>).props.size || 16,
+      color: (icon as React.ReactElement<any>).props.color || iconColor,
+    });
+  };
 
   return (
     <Pressable
@@ -405,7 +415,7 @@ export function DropdownMenuItem({
       disabled={disabled}
       className={cn(dropdownItemVariants({ variant, disabled }), className)}
     >
-      {leftIcon && <View className="w-5 items-center">{leftIcon}</View>}
+      {leftIcon && <View className="w-5 items-center">{renderIcon(leftIcon)}</View>}
 
       <View className="flex-1">
         {typeof children === 'string' ? (
@@ -420,7 +430,7 @@ export function DropdownMenuItem({
         )}
       </View>
 
-      {rightIcon && <View className="w-5 items-center">{rightIcon}</View>}
+      {rightIcon && <View className="w-5 items-center">{renderIcon(rightIcon)}</View>}
     </Pressable>
   );
 }
@@ -477,11 +487,12 @@ function useDropdownMenuSub() {
   return context;
 }
 
-export function DropdownMenuSub({ children, trigger }: DropdownMenuSubProps) {
+export function DropdownMenuSub({ children, trigger, leftIcon, rightIcon }: DropdownMenuSubProps) {
   const { onOpenChange: closeParent } = useDropdownMenu();
   const [open, setOpen] = React.useState(false);
   const [triggerLayout, setTriggerLayout] = React.useState<LayoutRectangle | null>(null);
   const triggerRef = React.useRef<View>(null);
+  const { colors } = useThemeColors();
 
   const handleTriggerPress = () => {
     triggerRef.current?.measureInWindow((x, y, width, height) => {
@@ -505,6 +516,17 @@ export function DropdownMenuSub({ children, trigger }: DropdownMenuSubProps) {
     [open, triggerLayout],
   );
 
+  const iconColor = colors.foreground;
+
+  const renderIcon = (icon: React.ReactNode) => {
+    if (!React.isValidElement(icon)) return icon;
+    return React.cloneElement(icon as React.ReactElement<any>, {
+      size: (icon as React.ReactElement<any>).props.size || 16,
+      color: (icon as React.ReactElement<any>).props.color || iconColor,
+    });
+  };
+
+
   return (
     <DropdownMenuSubContext.Provider value={value}>
       {/* Trigger row — tampil sebagai item di dalam parent dropdown */}
@@ -516,6 +538,7 @@ export function DropdownMenuSub({ children, trigger }: DropdownMenuSubProps) {
         }}
         className={cn(dropdownItemVariants({ variant: 'default', disabled: false }))}
       >
+        {leftIcon && <View className="w-5 items-center">{renderIcon(leftIcon)}</View>}
         <View className="flex-1">
           {typeof trigger === 'string' ? (
             <Text size="sm" className="text-foreground">{trigger}</Text>
@@ -523,6 +546,7 @@ export function DropdownMenuSub({ children, trigger }: DropdownMenuSubProps) {
             trigger
           )}
         </View>
+        {rightIcon && <View className="w-5 items-center">{renderIcon(rightIcon)}</View>}
         {/* Chevron kanan sebagai indikator ada sub-menu */}
         <View className="w-5 items-center">
           <Text size="sm" className="text-muted-foreground">›</Text>
