@@ -16,6 +16,7 @@ import Animated, {
   Easing,
   runOnJS,
   clamp,
+  type SharedValue,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import { cva, type VariantProps } from 'class-variance-authority';
@@ -152,7 +153,15 @@ const BottomSheetContext = React.createContext<{
 
 const BottomSheetInternalContext = React.createContext<{
   panGesture: ReturnType<typeof Gesture.Pan> | null;
-}>({ panGesture: null });
+  dismissTranslateY: SharedValue<number> | null;
+  lowestSnapHeight: number;
+  dragAreaHeight: SharedValue<number> | null;
+}>({
+  panGesture: null,
+  dismissTranslateY: null,
+  lowestSnapHeight: 0,
+  dragAreaHeight: null,
+});
 
 function useBottomSheet() {
   const context = React.useContext(BottomSheetContext);
@@ -233,6 +242,7 @@ export function BottomSheetContent({
   const animatedHeight = useSharedValue(snapHeights[defaultSnapPoint]);
   const dismissTranslateY = useSharedValue(SCREEN_HEIGHT);
   const backdropOpacity = useSharedValue(0);
+  const dragAreaHeight = useSharedValue(0);
 
   const dragContext = useSharedValue({
     startHeight: 0,
@@ -358,7 +368,9 @@ export function BottomSheetContent({
   if (!visible) return null;
 
   return (
-    <BottomSheetInternalContext.Provider value={{ panGesture }}>
+    <BottomSheetInternalContext.Provider
+      value={{ panGesture, dismissTranslateY, lowestSnapHeight: snapHeights[0], dragAreaHeight }}
+    >
       <Modal
         visible={visible}
         transparent
@@ -388,7 +400,12 @@ export function BottomSheetContent({
               <View className={cn(bottomSheetVariants({ variant }), className)}>
                 {/* Default drag handle */}
                 <GestureDetector gesture={panGesture}>
-                  <Animated.View className="items-center py-3">
+                  <Animated.View
+                    className="items-center py-3"
+                    onLayout={(e) => {
+                      dragAreaHeight.value = e.nativeEvent.layout.height;
+                    }}
+                  >
                     <View className={cn(dragHandleVariants({ variant }))} />
                   </Animated.View>
                 </GestureDetector>
@@ -407,13 +424,20 @@ export function BottomSheetDragArea({
   children,
   className,
 }: BottomSheetDragAreaProps) {
-  const { panGesture } = React.useContext(BottomSheetInternalContext);
+  const { panGesture, dragAreaHeight } = React.useContext(BottomSheetInternalContext);
 
   if (!panGesture) return <>{children}</>;
 
   return (
     <GestureDetector gesture={panGesture}>
-      <Animated.View className={className}>{children}</Animated.View>
+      <Animated.View
+        className={className}
+        onLayout={(e) => {
+          if (dragAreaHeight) dragAreaHeight.value = e.nativeEvent.layout.height;
+        }}
+      >
+        {children}
+      </Animated.View>
     </GestureDetector>
   );
 }
@@ -593,15 +617,31 @@ export function BottomSheetFooter({
   children,
   className,
 }: BottomSheetFooterProps) {
+  const { dismissTranslateY, lowestSnapHeight, dragAreaHeight } = React.useContext(BottomSheetInternalContext);
+
+  const footerHeight = useSharedValue(0);
+
+  const footerStyle = useAnimatedStyle(() => {
+    if (!dismissTranslateY) return {};
+    const dragH = dragAreaHeight ? dragAreaHeight.value : 0;
+    const threshold = Math.max(0, lowestSnapHeight - dragH - footerHeight.value);
+    const counter = clamp(dismissTranslateY.value, 0, threshold);
+    return { transform: [{ translateY: -counter }] };
+  });
+
   return (
-    <View
-      className={cn(
-        'absolute bottom-0 left-0 right-0 bg-card px-4 py-4 border-t border-border',
-        className,
-      )}
+    <Animated.View
+      onLayout={(e) => {
+        footerHeight.value = e.nativeEvent.layout.height;
+      }}
+      style={[
+        { position: 'absolute', bottom: 0, left: 0, right: 0 },
+        footerStyle,
+      ]}
+      className={cn('bg-card px-4 py-4 border-t border-border', className)}
     >
       {children}
-    </View>
+    </Animated.View>
   );
 }
 
