@@ -6,101 +6,108 @@ We want this community to be friendly and respectful to each other. Please follo
 
 ## Development workflow
 
-This project is a monorepo managed using [pnpm workspaces](https://pnpm.io/workspaces). It contains the following packages:
+This project is a monorepo managed using [Bun workspaces](https://bun.sh/docs/install/workspaces). It contains the following packages:
 
-- **create-lunar-kit** - Project scaffolding CLI in `packages/create-lunar-kit/`
-- **lunar-kit-cli** - Module generator CLI in `packages/lunar-kit-cli/`
+- **`@lunar-kit/core`** - Shared registry and UI components in `packages/core/`
+- **`@lunar-kit/cli`** - Module generator CLI in `packages/cli/`
+- **`create-lunar-kit`** - Project scaffolding CLI in `packages/create-lunar-kit/`
 
-To get started with the project, make sure you have the correct version of [Node.js](https://nodejs.org/) installed. See the [`.nvmrc`](./.nvmrc) file for the version used in this project.
+And an example application:
+- **`example`** - Example Expo application in `apps/example/`
+
+To get started with the project, make sure you have [Bun](https://bun.sh/) installed.
 
 ### Prerequisites
 
-- Node.js (see `.nvmrc` for version)
-- pnpm 8.x or higher
+- [Bun](https://bun.sh/) natively installed.
 
-Install pnpm globally if you haven't:
+Install Bun globally if you haven't:
 
 ```sh
-npm install -g pnpm
+curl -fsSL https://bun.sh/install | bash
 ```
+
 ### Installation
-Run pnpm install in the root directory to install the required dependencies for each package:
+
+Run `bun install` in the root directory to install the required dependencies for all packages and apps:
 
 ```sh
-pnpm install
+bun install
 ```
-Since the project relies on pnpm workspaces, you cannot use npm or yarn for development without manually migrating.
+
+Since the project relies on Bun workspaces, you should use `bun` instead of `npm`, `yarn`, or `pnpm` for development.
 
 ### Building packages
-Build all packages from the root directory:
+
+Build all packages from the root directory by running their respect build scripts if applicable:
 
 ```sh
-pnpm build
+bun run build:cli
 ```
-Or build a specific package:
+
+Or build a specific CLI package:
 
 ```sh
 cd packages/create-lunar-kit
-pnpm build
-```
-```sh
-cd packages/lunar-kit-cli
-pnpm build
+bun run build
 ```
 
-Testing locally to test create-lunar-kit:
+```sh
+cd packages/cli
+bun run build
+```
+
+### Testing locally
+
+To test `create-lunar-kit` locally:
 
 ```sh
 cd packages/create-lunar-kit
-npm build
+bun run build
 npm link -g
 ```
 
-# Test it
+Then test it anywhere:
 ```sh
 cd ../..
 mkdir test-project
 cd test-project
 create-lunar-kit my-app
 ```
-To test lunar-kit-cli:
+
+To test `@lunar-kit/cli` locally:
 
 ```sh
-cd packages/lunar-kit-cli
-pnpm build
+cd packages/cli
+bun run build
 npm link -g
 ```
 
-# Test it in a Lunar Kit project
+Then test it in a Lunar Kit project:
 ```sh
 cd /path/to/lunar-kit-project
 lunar g mod auth/login
-lunar g mod:vi auth/splash
 ```
+
+### Dev Scripts
+
+To run the example app locally:
+
+```sh
+bun run dev
+```
+
+To run the CLI module in watch mode:
+
+```sh
+bun run dev:cli
+```
+
 ### Linting and Type Checking
-Make sure your code passes TypeScript:
+
+Make sure your code passes TypeScript in the respective packages if defined, though typically you'd run `tsc --noEmit` or similar scripts depending on what's configured.
 
 ```sh
-pnpm typecheck
+bun run lint
 ```
-To check for linting errors, run the following:
-
-```sh
-pnpm lint
-```
-To fix formatting errors, run the following:
-
-```sh
-pnpm lint --fix
-```
-### Testing
-Run the unit tests:
-
-```sh
-pnpm test
-```
-Run tests in watch mode:
-
-```sh
-pnpm test:watch
-```
+*(If lint scripts are configured in the target package)*
