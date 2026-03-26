@@ -1,7 +1,6 @@
-import { DatePicker, DatePickerContent, DatePickerTrigger, DatePickerValue } from '@/components/ui/date-picker';
-import { useToolbar } from '@/hooks/useToolbar';
+import { DatePicker, DatePickerContent, DatePickerTrigger, DatePickerValue, Text, useToolbar } from '@lunar-kit/core';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 export default function DatePickerView() {
   const [date, setDate] = React.useState<Date>();

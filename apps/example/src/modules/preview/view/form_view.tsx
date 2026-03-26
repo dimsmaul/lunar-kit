@@ -1,13 +1,7 @@
-import { View, Text, ScrollView } from 'react-native';
-import * as z from 'zod';
+import { View, ScrollView } from 'react-native';
 import { useForms } from '../hooks/useForm';
-import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
+import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage, Input, Textarea, Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, useToolbar } from '@lunar-kit/core';
 import { Mail } from 'lucide-react-native';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToolbar } from '@/hooks/useToolbar';
 
 
 

@@ -1,8 +1,4 @@
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { useToolbar } from '@/hooks/useToolbar';
-import { InfoIcon } from 'lucide-react-native';
+import { Button, Tooltip, TooltipContent, TooltipTrigger, Text, useToolbar } from '@lunar-kit/core';
 import React from 'react';
 import { View } from 'react-native';
 

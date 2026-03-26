@@ -1,7 +1,7 @@
 // components/theme-switcher.tsx
-import { View, Pressable, Text } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { cn } from '@/lib/utils';
-import { useTheme } from '@/hooks';
+import { useTheme, Text } from '@lunar-kit/core';
 
 export function ThemeSwitcher() {
     const { theme, setTheme } = useTheme();

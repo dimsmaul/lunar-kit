@@ -1,6 +1,4 @@
-import { Button } from '@/components/ui/button';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import { useToolbar } from '@/hooks/useToolbar';
+import { Button, useThemeColors, useToolbar } from '@lunar-kit/core';
 import { Moon } from 'lucide-react-native';
 import { View, Text } from 'react-native';
 

@@ -1,7 +1,4 @@
-import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Text } from '@/components/ui/text';
-import { useToolbar } from '@/hooks/useToolbar';
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuTrigger, Text, useToolbar } from '@lunar-kit/core';
 import { Pencil, Trash } from 'lucide-react-native';
 import React from 'react';
 import { View } from 'react-native';

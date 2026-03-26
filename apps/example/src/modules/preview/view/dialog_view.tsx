@@ -1,7 +1,4 @@
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Text } from '@/components/ui/text';
-import { useToolbar } from '@/hooks/useToolbar';
+import { Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Text, useToolbar } from '@lunar-kit/core';
 import React from 'react';
 import { View } from 'react-native';
 

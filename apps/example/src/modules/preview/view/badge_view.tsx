@@ -1,6 +1,4 @@
-import { Badge } from '@/components/ui/badge';
-import { Text } from '@/components/ui/text';
-import { useToolbar } from '@/hooks/useToolbar';
+import { Badge, Text, useToolbar } from '@lunar-kit/core';
 import { View } from 'react-native';
 
 export default function BadgeView() {
