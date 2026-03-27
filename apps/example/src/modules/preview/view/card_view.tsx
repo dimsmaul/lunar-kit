@@ -1,6 +1,4 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Text } from '@/components/ui/text';
-import { useToolbar } from '@/hooks/useToolbar';
+import { useToolbar, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Text } from '@lunar-kit/core';
 import { View } from 'react-native';
 
 export default function CardView() {

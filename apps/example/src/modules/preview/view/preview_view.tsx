@@ -1,11 +1,10 @@
 import { Link } from 'expo-router';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text } from 'react-native';
 import { usePreview } from '../hooks/usePreview';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Input } from '@/components/ui/input';
+import { Input, useToolbar } from '@lunar-kit/core';
 import { Search } from 'lucide-react-native';
 import { ThemeSwitcher } from '@/components/theme-switcher';
-import { useToolbar } from '@/hooks/useToolbar';
 import { cn } from '@/lib/utils';
 
 export default function PreviewView() {

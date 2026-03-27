@@ -100,7 +100,7 @@ function PillIndicator({ layout }: { layout: TabLayout }) {
     if (isWeb) {
         return (
             <View
-                className="absolute bg-background rounded-md shadow-sm"
+                className="absolute bg-background rounded-md"
                 style={{
                     left: layout.x,
                     width: layout.width,
@@ -138,7 +138,7 @@ function NativePillIndicator({ layout }: { layout: TabLayout }) {
 
     return (
         <Animated.View
-            className="absolute bg-background rounded-md shadow-sm"
+            className="absolute bg-background rounded-md"
             style={{ left: x, width, height }}
         />
     );

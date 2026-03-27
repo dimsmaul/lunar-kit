@@ -1,7 +1,6 @@
-import { DateRangePicker, DateRangePickerContent, DateRangePickerTrigger, DateRangePickerValue } from '@/components/ui/date-range-picker';
-import { useToolbar } from '@/hooks/useToolbar';
+import { DateRangePicker, DateRangePickerContent, DateRangePickerTrigger, DateRangePickerValue, Text, useToolbar } from '@lunar-kit/core';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 export default function DateRangePickerView() {
   const [startDate, setStartDate] = React.useState<Date>();

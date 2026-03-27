@@ -11,7 +11,11 @@
     "dev": "bun --filter example start",
     "dev:showcase": "bun --filter showcase start",
     "dev:cli": "bun --filter lk dev",
-    "build:cli": "bun --filter lk build"
+    "deps:core": "bun --filter @lunar-kit/core install",
+    "build:cli": "bun --filter @lunar-kit/cli build",
+    "build:core": "bun --filter @lunar-kit/core build",
+    "build:create": "bun --filter create-lunar-kit build",
+    "build": "bun run build:core && bun run build:cli && bun run build:create"
   },
   "keywords": [
     "react-native",

@@ -1,32 +1,8 @@
-import { SelectSheet, MultiSelectSheet } from '@/components/ui/select-sheet';
-import { Text } from '@/components/ui/text';
+import { SelectSheet, MultiSelectSheet, Text, useToolbar } from '@lunar-kit/core';
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useToolbar } from '@/hooks/useToolbar';
 
-// Mock API function
-// const fetchOptions = async (page: number) => {
-//   // Simulate API delay
-//   await new Promise((resolve) => setTimeout(resolve, 1000));
-
-//   const itemsPerPage = 20;
-//   const totalPages = 5;
-
-//   const data = Array.from({ length: itemsPerPage }, (_, i) => {
-//     const id = (page - 1) * itemsPerPage + i + 1;
-//     return {
-//       label: `Option ${id}`,
-//       value: id,
-//     };
-//   });
-
-//   return {
-//     data,
-//     nextPage: page < totalPages ? page + 1 : undefined,
-//     hasMore: page < totalPages,
-//   };
-// };
 
 export default function SelectSheetView() {
   const [singleValue, setSingleValue] = React.useState<string | number>();

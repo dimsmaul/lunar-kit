@@ -1,6 +1,4 @@
-import { Accordion, AccordionContent, AccordionContentText, AccordionItem, AccordionTrigger, AccordionTriggerText } from '@/components/ui/accordion';
-import { Text } from '@/components/ui/text';
-import { useToolbar } from '@/hooks/useToolbar';
+import { Accordion, AccordionContent, AccordionContentText, AccordionItem, AccordionTrigger, AccordionTriggerText, Text, useToolbar } from '@lunar-kit/core';
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 

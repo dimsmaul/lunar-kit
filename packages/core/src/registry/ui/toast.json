@@ -1,0 +1,44 @@
+{
+  "name": "toast",
+  "type": "registry:ui",
+  "description": "A floating notification component.",
+  "files": [
+    {
+      "path": "/src/components/ui/toast.tsx",
+      "type": "component"
+    },
+    {
+      "path": "/src/components/ui/toaster.tsx",
+      "type": "component"
+    },
+    {
+      "path": "/src/stores/toast.ts",
+      "type": "store"
+    },
+    {
+      "path": "/src/hooks/use-toast.ts",
+      "type": "hook"
+    }
+  ],
+  "dependencies": [
+    "lucide-react-native",
+    "react-native-reanimated",
+    "react-native-gesture-handler",
+    "react-native-safe-area-context",
+    "zustand"
+  ],
+  "registryDependencies": [
+    "text"
+  ],
+  "meta": {
+    "description": "A floating notification system with variants, auto-dismiss, and swipe-to-dismiss support.",
+    "features": [
+      "Imperative API via toast() function",
+      "Declarative API via Toaster component",
+      "Swipe to dismiss",
+      "Auto-dismiss with customizable duration",
+      "Multiple variants support",
+      "Dark mode support"
+    ]
+  }
+}

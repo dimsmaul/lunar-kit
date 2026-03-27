@@ -1,0 +1,25 @@
+{
+  "name": "search-bar",
+  "type": "registry:ui",
+  "description": "A search input component with built-in utilities.",
+  "files": [
+    {
+      "path": "/src/components/ui/search-bar.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [
+    "lucide-react-native",
+    "nativewind"
+  ],
+  "registryDependencies": [],
+  "meta": {
+    "description": "A refined search bar with debounce support, clear button, and integrated search icon.",
+    "features": [
+      "Built-in debounce support for search queries",
+      "Quick clear button",
+      "Fully themed using NativeWind",
+      "Configurable placeholder and icons"
+    ]
+  }
+}

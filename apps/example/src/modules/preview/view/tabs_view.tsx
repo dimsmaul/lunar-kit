@@ -1,7 +1,6 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToolbar } from '@/hooks/useToolbar';
+import { Tabs, TabsContent, TabsList, TabsTrigger, Text, useToolbar } from '@lunar-kit/core';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 export default function TabsView() {
   const [activeTab, setActiveTab] = React.useState('overview');

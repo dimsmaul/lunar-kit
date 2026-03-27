@@ -3,7 +3,9 @@ module.exports = {
   content: [
     "./App.{js,jsx,ts,tsx}",
     "./app/**/*.{js,jsx,ts,tsx}",
-    "./src/**/*.{js,jsx,ts,tsx}"
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "../../packages/core/src/**/*.{js,jsx,ts,tsx}",
+    "../../packages/core/dist/**/*.{js,jsx,ts,tsx}"
   ],
   presets: [require("nativewind/preset")],
   darkMode: "class",

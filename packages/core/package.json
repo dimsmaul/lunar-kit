@@ -4,8 +4,17 @@
   "description": "Shared registry and components for Lunar Kit",
   "type": "module",
   "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./src/index.ts",
+  "source": "./src/index.ts",
+  "react-native": "./src/index.ts",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./src/index.ts",
+      "react-native": "./src/index.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
   "files": [
     "dist",
@@ -28,10 +37,42 @@
     "dev": "tsup --watch",
     "prepublishOnly": "bun run build"
   },
+  "peerDependencies": {
+    "@react-native-async-storage/async-storage": "*",
+    "dayjs": "*",
+    "expo-router": "*",
+    "react": "*",
+    "react-hook-form": "*",
+    "react-native": "*",
+    "react-native-reanimated": "*",
+    "react-native-gesture-handler": "*",
+    "react-native-safe-area-context": "*",
+    "react-native-screens": "*",
+    "lucide-react-native": "*",
+    "class-variance-authority": "*",
+    "nativewind": "*",
+    "zustand": "*"
+  },
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^22.10.5",
+    "@types/react": "^19.0.0",
+    "@types/react-native": "^0.72.0",
+    "@react-native-async-storage/async-storage": "*",
+    "class-variance-authority": "*",
+    "dayjs": "*",
+    "esbuild-plugin-alias": "^0.2.1",
+    "expo-router": "*",
+    "lucide-react-native": "*",
+    "nativewind": "*",
+    "react-native": "*",
+    "react-hook-form": "*",
+    "react-native-reanimated": "*",
+    "react-native-gesture-handler": "*",
+    "react-native-safe-area-context": "*",
+    "react-native-screens": "*",
     "tsup": "^8.5.1",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "zustand": "*"
   }
 }

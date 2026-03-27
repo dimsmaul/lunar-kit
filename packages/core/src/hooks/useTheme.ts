@@ -1,5 +1,5 @@
 // hooks/use-theme.ts
-import { useThemeStore } from '@/stores';
+import { useThemeStore } from '@/stores/theme';
 import { useColorScheme as useDeviceColorScheme } from 'react-native';
 
 export function useTheme() {

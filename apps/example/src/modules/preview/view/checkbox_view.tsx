@@ -1,6 +1,4 @@
-import { Checkbox, CheckboxLabel } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem, RadioGroupLabel } from '@/components/ui/radio-group';
-import { useToolbar } from '@/hooks/useToolbar';
+import { Checkbox, CheckboxLabel, RadioGroup, RadioGroupItem, RadioGroupLabel, useToolbar } from '@lunar-kit/core';
 import React from 'react';
 import { View, Text } from 'react-native';
 

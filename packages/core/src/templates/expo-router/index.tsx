@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Alert } from 'react-native';
 import { Button } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';
 
 export default function IndexScreen() {
   return (
@@ -11,7 +12,7 @@ export default function IndexScreen() {
       <Text className="text-slate-600 mb-8">
         Your app is ready!
       </Text>
-      <Button onPress={() => alert('Hello Lunar Kit!')}>
+      <Button onPress={() => Alert.alert('Hello Lunar Kit!')}>
         Get Started
       </Button>
     </View>

@@ -1,7 +1,4 @@
-import { Banner } from '@/components/ui/banner';
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
-import { useToolbar } from '@/hooks/useToolbar';
+import { Banner, Button, Text, useToolbar } from '@lunar-kit/core';
 import { Star } from 'lucide-react-native';
 import { ScrollView, View } from 'react-native';
 

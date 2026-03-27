@@ -1,0 +1,25 @@
+{
+  "name": "step-indicator",
+  "type": "registry:ui",
+  "description": "A component to indicate progress through a multi-step process.",
+  "files": [
+    {
+      "path": "/src/components/ui/step-indicator.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [
+    "lucide-react-native",
+    "nativewind"
+  ],
+  "registryDependencies": ["text"],
+  "meta": {
+    "description": "Visual representation of steps in a flow, highlighting completed and current states.",
+    "features": [
+      "Support for titles and status icons (Checkmark)",
+      "Customizable number of steps",
+      "Active and completed state styling",
+      "Responsive layout with connecting lines"
+    ]
+  }
+}

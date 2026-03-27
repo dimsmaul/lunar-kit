@@ -1,8 +1,5 @@
 import { View, Text } from 'react-native';
-import { KeyboardAvoidingView } from '@/components/ui/keyboard-avoiding-view';
-import { Input } from '@/components/ui/input';
-import { useToolbar } from '@/hooks/useToolbar';
-import { Button } from '@/components/ui/button';
+import { KeyboardAvoidingView, Input, Button, useToolbar } from '@lunar-kit/core';
 
 export default function KeyboardAvoidingViewView() {
   useToolbar({
@@ -77,8 +74,8 @@ export default function KeyboardAvoidingViewView() {
           <Input
             placeholder="Any additional notes..."
             multiline
-            // numberOfLines={4}
-            // style={{ minHeight: 100, textAlignVertical: 'top' }}
+          // numberOfLines={4}
+          // style={{ minHeight: 100, textAlignVertical: 'top' }}
           />
         </View>
 
