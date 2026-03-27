@@ -6,21 +6,32 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Path to core templates (relative to create-lunar-kit package)
-const CORE_TEMPLATES_PATH = path.join(__dirname, '../../node_modules/@lunar-kit/core/src/templates');
-const CORE_SOURCE_PATH = path.join(__dirname, '../../node_modules/@lunar-kit/core/src');
+// Path to core templates
+// This file is at: create-lunar-kit/src/commands/init.ts
+// Core is at: core/src/templates/
+// Both are in packages/ directory
+const PACKAGES_DIR = path.resolve(__dirname, '../../..');
+const CORE_ROOT = path.join(PACKAGES_DIR, 'core', 'src');
+const CORE_TEMPLATES_PATH = path.join(CORE_ROOT, 'templates');
+const CORE_SOURCE_PATH = CORE_ROOT;
 
 /**
  * Helper: copy a template file from core to the target project
  */
 function copyTemplate(templatePath: string, destPath: string) {
   const fullPath = path.join(CORE_TEMPLATES_PATH, templatePath);
+  if (!fs.existsSync(fullPath)) {
+    throw new Error(`Template not found: ${fullPath}`);
+  }
   const content = fs.readFileSync(fullPath);
   fs.writeFileSync(destPath, content);
 }
 
 function copySource(sourcePath: string, destPath: string) {
   const fullPath = path.join(CORE_SOURCE_PATH, sourcePath);
+  if (!fs.existsSync(fullPath)) {
+    throw new Error(`Source not found: ${fullPath}`);
+  }
   const content = fs.readFileSync(fullPath);
   fs.writeFileSync(destPath, content);
 }
