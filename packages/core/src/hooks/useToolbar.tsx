@@ -1,7 +1,8 @@
 import { useLayoutEffect } from 'react';
 import { useNavigation } from 'expo-router';
-import { Pressable, Text } from 'react-native';
+import { Pressable } from 'react-native';
 import { useThemeColors } from './useThemeColors';
+import { Text } from '@/components/ui/text';
 
 interface HeaderOptions {
   headerShown?: boolean;

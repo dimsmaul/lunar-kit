@@ -4,7 +4,7 @@ import { StatusBar, View } from 'react-native';
 import { useColorScheme as useDeviceColorScheme } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import { lightTheme, darkTheme } from '@/lib/theme';
-import { useThemeStore } from '@/stores';
+import { useThemeStore } from '@/stores/theme';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const deviceTheme = useDeviceColorScheme();

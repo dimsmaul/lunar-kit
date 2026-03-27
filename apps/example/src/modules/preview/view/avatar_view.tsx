@@ -1,12 +1,7 @@
-import { Avatar, AvatarGroup } from '@/components/ui/avatar';
-import { Text } from '@/components/ui/text';
-import { useThemeColors } from '@/hooks/useThemeColors';
-import { useToolbar } from '@/hooks/useToolbar';
-import { Notebook } from 'lucide-react-native';
+import { Avatar, AvatarGroup, Text, useToolbar } from '@lunar-kit/core';
 import { View, } from 'react-native';
 
 export default function AvatarView() {
-  const { colors } = useThemeColors()
   useToolbar({
     title: 'Avatar View',
   })

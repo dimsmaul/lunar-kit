@@ -1,7 +1,6 @@
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToolbar } from '@/hooks/useToolbar';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, Text, useToolbar } from '@lunar-kit/core';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 export default function SelectView() {
   // const [value, setValue] = React.useState<SelectOption | undefined>();

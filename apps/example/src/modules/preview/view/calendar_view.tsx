@@ -1,6 +1,4 @@
-import { Calendar } from '@/components/ui/calendar';
-import { Text } from '@/components/ui/text';
-import { useToolbar } from '@/hooks/useToolbar';
+import { Calendar, Text, useToolbar } from '@lunar-kit/core';
 import React from 'react';
 import { View } from 'react-native';
 
