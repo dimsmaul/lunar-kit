@@ -221,7 +221,7 @@ export async function updatePackageJson(projectPath: string, navigation: string,
     'react-native-reanimated': '~4.1.1',
     'react-native-safe-area-context': '^5.6.2',
     'react-native-screens': '~4.16.0',
-    'react-native-worklets': '0.5.1',
+    // 'react-native-worklets': '0.5.1',
     'zustand': '^5.0.3',
   };
 
