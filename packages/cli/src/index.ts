@@ -35,6 +35,7 @@ import {
   generateModuleTest,
   generateGlobalTest,
 } from './commands/test.js';
+import { runDoctor } from './commands/doctor.js';
 
 // ============================================
 // Help Display Functions
@@ -354,6 +355,14 @@ generate
     await generateGlobalTest(type);
   });
 
+// Doctor command
+program
+  .command('doctor')
+  .description('Check your Lunar Kit setup')
+  .action(async () => {
+    await runDoctor();
+  });
+
   program.configureHelp({
   formatHelp: () => {
     return `
@@ -363,6 +372,7 @@ ${chalk.bold('Commands:')}
   ${chalk.green('init')}                                          Initialize Lunar Kit in your project
   ${chalk.green('add')} [subcommand]                              Add a component or feature
   ${chalk.green('add help')}                                      Show add subcommand table
+  ${chalk.green('doctor')}                                        Check your Lunar Kit setup
   ${chalk.green('upgrade')}                                       Upgrade Lunar Kit packages to latest version
   ${chalk.green('migrate')}                                       Migrate breaking changes between versions
   ${chalk.green('generate|g')} [subcommand]                       Generate a Lunar Kit element
@@ -374,6 +384,7 @@ ${chalk.bold('Quick Reference:')}
   ┌─────────────────┬──────────────────────────────────────────────────────────┐
   │ ${chalk.bold('command')}         │ ${chalk.bold('description')}                                                   │
   ├─────────────────┼──────────────────────────────────────────────────────────┤
+  │ doctor          │ Check Lunar Kit setup and configuration                  │
   │ add             │ Add components or features (button, dialog, locale)      │
   │ generate (g)    │ Generate code (modules, services, types, tests)          │
   │ upgrade         │ Update Lunar Kit packages                                │
@@ -382,6 +393,7 @@ ${chalk.bold('Quick Reference:')}
 
 ${chalk.bold('Examples:')}
   ${chalk.dim('$ lunar init')}
+  ${chalk.dim('$ lunar doctor')}
   ${chalk.dim('$ lunar add button')}
   ${chalk.dim('$ lunar add locale')}
   ${chalk.dim('$ lunar add help')}
