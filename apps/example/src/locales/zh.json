@@ -1,0 +1,17 @@
+{
+  "common": {
+    "ok": "",
+    "cancel": "",
+    "hello": "你好"
+  },
+  "button": {
+    "submit": "",
+    "ok": "好的",
+    "login": "登陆"
+  },
+  "message": {
+    "welcome": ""
+  },
+  "label": {},
+  "error": {}
+}

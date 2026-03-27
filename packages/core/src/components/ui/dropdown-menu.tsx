@@ -259,18 +259,15 @@ export function DropdownMenuContent({
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
   const opacity = useSharedValue(0);
-  const scale = useSharedValue(0.95);
   const [visible, setVisible] = React.useState(false);
   const [contentSize, setContentSize] = React.useState({ width: 0, height: 0 });
 
   React.useEffect(() => {
     if (open) {
       setVisible(true);
-      opacity.value = withTiming(1, { duration: 120 });
-      scale.value = withSpring(1, { damping: 15, stiffness: 150 });
+      opacity.value = withTiming(1, { duration: 100 });
     } else {
-      opacity.value = withTiming(0, { duration: 120 });
-      scale.value = withTiming(0.98, { duration: 120 }, (finished) => {
+      opacity.value = withTiming(0, { duration: 100 }, (finished) => {
         if (finished) runOnJS(setVisible)(false);
       });
     }
@@ -278,7 +275,6 @@ export function DropdownMenuContent({
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
-    transform: [{ scale: scale.value }],
   }));
 
   if (!visible || !triggerLayout) return null;
@@ -571,18 +567,15 @@ export function DropdownMenuSubContent({
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
   const opacity = useSharedValue(0);
-  const scale = useSharedValue(0.95);
   const [visible, setVisible] = React.useState(false);
   const [contentSize, setContentSize] = React.useState({ width: 0, height: 0 });
 
   React.useEffect(() => {
     if (open) {
       setVisible(true);
-      opacity.value = withTiming(1, { duration: 120 });
-      scale.value = withSpring(1, { damping: 15, stiffness: 150 });
+      opacity.value = withTiming(1, { duration: 100 });
     } else {
-      opacity.value = withTiming(0, { duration: 120 });
-      scale.value = withTiming(0.98, { duration: 120 }, (finished) => {
+      opacity.value = withTiming(0, { duration: 100 }, (finished) => {
         if (finished) runOnJS(setVisible)(false);
       });
     }
@@ -590,7 +583,6 @@ export function DropdownMenuSubContent({
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
-    transform: [{ scale: scale.value }],
   }));
 
   if (!visible || !triggerLayout) return null;

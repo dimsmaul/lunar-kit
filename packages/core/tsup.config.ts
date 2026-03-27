@@ -3,7 +3,7 @@ import path from 'path';
 import alias from 'esbuild-plugin-alias';
 
 export default defineConfig({
-  entry: ['src/index.ts'],
+  entry: ['src/index.ts', 'src/templates.ts', 'src/cli-utils.ts'],
   format: ['esm'],
   dts: false,
   clean: true,

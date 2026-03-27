@@ -6,8 +6,8 @@ import { execSync } from 'node:child_process';
 import { loadConfig } from '../utils/helpers.js';
 import {
   LOCAL_REGISTRY_PATH,
-  LOCAL_COMPONENTS_PATH 
-} from '@lunar-kit/core';
+  LOCAL_COMPONENTS_PATH
+} from '@lunar-kit/core/cli-utils';
 
 interface ComponentRegistry {
   name: string;
@@ -23,14 +23,79 @@ interface ComponentRegistry {
 }
 
 /**
- * @Get registry source (local or remote)
+ * Add Command Registry
+ * 
+ * Centralized table for handling different "add" subcommands
+ * Each feature registers its handler here
+ */
+const addCommandHandlers: Record<string, (args: string[]) => Promise<void>> = {
+  'locale': addLocaleEntry,
+  'locale:update': updateLocaleTranslations,
+  // Future: add more handlers here
+  // 'theme': addTheme,
+  // 'icon': addIcon,
+  // 'config': addConfig,
+};
+
+/**
+ * Main add command dispatcher
+ * Routes to appropriate handler based on arguments
+ */
+export async function addCommand(args: string[]) {
+  if (!args || args.length === 0) {
+    showAddHelp();
+    return;
+  }
+
+  const [subcommand, ...restArgs] = args;
+
+  // Handle compound subcommands like 'locale update'
+  if (subcommand === 'locale' && restArgs[0] === 'update') {
+    const handler = addCommandHandlers['locale:update'];
+    if (handler) {
+      await handler(restArgs);
+      return;
+    }
+  }
+
+  // Handle simple subcommands like 'locale'
+  const handler = addCommandHandlers[subcommand];
+  if (handler) {
+    await handler(restArgs);
+    return;
+  }
+
+  // Not a recognized subcommand - treat as component name (legacy behavior)
+  await addComponent(subcommand);
+}
+
+/**
+ * Show help for add subcommands
+ */
+function showAddHelp() {
+  console.log(`
+${chalk.bold('Usage:')} lunar add <subcommand> [options]
+
+${chalk.bold('Subcommands:')}
+  ${chalk.green('locale')}                                    Add a translation entry to all locale files
+  ${chalk.green('<component>')}                               Add a UI component (e.g., button, dialog)
+
+${chalk.bold('Examples:')}
+  ${chalk.dim('$ lunar add locale')}
+  ${chalk.dim('$ lunar add button')}
+  ${chalk.dim('$ lunar add dialog')}
+`);
+}
+
+/**
+ * Get registry source (local or remote)
  */
 async function getRegistryPath(): Promise<string> {
   // Check if local registry exists (from @lunar-kit/core package)
   if (await fs.pathExists(LOCAL_REGISTRY_PATH)) {
     return LOCAL_REGISTRY_PATH;
   }
-  
+
   // Fallback to remote (will need to fetch via axios)
   throw new Error('Local registry not found. Remote registry not yet implemented.');
 }
@@ -39,12 +104,12 @@ async function getComponentsPath(): Promise<string> {
   if (await fs.pathExists(LOCAL_COMPONENTS_PATH)) {
     return LOCAL_COMPONENTS_PATH;
   }
-  
+
   throw new Error('Local components not found.');
 }
 
 /**
- * @Install registry dependencies recursively
+ * Install registry dependencies recursively
  */
 
 // Track installed components to avoid circular dependencies
@@ -64,16 +129,16 @@ async function installRegistryDependencies(
     }
 
     spinner.text = `Installing registry dependency: ${chalk.cyan(dep)}`;
-    
+
     const depRegistryPath = path.join(registryPath, 'ui', `${dep}.json`);
-    
+
     if (!await fs.pathExists(depRegistryPath)) {
       spinner.warn(`Registry dependency "${dep}" not found. Skipping...`);
       continue;
     }
 
     const depRegistry: ComponentRegistry = await fs.readJson(depRegistryPath);
-    
+
     // Recursively install dependencies first
     if (depRegistry.registryDependencies?.length > 0) {
       await installRegistryDependencies(
@@ -87,25 +152,14 @@ async function installRegistryDependencies(
 
     // Copy component files
     for (const file of depRegistry.files) {
-      const relativePath = file.path.replace('/src/components/', '');
-      const sourcePath = path.join(componentsPath, relativePath);
-      const fileName = path.basename(file.path);
-      const targetPath = path.join(componentsDir, fileName);
+      const srcPath = path.join(componentsPath, file.path);
+      const destPath = path.join(componentsDir, file.path);
 
-      // Skip if already exists
-      if (await fs.pathExists(targetPath)) {
-        spinner.text = chalk.dim(`Skipping ${fileName} (already exists)`);
-        continue;
+      if (await fs.pathExists(srcPath)) {
+        await fs.ensureDir(path.dirname(destPath));
+        await fs.copy(srcPath, destPath);
+        spinner.text = `Copied ${chalk.cyan(file.path)}`;
       }
-
-      if (!await fs.pathExists(sourcePath)) {
-        spinner.warn(`Source file not found: ${sourcePath}`);
-        continue;
-      }
-
-      await fs.ensureDir(path.dirname(targetPath));
-      await fs.copy(sourcePath, targetPath);
-      spinner.text = `Copied ${chalk.green(fileName)} (from ${dep})`;
     }
 
     installedComponents.add(dep);
@@ -113,113 +167,8 @@ async function installRegistryDependencies(
 }
 
 /**
- * @Install by package manager
+ * Add UI component (legacy behavior - direct component name)
  */
-function getPackageManager(config: any): string {
-  // First, check config
-  if (config.packageManager) {
-    return config.packageManager;
-  }
-
-  // Fallback: detect from lock files
-  if (fs.existsSync(path.join(process.cwd(), 'pnpm-lock.yaml'))) {
-    return 'pnpm';
-  }
-  if (fs.existsSync(path.join(process.cwd(), 'yarn.lock'))) {
-    return 'yarn';
-  }
-  if (fs.existsSync(path.join(process.cwd(), 'package-lock.json'))) {
-    return 'npm';
-  }
-  
-  return 'npm';
-}
-
-/**
- * @Check installed dependencies
- */
-
-// DONE: Check which dependencies are already installed
-function getInstalledDependencies(): { dependencies: Set<string>; devDependencies: Set<string> } {
-  const pkgPath = path.join(process.cwd(), 'package.json');
-  
-  if (!fs.existsSync(pkgPath)) {
-    return { dependencies: new Set(), devDependencies: new Set() };
-  }
-
-  const pkg = fs.readJsonSync(pkgPath);
-  
-  return {
-    dependencies: new Set(Object.keys(pkg.dependencies || {})),
-    devDependencies: new Set(Object.keys(pkg.devDependencies || {})),
-  };
-}
-
-/**
- * @Install dependencies
- */
-
-// DONE: Filter out already installed dependencies
-function filterUninstalledDeps(
-  deps: string[],
-  installed: Set<string>
-): string[] {
-  return deps.filter(dep => {
-    // Handle version specifiers (e.g., "react@18.0.0" -> "react")
-    const pkgName = dep.split('@')[0];
-    return !installed.has(pkgName);
-  });
-}
-
-function installDependencies(
-  deps: string[],
-  config: any,
-  isDev: boolean = false
-): void {
-  if (deps.length === 0) return;
-
-  const packageManager = getPackageManager(config);
-  
-  // Check what's already installed
-  const { dependencies, devDependencies } = getInstalledDependencies();
-  const installed = isDev ? devDependencies : dependencies;
-  
-  // Filter out already installed
-  const toInstall = filterUninstalledDeps(deps, installed);
-  
-  if (toInstall.length === 0) {
-    console.log(chalk.dim(`\n✓ All ${isDev ? 'dev ' : ''}dependencies already installed`));
-    return;
-  }
-
-  // Show which deps are being installed
-  const alreadyInstalled = deps.filter(d => !toInstall.includes(d));
-  if (alreadyInstalled.length > 0) {
-    console.log(chalk.dim(`\n✓ Already installed: ${alreadyInstalled.join(', ')}`));
-  }
-
-  const devFlag = isDev ? (packageManager === 'npm' ? '--save-dev' : '-D') : '';
-  const command = `${packageManager} add ${devFlag} ${toInstall.join(' ')}`;
-
-  console.log(chalk.cyan(`\nInstalling ${isDev ? 'dev ' : ''}dependencies with ${packageManager}...`));
-  console.log(chalk.white(`Installing: ${chalk.green(toInstall.join(', '))}`));
-  console.log(chalk.dim(command));
-
-  try {
-    execSync(command, { 
-      stdio: 'inherit',
-      cwd: process.cwd(),
-    });
-  } catch (error) {
-    console.error(chalk.red(`Failed to install dependencies`));
-    throw error;
-  }
-}
-
-/**
- * @Add component command
- */
-
 export async function addComponent(componentName: string) {
   const spinner = ora(`Adding ${componentName}...`).start();
 
@@ -235,7 +184,7 @@ export async function addComponent(componentName: string) {
     const componentsPath = await getComponentsPath();
 
     const componentsDir = path.join(process.cwd(), config.uiComponentsDir || 'src/components/ui');
-    
+
     // Auto create folder if not exists
     if (!await fs.pathExists(componentsDir)) {
       spinner.text = `Creating directory: ${config.uiComponentsDir}`;
@@ -245,22 +194,28 @@ export async function addComponent(componentName: string) {
     }
 
     const componentRegistryPath = path.join(registryPath, 'ui', `${componentName}.json`);
-    
+
     if (!await fs.pathExists(componentRegistryPath)) {
-      spinner.fail(`Component "${componentName}" not found in registry.`);
+      spinner.fail(`Component "${componentName}" not found in registry`);
+      console.log(chalk.dim('Available components:'));
+      
+      const registryFiles = await fs.readdir(path.join(registryPath, 'ui'));
+      const availableComponents = registryFiles
+        .filter(f => f.endsWith('.json'))
+        .map(f => f.replace('.json', ''));
+      
+      availableComponents.forEach(comp => {
+        console.log(chalk.dim(`  - ${comp}`));
+      });
       return;
     }
 
-    const registry: ComponentRegistry = await fs.readJson(componentRegistryPath);
+    const componentRegistry: ComponentRegistry = await fs.readJson(componentRegistryPath);
 
-    // Clear installed components tracker
-    installedComponents.clear();
-
-    // Install registry dependencies first (recursive)
-    if (registry.registryDependencies?.length > 0) {
-      spinner.text = 'Installing registry dependencies...';
+    // Install registry dependencies first
+    if (componentRegistry.registryDependencies?.length > 0) {
       await installRegistryDependencies(
-        registry.registryDependencies,
+        componentRegistry.registryDependencies,
         componentsDir,
         spinner,
         registryPath,
@@ -268,41 +223,62 @@ export async function addComponent(componentName: string) {
       );
     }
 
-    // Copy main component files
-    for (const file of registry.files) {
-      const relativePath = file.path.replace('/src/components/', '');
-      const sourcePath = path.join(componentsPath, relativePath);
-      const fileName = path.basename(file.path);
-      const targetPath = path.join(componentsDir, fileName);
+    // Copy component files
+    for (const file of componentRegistry.files) {
+      const srcPath = path.join(componentsPath, file.path);
+      const destPath = path.join(componentsDir, file.path);
 
-      if (!await fs.pathExists(sourcePath)) {
-        spinner.warn(`Source file not found: ${sourcePath}`);
-        continue;
+      if (await fs.pathExists(srcPath)) {
+        await fs.ensureDir(path.dirname(destPath));
+        await fs.copy(srcPath, destPath);
+        spinner.text = `Copied ${chalk.cyan(file.path)}`;
       }
-
-      await fs.ensureDir(path.dirname(targetPath));
-      await fs.copy(sourcePath, targetPath);
-      spinner.text = `Copied ${chalk.green(fileName)}`;
     }
 
-    spinner.succeed(`Successfully added ${chalk.green(componentName)}!`);
-    console.log(chalk.dim(`\nLocation: ${config.uiComponentsDir}/${componentName}.tsx`));
+    installedComponents.add(componentName);
 
     // Install npm dependencies
-    if (registry.dependencies?.length > 0) {
-      spinner.stop();
-      installDependencies(registry.dependencies, config, false);
+    if (componentRegistry.dependencies?.length > 0) {
+      spinner.text = 'Installing dependencies...';
+      const packageManager = config.packageManager || 'pnpm';
+      const installCmd = packageManager === 'npm' ? 'npm install' : `${packageManager} add`;
+      
+      try {
+        execSync(`${installCmd} ${componentRegistry.dependencies.join(' ')}`, {
+          stdio: 'ignore',
+          cwd: process.cwd(),
+        });
+      } catch (error) {
+        spinner.fail('Failed to install dependencies');
+        console.log(chalk.dim(`Run: ${installCmd} ${componentRegistry.dependencies.join(' ')}`));
+        return;
+      }
     }
 
-    // Install dev dependencies
-    if (registry.devDependencies && registry.devDependencies.length > 0) {
-      installDependencies(registry.devDependencies, config, true);
-    }
-
-    console.log(chalk.green('\n✓ All done!'));
+    spinner.succeed(chalk.green(`Component "${componentName}" added successfully`));
+    console.log(chalk.dim('Import it in your code:'));
+    console.log(chalk.cyan(`  import { ${componentName} } from '${componentsDir}';`));
 
   } catch (error) {
-    spinner.fail(`Failed to add ${componentName}`);
+    spinner.fail('Failed to add component');
     console.error(error);
   }
+}
+
+/**
+ * Add locale entry (subcommand handler)
+ */
+async function addLocaleEntry(): Promise<void> {
+  // Import dynamically to avoid circular dependency
+  const { addLocaleEntry: localeHandler } = await import('./localization.js');
+  await localeHandler();
+}
+
+/**
+ * Update locale translations (subcommand handler)
+ */
+async function updateLocaleTranslations(): Promise<void> {
+  // Import dynamically to avoid circular dependency
+  const { updateLocaleTranslations: updateHandler } = await import('./localization.js');
+  await updateHandler();
 }

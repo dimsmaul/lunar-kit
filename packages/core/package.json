@@ -14,6 +14,16 @@
       "react-native": "./src/index.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./templates": {
+      "types": "./src/templates.ts",
+      "import": "./dist/templates.js",
+      "default": "./dist/templates.js"
+    },
+    "./cli-utils": {
+      "types": "./src/cli-utils.ts",
+      "import": "./dist/cli-utils.js",
+      "default": "./dist/cli-utils.js"
     }
   },
   "files": [
@@ -25,6 +35,7 @@
     "src/stores",
     "src/lib",
     "src/navigation",
+    "src/templates",
     "src/tailwind.config.js"
   ],
   "keywords": [
@@ -53,7 +64,10 @@
     "nativewind": "*",
     "zustand": "*"
   },
-  "dependencies": {},
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.6.0"
+  },
   "devDependencies": {
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.0",
