@@ -1,0 +1,17 @@
+{
+  "common": {
+    "ok": "",
+    "cancel": "",
+    "hello": "Halo"
+  },
+  "button": {
+    "submit": "",
+    "ok": "OKE",
+    "login": "Masuk"
+  },
+  "message": {
+    "welcome": ""
+  },
+  "label": {},
+  "error": {}
+}
