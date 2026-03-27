@@ -1,0 +1,27 @@
+{
+  "name": "slider",
+  "type": "registry:ui",
+  "description": "A draggable range input component.",
+  "files": [
+    {
+      "path": "/src/components/ui/slider.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [
+    "react-native-reanimated",
+    "react-native-gesture-handler",
+    "nativewind"
+  ],
+  "registryDependencies": [],
+  "meta": {
+    "description": "A smooth, interactive slider with support for range, steps, and customs styles.",
+    "features": [
+      "Smooth dragging with Reanimated & Gesture Handler",
+      "Support for min, max, and step",
+      "Controlled and uncontrolled modes",
+      "High performance using Shared Values",
+      "Fully themed with NativeWind"
+    ]
+  }
+}

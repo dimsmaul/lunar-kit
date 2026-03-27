@@ -2,7 +2,7 @@ import React from 'react';
 import '../src/global.css';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ThemeProvider, useThemeColors } from '@lunar-kit/core';
+import { ThemeProvider, useThemeColors, Toaster } from '@lunar-kit/core';
 import { useColorScheme } from 'nativewind';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -22,6 +22,7 @@ export default function RootLayout() {
 
             },
           }} key={colorScheme} />
+          <Toaster />
         </ThemeProvider>
       </GestureHandlerRootView>
     </QueryClientProvider>

@@ -1,0 +1,29 @@
+{
+  "name": "alert",
+  "type": "registry:ui",
+  "description": "An inline notification component with various variants.",
+  "files": [
+    {
+      "path": "/src/components/ui/alert.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [
+    "lucide-react-native",
+    "class-variance-authority",
+    "nativewind"
+  ],
+  "registryDependencies": [
+    "text"
+  ],
+  "meta": {
+    "description": "An inline notification component with various variants (success, error, warning, info) and optional icon.",
+    "features": [
+      "Multiple variants: default, info, success, warning, destructive",
+      "Optional automatic icon based on variant",
+      "Customizable icon",
+      "Dark mode support",
+      "NativeWind integration"
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "skeleton",
+  "type": "registry:ui",
+  "description": "An animated loading placeholder component.",
+  "files": [
+    {
+      "path": "/src/components/ui/skeleton.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [
+    "react-native-reanimated",
+    "nativewind"
+  ],
+  "registryDependencies": [],
+  "meta": {
+    "description": "Animated loading placeholders for different shapes: rectangle, circle, and text.",
+    "features": [
+      "Pulse animation using Reanimated",
+      "Multiple shapes: rect, circle, text",
+      "Extremely lightweight",
+      "Easy to use in loading states"
+    ]
+  }
+}
