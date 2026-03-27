@@ -6,7 +6,7 @@ import prompts from 'prompts';
 import { loadConfig } from '../utils/helpers.js';
 
 /**
- * Generate a new locale file
+ * Generate a new locale file (JSON format)
  * Usage: lunar g locale <lang>
  */
 export async function generateLocale(lang: string) {
@@ -22,7 +22,7 @@ export async function generateLocale(lang: string) {
     const localesDir = path.join(process.cwd(), config.localization?.localesDir || 'src/locales');
     await fs.ensureDir(localesDir);
 
-    const targetFile = path.join(localesDir, `${lang}.ts`);
+    const targetFile = path.join(localesDir, `${lang}.json`);
 
     if (fs.existsSync(targetFile)) {
       spinner.fail(`Locale "${lang}" already exists at ${targetFile}`);
@@ -31,80 +31,191 @@ export async function generateLocale(lang: string) {
 
     // Find existing locale to clone structure from
     const existingLocales = (await fs.readdir(localesDir))
-      .filter(f => f.endsWith('.ts') && f !== 'index.ts' && f !== 'locale-store.ts')
-      .map(f => f.replace('.ts', ''));
+      .filter(f => f.endsWith('.json'))
+      .map(f => f.replace('.json', ''));
 
-    let template: string;
+    let template: any;
 
     if (existingLocales.length > 0) {
       // Read first existing locale and create empty-value clone
-      const sourceFile = path.join(localesDir, `${existingLocales[0]}.ts`);
-      const sourceContent = await fs.readFile(sourceFile, 'utf-8');
+      const sourceFile = path.join(localesDir, `${existingLocales[0]}.json`);
+      const sourceContent = await fs.readJson(sourceFile);
 
-      // Replace all string values with empty strings for translation
-      template = sourceContent
-        .replace(/from '\.\/index'/, `from './index'`)
-        .replace(
-          new RegExp(`const ${existingLocales[0]}`),
-          `const ${lang}`,
-        )
-        .replace(
-          new RegExp(`export default ${existingLocales[0]}`),
-          `export default ${lang}`,
-        )
-        // Replace string values with TODO markers
-        .replace(/: '([^']+)'/g, (match, value) => {
-          // Keep {{param}} placeholders but clear the text
-          if (value.includes('{{')) {
-            return `: '${value}'`; // Keep parameterized strings as reference
-          }
-          return `: ''`; // Empty for translation
-        });
+      // Create clone with empty values
+      template = cloneWithEmptyValues(sourceContent);
     } else {
       // No existing locale — create minimal template
-      template = `import type { TranslationDictionary } from './index';
-
-const ${lang}: TranslationDictionary = {
-  common: {
-    ok: '',
-    cancel: '',
-  },
-  button: {
-    submit: '',
-  },
-  message: {
-    welcome: '',
-  },
-  label: {},
-  error: {},
-};
-
-export default ${lang};
-`;
+      template = {
+        common: {
+          ok: '',
+          cancel: '',
+        },
+        button: {
+          submit: '',
+        },
+        message: {
+          welcome: '',
+        },
+        label: {},
+        error: {},
+      };
     }
 
-    await fs.writeFile(targetFile, template, 'utf-8');
-
-    // Update the locales/index.ts to register new locale
-    await registerLocaleInIndex(localesDir, lang);
+    await fs.writeJson(targetFile, template, { spaces: 2 });
 
     // Update kit.config.json
-    if (config.localization) {
-      if (!config.localization.locales.includes(lang)) {
-        config.localization.locales.push(lang);
-        const configPath = path.join(process.cwd(), 'kit.config.json');
-        await fs.writeJson(configPath, config, { spaces: 2 });
-      }
+    if (!config.localization) {
+      config.localization = {
+        localesDir: 'src/locales',
+        locales: [],
+        defaultLocale: 'en',
+      };
     }
 
+    if (!config.localization.locales.includes(lang)) {
+      config.localization.locales.push(lang);
+    }
+
+    const configPath = path.join(process.cwd(), 'kit.config.json');
+    await fs.writeJson(configPath, config, { spaces: 2 });
+
+    // Generate i18n setup if not exists
+    await generateI18nSetup(config);
+
     spinner.succeed(chalk.green(`Locale "${lang}" generated`));
-    console.log(chalk.cyan(`  ${localesDir}/${lang}.ts`));
-    console.log(chalk.dim(`  → Fill in the translations, then use t('category.key') in your components`));
+    console.log(chalk.cyan(`  ${localesDir}/${lang}.json`));
+    console.log(chalk.dim(`  → Fill in the translations in the JSON file`));
+    console.log(chalk.yellow(`  → Run "lunar add locale update" to bulk-add translations`));
 
   } catch (error) {
     spinner.fail('Failed to generate locale');
     console.error(error);
   }
+}
+
+/**
+ * Clone object with empty string values (keep structure)
+ */
+function cloneWithEmptyValues(obj: any): any {
+  const result: any = {};
+  for (const key in obj) {
+    if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+      result[key] = cloneWithEmptyValues(obj[key]);
+    } else {
+      result[key] = '';
+    }
+  }
+  return result;
+}
+
+/**
+ * Generate i18n setup files
+ */
+async function generateI18nSetup(config: any) {
+  const srcDir = config.srcDir || 'src';
+  const libDir = path.join(process.cwd(), srcDir, 'lib');
+  const i18nPath = path.join(libDir, 'i18n.ts');
+
+  if (await fs.pathExists(i18nPath)) {
+    return;
+  }
+
+  await fs.ensureDir(libDir);
+
+  const i18nContent = `/**
+ * i18n Configuration
+ * 
+ * Internationalization setup with JSON locale files
+ */
+
+import type { TranslationDictionary } from '@/locales';
+
+// Auto-loaded locales
+let loadedLocales: Record<string, TranslationDictionary> = {};
+
+/**
+ * Load a locale from JSON file
+ */
+export async function loadLocale(lang: string): Promise<TranslationDictionary | null> {
+  if (loadedLocales[lang]) return loadedLocales[lang];
+
+  try {
+    const locale = await import(\`@/locales/\${lang}.json\`);
+    loadedLocales[lang] = locale.default;
+    return locale.default;
+  } catch (error) {
+    console.error(\`Failed to load locale: \${lang}\`, error);
+    return null;
+  }
+}
+
+/**
+ * Translation lookup
+ */
+export function t(
+  locale: string,
+  key: string,
+  params?: Record<string, string | number>,
+): string {
+  const dict = loadedLocales[locale];
+  if (!dict) return key;
+
+  // Support dot notation: "common.greeting"
+  const parts = key.split('.');
+  let value: any = dict;
+
+  for (const part of parts) {
+    value = value?.[part];
+  }
+
+  if (!value || typeof value !== 'string') return key;
+
+  if (!params) return value;
+
+  // Replace {{param}} placeholders
+  return value.replace(/\\{\\{(\\w+)\\}\\}/g, (_, paramKey) => {
+    return String(params[paramKey] ?? \`{{\${paramKey}}}\`);
+  });
+}
+
+/**
+ * Pre-load all configured locales
+ */
+export async function initLocalization(defaultLocale: string) {
+  await loadLocale(defaultLocale);
+}
+
+/**
+ * Get available locales
+ */
+export function getAvailableLocales(): string[] {
+  return Object.keys(loadedLocales);
+}
+
+/**
+ * React Hook for Translations
+ */
+export function useTranslation() {
+  // Implement with Zustand store
+  throw new Error('useTranslation should be implemented with Zustand store');
+}
+`;
+
+  await fs.writeFile(i18nPath, i18nContent);
+
+  // Update lib/index.ts barrel export
+  const barrelPath = path.join(libDir, 'index.ts');
+  let barrelContent = '';
+  if (await fs.pathExists(barrelPath)) {
+    barrelContent = await fs.readFile(barrelPath, 'utf-8');
+  }
+
+  if (!barrelContent.includes('i18n')) {
+    barrelContent += `\nexport * from './i18n';\n`;
+    await fs.writeFile(barrelPath, barrelContent);
+  }
+
+  console.log(chalk.dim('  Auto-created: ') + chalk.cyan(`${srcDir}/lib/i18n.ts`));
 }
 
 /**
@@ -128,21 +239,18 @@ export async function addLocaleEntry() {
 
     // Discover existing locale files
     const localeFiles = (await fs.readdir(localesDir))
-      .filter(f => f.endsWith('.ts') && f !== 'index.ts' && f !== 'locale-store.ts');
+      .filter(f => f.endsWith('.json'));
 
     if (localeFiles.length === 0) {
       console.log(chalk.red('No locale files found. Run `lunar g locale <lang>` first.'));
       return;
     }
 
-    const locales = localeFiles.map(f => f.replace('.ts', ''));
+    const locales = localeFiles.map(f => f.replace('.json', ''));
 
     // Discover existing categories from first locale
-    const firstLocaleContent = await fs.readFile(path.join(localesDir, localeFiles[0]), 'utf-8');
-    const categoryMatches = firstLocaleContent.match(/^\s{2}(\w+):\s*\{/gm);
-    const existingCategories = categoryMatches
-      ? categoryMatches.map(m => m.trim().replace(/:\s*\{$/, ''))
-      : [];
+    const firstLocaleContent = await fs.readJson(path.join(localesDir, localeFiles[0]));
+    const existingCategories = Object.keys(firstLocaleContent);
 
     // Prompt: category
     const categoryResponse = await prompts({
@@ -198,38 +306,22 @@ export async function addLocaleEntry() {
     const spinner = ora('Adding translations...').start();
 
     for (const lang of locales) {
-      const filePath = path.join(localesDir, `${lang}.ts`);
-      let content = await fs.readFile(filePath, 'utf-8');
-
-      const escapedValue = translations[lang].replace(/'/g, "\\'");
+      const filePath = path.join(localesDir, `${lang}.json`);
+      let content = await fs.readJson(filePath);
 
       // Check if category exists
-      const categoryRegex = new RegExp(`(\\s{2}${category}:\\s*\\{)([^}]*)(\\})`);
-      const categoryMatch = content.match(categoryRegex);
-
-      if (categoryMatch) {
-        // Category exists — add key before closing brace
-        const existingKeys = categoryMatch[2];
-        const newKey = `    ${key}: '${escapedValue}',\n`;
-
-        // Check if key already exists
-        if (existingKeys.includes(`${key}:`)) {
-          spinner.warn(chalk.yellow(`Key "${category}.${key}" already exists in ${lang}.ts — skipping`));
-          continue;
-        }
-
-        content = content.replace(
-          categoryRegex,
-          `$1${existingKeys}${newKey}  $3`,
-        );
-      } else {
-        // Category doesn't exist — add before the closing of the object
-        const newCategory = `  ${category}: {\n    ${key}: '${escapedValue}',\n  },\n`;
-        // Insert before the final `};`
-        content = content.replace(/^(\};)/m, `${newCategory}$1`);
+      if (!content[category]) {
+        content[category] = {};
       }
 
-      await fs.writeFile(filePath, content, 'utf-8');
+      // Check if key already exists
+      if (content[category][key]) {
+        spinner.warn(chalk.yellow(`Key "${category}.${key}" already exists in ${lang}.json — updating`));
+      }
+
+      content[category][key] = translations[lang];
+
+      await fs.writeJson(filePath, content, { spaces: 2 });
     }
 
     spinner.succeed(chalk.green(`Added "${category}.${key}" to ${locales.length} locale files`));
@@ -240,27 +332,158 @@ export async function addLocaleEntry() {
 }
 
 /**
- * Register a new locale in the locales/index.ts
+ * Update locale: Bulk add translations for a specific locale
+ * Usage: lunar add locale update
  */
-async function registerLocaleInIndex(localesDir: string, lang: string) {
-  const indexPath = path.join(localesDir, 'index.ts');
-  if (!fs.existsSync(indexPath)) return;
+export async function updateLocaleTranslations() {
+  try {
+    const config = await loadConfig();
+    if (!config) {
+      console.log(chalk.red('kit.config.json not found. Run `lunar init` first.'));
+      return;
+    }
 
-  let content = await fs.readFile(indexPath, 'utf-8');
+    const localesDir = path.join(process.cwd(), config.localization?.localesDir || 'src/locales');
 
-  const registerLine = `registerLocale('${lang}', () => import('./${lang}'));`;
+    if (!fs.existsSync(localesDir)) {
+      console.log(chalk.red('Locales directory not found.'));
+      return;
+    }
 
-  if (content.includes(registerLine)) return;
+    const localeFiles = (await fs.readdir(localesDir))
+      .filter(f => f.endsWith('.json'));
 
-  // Find the last registerLocale line or the end of file
-  const lastRegisterIndex = content.lastIndexOf('registerLocale(');
-  if (lastRegisterIndex !== -1) {
-    const lineEnd = content.indexOf('\n', lastRegisterIndex);
-    content = content.slice(0, lineEnd + 1) + registerLine + '\n' + content.slice(lineEnd + 1);
-  } else {
-    // No registerLocale yet — add at end
-    content += `\n${registerLine}\n`;
+    if (localeFiles.length === 0) {
+      console.log(chalk.red('No locale files found.'));
+      return;
+    }
+
+    // Select which locale to update
+    const locales = localeFiles.map(f => f.replace('.json', ''));
+    
+    const localeResponse = await prompts({
+      type: 'select',
+      name: 'locale',
+      message: 'Which locale do you want to update?',
+      choices: locales.map(lang => ({ title: lang, value: lang })),
+    });
+
+    const targetLocale = localeResponse.locale;
+    if (!targetLocale) return;
+
+    // Find reference locale (first one that's not the target)
+    const referenceLocale = locales.find(l => l !== targetLocale) || locales[0];
+    
+    // Load reference locale to get all keys
+    const referenceFile = path.join(localesDir, `${referenceLocale}.json`);
+    const referenceContent = await fs.readJson(referenceFile);
+    
+    // Load target locale
+    const targetFile = path.join(localesDir, `${targetLocale}.json`);
+    let targetContent = await fs.readJson(targetFile);
+
+    // Extract all keys from reference
+    const allKeys = extractAllKeys(referenceContent);
+
+    console.log(chalk.dim(`\nFound ${allKeys.length} keys to translate (from ${referenceLocale}.json)`));
+    console.log(chalk.dim(`Target: ${targetLocale}.json\n`));
+
+    const spinner = ora('Updating translations...').start();
+    let updatedCount = 0;
+
+    // Prompt for each key
+    for (const keyPath of allKeys) {
+      const currentValue = getNestedValue(targetContent, keyPath);
+      
+      // Skip if already has value
+      if (currentValue && currentValue !== '') {
+        spinner.text = `Skipping: ${chalk.cyan(keyPath)} (already translated)`;
+        continue;
+      }
+
+      const referenceValue = getNestedValue(referenceContent, keyPath);
+      
+      spinner.stop();
+      console.log(chalk.dim(`\nKey: ${chalk.cyan(keyPath)}`));
+      console.log(chalk.dim(`Reference (${referenceLocale}): ${chalk.green(referenceValue || '(empty)')}`));
+      
+      const response = await prompts({
+        type: 'text',
+        name: 'value',
+        message: `${targetLocale}:`,
+        initial: '',
+      });
+
+      if (response.value === undefined) {
+        spinner.start('Cancelled...');
+        break;
+      }
+
+      setNestedValue(targetContent, keyPath, response.value);
+      updatedCount++;
+      
+      spinner.start(`Updated ${updatedCount}/${allKeys.length} keys...`);
+    }
+
+    if (updatedCount > 0) {
+      // Write updated content
+      await fs.writeJson(targetFile, targetContent, { spaces: 2 });
+      spinner.succeed(chalk.green(`Updated ${updatedCount} translations in ${targetLocale}.json`));
+    } else {
+      spinner.info(chalk.yellow('No translations updated'));
+    }
+
+  } catch (error) {
+    console.error(chalk.red('Failed to update locale translations'), error);
   }
+}
 
-  await fs.writeFile(indexPath, content, 'utf-8');
+/**
+ * Extract all dot-notation keys from an object
+ */
+function extractAllKeys(obj: any, prefix = ''): string[] {
+  const keys: string[] = [];
+  
+  for (const key in obj) {
+    const fullKey = prefix ? `${prefix}.${key}` : key;
+    
+    if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+      keys.push(...extractAllKeys(obj[key], fullKey));
+    } else {
+      keys.push(fullKey);
+    }
+  }
+  
+  return keys;
+}
+
+/**
+ * Get nested value using dot notation
+ */
+function getNestedValue(obj: any, keyPath: string): any {
+  const parts = keyPath.split('.');
+  let value: any = obj;
+  
+  for (const part of parts) {
+    value = value?.[part];
+  }
+  
+  return value;
+}
+
+/**
+ * Set nested value using dot notation
+ */
+function setNestedValue(obj: any, keyPath: string, value: any) {
+  const parts = keyPath.split('.');
+  let current: any = obj;
+  
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (!current[parts[i]]) {
+      current[parts[i]] = {};
+    }
+    current = current[parts[i]];
+  }
+  
+  current[parts[parts.length - 1]] = value;
 }

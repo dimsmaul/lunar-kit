@@ -20,5 +20,19 @@
   "autoRouting": true,
   "autoImport": true,
   "autoBarrelExport": true,
-  "packageManager": "pnpm"
+  "packageManager": "pnpm",
+  "testing": {
+    "enabled": true,
+    "framework": "jest"
+  },
+  "localization": {
+    "localesDir": "src/locales",
+    "locales": [
+      "en",
+      "id",
+      "zh",
+      "jp"
+    ],
+    "defaultLocale": "en"
+  }
 }
