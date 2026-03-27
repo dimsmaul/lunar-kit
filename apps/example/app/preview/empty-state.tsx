@@ -1,0 +1,1 @@
+export { default } from '@modules/preview/view/empty-state_view';

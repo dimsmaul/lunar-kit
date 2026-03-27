@@ -1,0 +1,25 @@
+{
+  "name": "breadcrumb",
+  "type": "registry:ui",
+  "description": "A navigation component that indicates the current page's location within a hierarchy.",
+  "files": [
+    {
+      "path": "/src/components/ui/breadcrumb.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [
+    "lucide-react-native",
+    "nativewind"
+  ],
+  "registryDependencies": ["text"],
+  "meta": {
+    "description": "Clear and accessible breadcrumb navigation with customizable separators.",
+    "features": [
+      "Dynamic items with support for active states",
+      "Interactive breadcrumb items",
+      "Customizable separators",
+      "Themed typography"
+    ]
+  }
+}

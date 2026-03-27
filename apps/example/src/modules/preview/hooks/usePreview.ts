@@ -10,6 +10,10 @@ export function usePreview() {
       name: 'Button',
     },
     {
+      path: '/preview/carousel',
+      name: 'Carousel',
+    },
+    {
       path: '/preview/dialog',
       name: 'Dialog',
     },
@@ -80,6 +84,58 @@ export function usePreview() {
     {
       path: '/preview/tooltip',
       name: 'Tooltip',
+    },
+    {
+      path: '/preview/alert',
+      name: 'Alert',
+    },
+    {
+      path: '/preview/toast',
+      name: 'Toast',
+    },
+    {
+      path: '/preview/progress',
+      name: 'Progress',
+    },
+    {
+      path: '/preview/separator',
+      name: 'Separator',
+    },
+    {
+      path: '/preview/skeleton',
+      name: 'Skeleton',
+    },
+    {
+      path: '/preview/switch',
+      name: 'Switch',
+    },
+    {
+      path: '/preview/breadcrumb',
+      name: 'Breadcrumb',
+    },
+    {
+      path: '/preview/empty-state',
+      name: 'Empty State',
+    },
+    {
+      path: '/preview/input',
+      name: 'Input',
+    },
+    {
+      path: '/preview/input-otp',
+      name: 'Input OTP',
+    },
+    {
+      path: '/preview/search-bar',
+      name: 'Search Bar',
+    },
+    {
+      path: '/preview/slider',
+      name: 'Slider',
+    },
+    {
+      path: '/preview/step-indicator',
+      name: 'Step Indicator',
     },
   ]
 

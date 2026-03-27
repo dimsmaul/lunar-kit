@@ -63,3 +63,4 @@ export const LOCAL_TEMPLATES_PATH = getLocalTemplatesPath();
 export * from './components/ui';
 export * from './hooks/index';
 export * from './providers/theme-provider';
+export { toast } from './stores/toast';

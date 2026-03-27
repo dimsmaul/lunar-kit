@@ -1,0 +1,26 @@
+{
+  "name": "carousel",
+  "type": "registry:ui",
+  "description": "A horizontal swipeable component for images or cards.",
+  "files": [
+    {
+      "path": "/src/components/ui/carousel.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [
+    "react-native-reanimated",
+    "nativewind"
+  ],
+  "registryDependencies": [],
+  "meta": {
+    "description": "Smooth swipeable gallery with Reanimated-powered pagination dots and snapping support.",
+    "features": [
+      "Customizable item width and gap",
+      "Animated pagination dots",
+      "Snap-to-item mechanics",
+      "High performance using FlatList",
+      "Themed with NativeWind"
+    ]
+  }
+}

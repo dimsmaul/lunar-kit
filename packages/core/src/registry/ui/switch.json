@@ -1,0 +1,26 @@
+{
+  "name": "switch",
+  "type": "registry:ui",
+  "description": "A toggle switch component.",
+  "files": [
+    {
+      "path": "/src/components/ui/switch.tsx",
+      "type": "component"
+    }
+  ],
+  "dependencies": [
+    "react-native-reanimated",
+    "nativewind"
+  ],
+  "registryDependencies": [],
+  "meta": {
+    "description": "A smooth, animated toggle switch with support for controlled and uncontrolled states.",
+    "features": [
+      "Smooth spring animations",
+      "Color interpolation on track",
+      "Shadowed thumb for depth",
+      "Controlled & Uncontrolled modes",
+      "Dark mode support"
+    ]
+  }
+}
