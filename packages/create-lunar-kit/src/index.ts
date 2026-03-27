@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 import { renderLogo } from './assets/logo';
 import { createConfig, createSrcStructure, setupAppEntry, setupAuthSrc, setupDarkModeSrc, setupExpoRouterSrc, setupFormsSrc, setupNativeWind, setupReactNavigationSrc, setupStateSrc, updatePackageJson, setupLocalizationSrc, setupEnvConfig, setupApiClient } from './commands/init';
 import { closeInitProject } from './res/close';
+import pkg from '../package.json' assert { type: 'json' };
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -21,7 +22,7 @@ program
   .argument('[project-name]', 'Name of your project')
   .action(async (projectName?: string) => {
     renderLogo();
-    console.log(chalk.bold.cyan('\n🌙 Create Lunar Kit App\n'));
+    console.log(chalk.bold.cyan(`\n🌙 Create Lunar Kit App (v${pkg.version})\n`));
 
     const response = await prompts([
       {

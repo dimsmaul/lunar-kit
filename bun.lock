@@ -120,7 +120,7 @@
         "create-lunar-kit": "./dist/index.js",
       },
       "dependencies": {
-        "@lunar-kit/core": "0.1.7",
+        "@lunar-kit/core": "workspace:*",
         "chalk": "^5.4.1",
         "commander": "^12.1.0",
         "execa": "^9.6.1",
@@ -1824,8 +1824,6 @@
     "compression/negotiator": ["negotiator@0.6.4", "", {}, "sha512-myRT3DiWPHqho5PrJaIRyaMv2kgYf0mUVgBNOYMuCH5Ki1yEiQaf/ZJuQ62nvpc44wL5WDbTX7yGJi1Neevw8w=="],
 
     "connect/debug": ["debug@2.6.9", "", { "dependencies": { "ms": "2.0.0" } }, "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA=="],
-
-    "create-lunar-kit/@lunar-kit/core": ["@lunar-kit/core@0.1.7", "", {}, "sha512-OuGsaoaCVDE2z9wOERFeGT2FU/yTCcolc/NueYj/7JP0XP5jUz+dM3v1GgeA6keaxkjeGgv7WVS8D4HaIa8zKg=="],
 
     "create-lunar-kit/commander": ["commander@12.1.0", "", {}, "sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA=="],
 

@@ -1,17 +1,27 @@
+import { LOCAL_COMPONENTS_PATH } from '@lunar-kit/core';
 import fs from 'fs-extra';
 import path from 'node:path';
-import { LOCAL_COMPONENTS_PATH, LOCAL_SOURCE_PATH, LOCAL_TEMPLATES_PATH } from '@lunar-kit/core';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Path to core templates (relative to create-lunar-kit package)
+const CORE_TEMPLATES_PATH = path.join(__dirname, '../../node_modules/@lunar-kit/core/src/templates');
+const CORE_SOURCE_PATH = path.join(__dirname, '../../node_modules/@lunar-kit/core/src');
 
 /**
  * Helper: copy a template file from core to the target project
  */
 function copyTemplate(templatePath: string, destPath: string) {
-  const content = fs.readFileSync(path.join(LOCAL_TEMPLATES_PATH, templatePath));
+  const fullPath = path.join(CORE_TEMPLATES_PATH, templatePath);
+  const content = fs.readFileSync(fullPath);
   fs.writeFileSync(destPath, content);
 }
 
 function copySource(sourcePath: string, destPath: string) {
-  const content = fs.readFileSync(path.join(LOCAL_SOURCE_PATH, sourcePath));
+  const fullPath = path.join(CORE_SOURCE_PATH, sourcePath);
+  const content = fs.readFileSync(fullPath);
   fs.writeFileSync(destPath, content);
 }
 
