@@ -111,3 +111,25 @@ Make sure your code passes TypeScript in the respective packages if defined, tho
 bun run lint
 ```
 *(If lint scripts are configured in the target package)*
+
+## Release Process
+
+The project uses a fully automated release pipeline via GitHub Actions.
+
+### Stable Releases (to `main`)
+- **Automated**: Every merge/push to `main` will automatically bump the patch version, tag it, and publish to NPM as `latest`.
+- **Manual**: To specify a version, use a commit message like `release: 0.1.21`.
+
+### Beta Releases (to `dev`)
+- **Automated**: Every push to `dev` will automatically publish a beta version (e.g., `0.1.20-beta.45`) with the `beta` tag. No Git tag is created.
+- **Manual**: To create a formal, tagged beta version, use a commit message like `beta: 0.1.20-beta.1`. This will create a Git tag `v0.1.20-beta.1`.
+
+### Installing Pre-releases
+Test the beta version by running:
+```sh
+bunx create-lunar-kit@beta
+```
+or 
+```sh
+npm install @lunar-kit/core@beta
+```
