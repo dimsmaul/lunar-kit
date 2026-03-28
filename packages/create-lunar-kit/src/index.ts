@@ -45,7 +45,6 @@ program
     intro(chalk.bold.cyan(`🌙 Create Lunar Kit App (v${pkg.version})`));
 
     if (latestVersion !== pkg.version && process.env.NODE_ENV !== 'development') {
-      // console.log(chalk.dim(`  (Note: local version is ${pkg.version})\n`));
       console.log(chalk.dim(`New version available: ${latestVersion} (you have ${pkg.version})`));
       console.log(chalk.dim('Please update to the latest version for the best experience.\n'));
     }

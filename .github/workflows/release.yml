@@ -52,6 +52,10 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Install dependencies
+        if: steps.check.outputs.should_release == 'true'
+        run: bun install
+
       - name: Determine next version
         id: version
         if: steps.check.outputs.should_release == 'true'
