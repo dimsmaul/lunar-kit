@@ -1,6 +1,6 @@
 {
   "name": "@lunar-kit/cli",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "CLI for Lunar Kit",
   "bin": {
     "lunar": "./dist/index.js"
