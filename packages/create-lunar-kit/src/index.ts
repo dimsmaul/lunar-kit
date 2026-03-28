@@ -42,11 +42,10 @@ program
   .action(async (projectName?: string) => {
     renderLogo();
     const latestVersion = await getLatestVersion();
-    intro(chalk.bold.cyan(`🌙 Create Lunar Kit App (v${pkg.version})`));
+    intro(chalk.bold.cyan(`🌙 Create Lunar Kit App (v${latestVersion})`));
 
     if (latestVersion !== pkg.version && process.env.NODE_ENV !== 'development') {
-      console.log(chalk.dim(`New version available: ${latestVersion} (you have ${pkg.version})`));
-      console.log(chalk.dim('Please update to the latest version for the best experience.\n'));
+      console.log(chalk.yellow(`  🆕 A manual update to your local CLI code is recommended (you have ${pkg.version}).\n`));
     }
 
     const name = projectName || (await text({
