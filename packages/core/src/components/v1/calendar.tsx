@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { cn } from '@/lib/utils';
 import dayjs, { Dayjs } from 'dayjs';
-import isBetween from 'dayjs/plugin/isBetween';
+import isBetween from 'dayjs/plugin/isBetween.js';
 
 dayjs.extend(isBetween);
 

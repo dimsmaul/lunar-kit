@@ -1,4 +1,3 @@
-import { LOCAL_COMPONENTS_PATH } from '@lunar-kit/core';
 import fs from 'fs-extra';
 import path from 'node:path';
 import { fileURLToPath } from 'url';
@@ -6,14 +5,15 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Path to core templates
-// This file is at: create-lunar-kit/src/commands/init.ts
-// Core is at: core/src/templates/
-// Both are in packages/ directory
-const PACKAGES_DIR = path.resolve(__dirname, '../../..');
+// Find the core package directory robustly, regardless of whether we're in dist/index.js,
+// dist/commands/init.js, or src/commands/init.ts
+const isFlattened = __dirname.endsWith('dist');
+const numLevelsUp = isFlattened ? '../..' : '../../..';
+const PACKAGES_DIR = path.resolve(__dirname, numLevelsUp);
 const CORE_ROOT = path.join(PACKAGES_DIR, 'core', 'src');
 const CORE_TEMPLATES_PATH = path.join(CORE_ROOT, 'templates');
 const CORE_SOURCE_PATH = CORE_ROOT;
+const CORE_COMPONENTS_PATH = path.join(CORE_ROOT, 'components');
 
 /**
  * Helper: copy a template file from core to the target project
@@ -120,6 +120,25 @@ export async function setupAppEntry(projectPath: string, navigation: string) {
 }
 
 // ============================================================
+// App Config (app.json)
+// ============================================================
+
+export async function setupAppConfig(projectPath: string, name: string) {
+  const appJsonPath = path.join(projectPath, 'app.json');
+  if (fs.existsSync(appJsonPath)) {
+    const appJson = await fs.readJson(appJsonPath);
+    if (!appJson.expo) appJson.expo = {};
+
+    // Add default scheme if not present (required for Expo Router / Linking)
+    if (!appJson.expo.scheme) {
+      appJson.expo.scheme = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
+
+    await fs.writeJson(appJsonPath, appJson, { spaces: 2 });
+  }
+}
+
+// ============================================================
 // Navigation Setup
 // ============================================================
 
@@ -216,8 +235,8 @@ export async function setupNativeWind(projectPath: string) {
 
   // Copy base UI components from core
   await fs.ensureDir(path.join(projectPath, 'src', 'components', 'ui'));
-  const buttonContent = fs.readFileSync(path.join(LOCAL_COMPONENTS_PATH, 'ui', 'button.tsx'));
-  const textContent = fs.readFileSync(path.join(LOCAL_COMPONENTS_PATH, 'ui', 'text.tsx'));
+  const buttonContent = fs.readFileSync(path.join(CORE_COMPONENTS_PATH, 'ui', 'button.tsx'));
+  const textContent = fs.readFileSync(path.join(CORE_COMPONENTS_PATH, 'ui', 'text.tsx'));
   await fs.writeFile(path.join(projectPath, 'src', 'components', 'ui', 'button.tsx'), buttonContent);
   await fs.writeFile(path.join(projectPath, 'src', 'components', 'ui', 'text.tsx'), textContent);
 }

@@ -36,6 +36,7 @@ import {
   generateGlobalTest,
 } from './commands/test.js';
 import { runDoctor } from './commands/doctor.js';
+import { runInstall } from './commands/install.js';
 
 // ============================================
 // Help Display Functions
@@ -363,6 +364,16 @@ program
     await runDoctor();
   });
 
+// Install command
+program
+  .command('install [packages...]')
+  .alias('i')
+  .description('Install packages using project package manager')
+  .option('-D, --dev', 'Install as dev dependency')
+  .action(async (packages, options) => {
+    await runInstall(packages, options);
+  });
+
   program.configureHelp({
   formatHelp: () => {
     return `
@@ -373,6 +384,7 @@ ${chalk.bold('Commands:')}
   ${chalk.green('add')} [subcommand]                              Add a component or feature
   ${chalk.green('add help')}                                      Show add subcommand table
   ${chalk.green('doctor')}                                        Check your Lunar Kit setup
+  ${chalk.green('install| i')} [packages]                         Install packages
   ${chalk.green('upgrade')}                                       Upgrade Lunar Kit packages to latest version
   ${chalk.green('migrate')}                                       Migrate breaking changes between versions
   ${chalk.green('generate|g')} [subcommand]                       Generate a Lunar Kit element
@@ -385,6 +397,7 @@ ${chalk.bold('Quick Reference:')}
   │ ${chalk.bold('command')}         │ ${chalk.bold('description')}                                                   │
   ├─────────────────┼──────────────────────────────────────────────────────────┤
   │ doctor          │ Check Lunar Kit setup and configuration                  │
+  │ install (i)     │ Install packages with progress bar                       │
   │ add             │ Add components or features (button, dialog, locale)      │
   │ generate (g)    │ Generate code (modules, services, types, tests)          │
   │ upgrade         │ Update Lunar Kit packages                                │
@@ -394,6 +407,8 @@ ${chalk.bold('Quick Reference:')}
 ${chalk.bold('Examples:')}
   ${chalk.dim('$ lunar init')}
   ${chalk.dim('$ lunar doctor')}
+  ${chalk.dim('$ lunar install dayjs axios')}
+  ${chalk.dim('$ lunar i -D @types/node')}
   ${chalk.dim('$ lunar add button')}
   ${chalk.dim('$ lunar add locale')}
   ${chalk.dim('$ lunar add help')}

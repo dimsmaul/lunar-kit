@@ -24,6 +24,7 @@
     "starter"
   ],
   "dependencies": {
+    "@clack/prompts": "^1.1.0",
     "@lunar-kit/core": "workspace:*",
     "chalk": "^5.4.1",
     "commander": "^12.1.0",
