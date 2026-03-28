@@ -75,8 +75,8 @@ jobs:
           VERSION=${{ steps.check.outputs.version }}
           echo "📦 Syncing all packages to version $VERSION"
 
-          # Update version in all package.json
-          for pkg in packages/core packages/cli packages/create-lunar-kit; do
+          # Update version in all package.json (including root)
+          for pkg in . packages/core packages/cli packages/create-lunar-kit; do
             jq --arg v "$VERSION" '.version = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
             echo "  ✅ $pkg/package.json version → $VERSION"
           done
