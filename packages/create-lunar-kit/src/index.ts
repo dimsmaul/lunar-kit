@@ -14,6 +14,25 @@ import pkg from '../package.json' assert { type: 'json' };
 
 const __filename = fileURLToPath(import.meta.url);
 
+async function getLatestVersion(): Promise<string> {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000);
+    
+    const response = await fetch('https://registry.npmjs.org/create-lunar-kit/latest', {
+      signal: controller.signal,
+    });
+    
+    clearTimeout(timeout);
+    
+    if (!response.ok) return pkg.version;
+    const data = await response.json() as { version: string };
+    return data.version || pkg.version;
+  } catch {
+    return pkg.version;
+  }
+}
+
 const program = new Command();
 
 program
@@ -22,7 +41,14 @@ program
   .argument('[project-name]', 'Name of your project')
   .action(async (projectName?: string) => {
     renderLogo();
+    const latestVersion = await getLatestVersion();
     intro(chalk.bold.cyan(`🌙 Create Lunar Kit App (v${pkg.version})`));
+
+    if (latestVersion !== pkg.version && process.env.NODE_ENV !== 'development') {
+      // console.log(chalk.dim(`  (Note: local version is ${pkg.version})\n`));
+      console.log(chalk.dim(`New version available: ${latestVersion} (you have ${pkg.version})`));
+      console.log(chalk.dim('Please update to the latest version for the best experience.\n'));
+    }
 
     const name = projectName || (await text({
       message: 'What is your project named?',
