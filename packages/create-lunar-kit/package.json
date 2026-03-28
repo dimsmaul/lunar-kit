@@ -1,6 +1,6 @@
 {
   "name": "create-lunar-kit",
-  "version": "0.1.5",
+  "version": "0.1.18",
   "description": "Create a new React Native app with Lunar Kit and NativeWind pre-configured",
   "author": "Your Name",
   "license": "MIT",

@@ -15,25 +15,21 @@ jobs:
       - name: Check for release trigger
         id: check
         run: |
-          # Get the full commit message
           COMMIT_MSG=$(cat <<'COMMIT_EOF'
           ${{ github.event.head_commit.message }}
           COMMIT_EOF
           )
-          echo "Commit message:"
-          echo "$COMMIT_MSG"
-          echo "---"
-
-          # Check if commit message contains "release:" pattern
+          
           if echo "$COMMIT_MSG" | grep -qiE 'release:\s*[0-9]+\.[0-9]+\.[0-9]+'; then
-            # Extract version
             VERSION=$(echo "$COMMIT_MSG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?' | head -1)
-            echo "✅ Release detected: v${VERSION}"
+            echo "✅ Manual release detected: v${VERSION}"
             echo "should_release=true" >> $GITHUB_OUTPUT
             echo "version=${VERSION}" >> $GITHUB_OUTPUT
+            echo "auto_bump=false" >> $GITHUB_OUTPUT
           else
-            echo "⏭️ Not a release commit. Skipping."
-            echo "should_release=false" >> $GITHUB_OUTPUT
+            echo "🚀 Automated release triggered on merge to main"
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "auto_bump=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Checkout repository
@@ -42,15 +38,6 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Verify tag does not exist
-        if: steps.check.outputs.should_release == 'true'
-        run: |
-          VERSION=${{ steps.check.outputs.version }}
-          if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
-            echo "::error::Tag v${VERSION} already exists!"
-            exit 1
-          fi
 
       - name: Setup Bun
         if: steps.check.outputs.should_release == 'true'
@@ -65,86 +52,76 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install dependencies
+      - name: Determine next version
+        id: version
         if: steps.check.outputs.should_release == 'true'
-        run: bun install
+        run: |
+          if [ "${{ steps.check.outputs.auto_bump }}" == "true" ]; then
+            CURRENT_VERSION=$(npm info create-lunar-kit version)
+            # Increment patch version
+            IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
+            NEXT_VERSION="$major.$minor.$((patch + 1))"
+            echo "version=${NEXT_VERSION}" >> $GITHUB_OUTPUT
+            echo "⏭️ Auto-bumping: $CURRENT_VERSION -> $NEXT_VERSION"
+          else
+            echo "version=${{ steps.check.outputs.version }}" >> $GITHUB_OUTPUT
+          fi
 
       - name: Sync version across all packages
         if: steps.check.outputs.should_release == 'true'
         run: |
-          VERSION=${{ steps.check.outputs.version }}
+          VERSION=${{ steps.version.outputs.version }}
           echo "📦 Syncing all packages to version $VERSION"
 
-          # Update version in all package.json (including root)
           for pkg in . packages/core packages/cli packages/create-lunar-kit; do
             jq --arg v "$VERSION" '.version = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
             echo "  ✅ $pkg/package.json version → $VERSION"
           done
 
-          # Update @lunar-kit/core dependency in cli and create-lunar-kit
           for pkg in packages/cli packages/create-lunar-kit; do
             jq --arg v "$VERSION" '.dependencies["@lunar-kit/core"] = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
             echo "  🔗 $pkg @lunar-kit/core dep → $VERSION"
           done
 
-          echo ""
-          echo "Verification:"
-          grep -r '"version"\|@lunar-kit/core' packages/core/package.json packages/cli/package.json packages/create-lunar-kit/package.json
-
-      - name: Build core
-        if: steps.check.outputs.should_release == 'true'
-        run: bun run --filter @lunar-kit/core build
-
-      - name: Build CLI
-        if: steps.check.outputs.should_release == 'true'
-        run: bun run --filter @lunar-kit/cli build
-
-      - name: Build create-lunar-kit
-        if: steps.check.outputs.should_release == 'true'
-        run: bun run --filter create-lunar-kit build
-
-      - name: Publish @lunar-kit/core
-        if: steps.check.outputs.should_release == 'true'
-        run: npm publish --access public
-        working-directory: packages/core
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish @lunar-kit/cli
-        if: steps.check.outputs.should_release == 'true'
-        run: npm publish --access public
-        working-directory: packages/cli
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish create-lunar-kit
-        if: steps.check.outputs.should_release == 'true'
-        run: npm publish --access public
-        working-directory: packages/create-lunar-kit
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Create git tag
+      - name: Build all packages
         if: steps.check.outputs.should_release == 'true'
         run: |
-          VERSION=${{ steps.check.outputs.version }}
+          bun run --filter @lunar-kit/core build
+          bun run --filter @lunar-kit/cli build
+          bun run --filter create-lunar-kit build
+
+      - name: Publish all packages
+        if: steps.check.outputs.should_release == 'true'
+        run: |
+          npm publish --access public --workspace packages/core
+          npm publish --access public --workspace packages/cli
+          npm publish --access public --workspace packages/create-lunar-kit
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Commit and Push version updates
+        if: steps.check.outputs.should_release == 'true'
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: release v${VERSION} [skip ci]"
           git tag -a "v${VERSION}" -m "Release v${VERSION}"
-          git push origin "v${VERSION}"
-          echo "🏷️ Tagged v${VERSION}"
+          git push origin main --tags
+          echo "🏷️ Tagged and pushed v${VERSION}"
 
       - name: Create GitHub Release
         if: steps.check.outputs.should_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.check.outputs.version }}
-          name: v${{ steps.check.outputs.version }}
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
           body: |
-            ## 📦 Lunar Kit v${{ steps.check.outputs.version }}
+            ## 📦 Lunar Kit v${{ steps.version.outputs.version }}
 
             ### Published packages
-            - `@lunar-kit/core@${{ steps.check.outputs.version }}`
-            - `@lunar-kit/cli@${{ steps.check.outputs.version }}`
-            - `create-lunar-kit@${{ steps.check.outputs.version }}`
+            - `@lunar-kit/core@${{ steps.version.outputs.version }}`
+            - `@lunar-kit/cli@${{ steps.version.outputs.version }}`
+            - `create-lunar-kit@${{ steps.version.outputs.version }}`
           generate_release_notes: true
