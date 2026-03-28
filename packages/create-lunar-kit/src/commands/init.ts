@@ -1,4 +1,3 @@
-import { LOCAL_COMPONENTS_PATH } from '@lunar-kit/core';
 import fs from 'fs-extra';
 import path from 'node:path';
 import { fileURLToPath } from 'url';
@@ -14,6 +13,7 @@ const PACKAGES_DIR = path.resolve(__dirname, '../../..');
 const CORE_ROOT = path.join(PACKAGES_DIR, 'core', 'src');
 const CORE_TEMPLATES_PATH = path.join(CORE_ROOT, 'templates');
 const CORE_SOURCE_PATH = CORE_ROOT;
+const CORE_COMPONENTS_PATH = path.join(CORE_ROOT, 'components');
 
 /**
  * Helper: copy a template file from core to the target project
@@ -216,8 +216,8 @@ export async function setupNativeWind(projectPath: string) {
 
   // Copy base UI components from core
   await fs.ensureDir(path.join(projectPath, 'src', 'components', 'ui'));
-  const buttonContent = fs.readFileSync(path.join(LOCAL_COMPONENTS_PATH, 'ui', 'button.tsx'));
-  const textContent = fs.readFileSync(path.join(LOCAL_COMPONENTS_PATH, 'ui', 'text.tsx'));
+  const buttonContent = fs.readFileSync(path.join(CORE_COMPONENTS_PATH, 'ui', 'button.tsx'));
+  const textContent = fs.readFileSync(path.join(CORE_COMPONENTS_PATH, 'ui', 'text.tsx'));
   await fs.writeFile(path.join(projectPath, 'src', 'components', 'ui', 'button.tsx'), buttonContent);
   await fs.writeFile(path.join(projectPath, 'src', 'components', 'ui', 'text.tsx'), textContent);
 }
