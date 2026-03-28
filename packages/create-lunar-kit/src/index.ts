@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import prompts from 'prompts';
+import { intro, outro, text, select, multiselect, isCancel, cancel, spinner as clackSpinner } from '@clack/prompts';
 import chalk from 'chalk';
 import ora from 'ora';
 import { execa } from 'execa';
@@ -8,7 +8,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { renderLogo } from './assets/logo';
-import { createConfig, createSrcStructure, setupAppEntry, setupAuthSrc, setupDarkModeSrc, setupExpoRouterSrc, setupFormsSrc, setupNativeWind, setupReactNavigationSrc, setupStateSrc, updatePackageJson, setupLocalizationSrc, setupEnvConfig, setupApiClient } from './commands/init';
+import { createConfig, createSrcStructure, setupAppEntry, setupAuthSrc, setupDarkModeSrc, setupExpoRouterSrc, setupFormsSrc, setupNativeWind, setupReactNavigationSrc, setupStateSrc, updatePackageJson, setupLocalizationSrc, setupEnvConfig, setupApiClient, setupAppConfig } from './commands/init';
 import { closeInitProject } from './res/close';
 import pkg from '../package.json' assert { type: 'json' };
 
@@ -22,63 +22,75 @@ program
   .argument('[project-name]', 'Name of your project')
   .action(async (projectName?: string) => {
     renderLogo();
-    console.log(chalk.bold.cyan(`\n🌙 Create Lunar Kit App (v${pkg.version})\n`));
+    intro(chalk.bold.cyan(`🌙 Create Lunar Kit App (v${pkg.version})`));
 
-    const response = await prompts([
-      {
-        type: projectName ? null : 'text',
-        name: 'projectName',
-        message: 'What is your project named?',
-        initial: 'my-lunar-app',
-        validate: (value: string) =>
-          /^[a-z0-9-]+$/.test(value) || 'Project name must be lowercase and use hyphens',
+    const name = projectName || (await text({
+      message: 'What is your project named?',
+      placeholder: 'my-lunar-app',
+      // initialValue: 'my-lunar-app',
+      defaultValue: 'my-lunar-app',
+      validate: (value?: string) => {
+        if (value && !/^[a-z0-9-]+$/.test(value)) return 'Project name must be lowercase and use hyphens';
       },
-      {
-        type: 'select',
-        name: 'navigation',
-        message: 'Which navigation library?',
-        choices: [
-          { title: 'Expo Router (File-based routing)', value: 'expo-router' },
-          { title: 'React Navigation (Stack-based)', value: 'react-navigation' },
-          { title: 'None (I\'ll add it later)', value: 'none' },
-        ],
-        initial: 0,
-      },
-      {
-        type: 'multiselect',
-        name: 'features',
-        message: 'Select features to include:',
-        choices: [
-          { title: '🌍 Localization (i18n)', value: 'localization', selected: false },
-          { title: '🔐 Environment config (.env)', value: 'env', selected: false },
-          { title: '📡 API client (axios)', value: 'api', selected: false },
-          { title: '🔑 Authentication screens', value: 'auth', selected: false },
-          { title: '📝 Form validation (react-hook-form)', value: 'forms', selected: false },
-        ],
-      },
-      {
-        type: 'select',
-        name: 'packageManager',
-        message: 'Which package manager?',
-        choices: [
-          { title: 'bun', value: 'bun' },
-          { title: 'pnpm', value: 'pnpm' },
-          { title: 'npm', value: 'npm' },
-          { title: 'yarn', value: 'yarn' },
-        ],
-        initial: 0,
-      },
-    ]);
+    }));
 
-    const name = projectName || response.projectName;
-    const { navigation, features, packageManager } = response;
+    if (isCancel(name)) {
+      cancel('Project creation cancelled');
+      process.exit(1);
+    }
+
+    const navigation = await select({
+      message: 'Which navigation library?',
+      options: [
+        { label: 'Expo Router (File-based routing)', value: 'expo-router' },
+        { label: 'React Navigation (Stack-based)', value: 'react-navigation' },
+        { label: 'None (I\'ll add it later)', value: 'none' },
+      ],
+    });
+
+    if (isCancel(navigation)) {
+      cancel('Project creation cancelled');
+      process.exit(1);
+    }
+
+    const features = await multiselect({
+      message: 'Select features to include:',
+      options: [
+        { label: 'Localization (i18n)', value: 'localization' },
+        { label: 'Environment config (.env)', value: 'env' },
+        { label: 'API client (axios)', value: 'api' },
+        { label: 'Authentication screens', value: 'auth' },
+        { label: 'Form validation (react-hook-form)', value: 'forms' },
+      ],
+      required: false,
+    });
+
+    if (isCancel(features)) {
+      cancel('Project creation cancelled');
+      process.exit(1);
+    }
+
+    const packageManager = await select({
+      message: 'Which package manager?',
+      options: [
+        { label: 'bun', value: 'bun' },
+        { label: 'pnpm', value: 'pnpm' },
+        { label: 'npm', value: 'npm' },
+        { label: 'yarn', value: 'yarn' },
+      ],
+    });
+
+    if (isCancel(packageManager)) {
+      cancel('Project creation cancelled');
+      process.exit(1);
+    }
 
     if (!name) {
       console.log(chalk.red('Project name is required'));
       process.exit(1);
     }
 
-    const projectPath = path.join(process.cwd(), name);
+    const projectPath = path.join(process.cwd(), name as string);
 
     if (fs.existsSync(projectPath)) {
       console.log(chalk.red(`Directory ${name} already exists`));
@@ -100,14 +112,17 @@ program
         '--no-install',
       ]);
 
-      // 2. Create src/ structure
+      // 2. Setup app config (app.json)
+      await setupAppConfig(projectPath, name as string);
+
+      // 3. Create src/ structure
       spinner.text = 'Setting up project structure...';
       await createSrcStructure(projectPath, navigation);
 
-      // 3. Move App.tsx to src/ and create new App.tsx as entry
+      // 4. Move App.tsx to src/ and create new App.tsx as entry
       await setupAppEntry(projectPath, navigation);
 
-      // 4. Setup navigation-specific files
+      // 5. Setup navigation-specific files
       if (navigation === 'expo-router') {
         spinner.text = 'Setting up Expo Router...';
         await setupExpoRouterSrc(projectPath);
@@ -116,7 +131,7 @@ program
         await setupReactNavigationSrc(projectPath);
       }
 
-      // 5. Setup features
+      // 6. Setup features
       if (features.includes('auth')) {
         spinner.text = 'Setting up authentication...';
         await setupAuthSrc(projectPath, navigation);
@@ -144,23 +159,46 @@ program
         await setupApiClient(projectPath);
       }
 
-      // 6. Setup NativeWind configs
+      // 7. Setup NativeWind configs
       await setupNativeWind(projectPath);
 
-      // 7. Update package.json
+      // 8. Update package.json
       spinner.text = 'Updating dependencies...';
       await updatePackageJson(projectPath, navigation, features);
 
-      // 8. Create lunar-kit.config.json
-      await createConfig(projectPath, navigation, features, packageManager); 
+      // 9. Create lunar-kit.config.json
+      await createConfig(projectPath, navigation, features, packageManager);
 
-      // 9. Install dependencies
-      spinner.text = `Installing dependencies with ${packageManager}...`;
-      
+      // 10. Install dependencies
+      spinner.stop();
+      console.log(`\n${chalk.cyan('📦 Installing dependencies...')}`);
+
       const installCmd = packageManager === 'yarn' ? 'yarn' : packageManager === 'bun' ? 'bun' : packageManager;
-      const installArgs = packageManager === 'npm' ? ['install'] : packageManager === 'yarn' ? [] : ['install'];
-      
-      await execa(installCmd, installArgs, { cwd: projectPath });
+      const installArgs = packageManager === 'yarn' ? [] : ['install'];
+
+      try {
+        await execa(installCmd, installArgs, {
+          cwd: projectPath,
+          stdio: 'inherit',
+        });
+        console.log(chalk.green('✅ Dependencies installed\n'));
+      } catch (error) {
+        console.error(chalk.red('❌ Failed to install dependencies'));
+        throw error;
+      }
+
+      // 11. Fix dependency versions for Expo compatibility
+      const fixSpinner = ora('Aligning dependency versions...').start();
+      try {
+        await execa('npx expo install --fix', {
+          cwd: projectPath,
+          stdio: 'ignore',
+          shell: true,
+        });
+        fixSpinner.succeed(chalk.green('Dependencies aligned'));
+      } catch {
+        fixSpinner.warn(chalk.yellow('Could not auto-fix dependencies'));
+      }
 
       spinner.succeed(chalk.green('Project created successfully! 🎉'));
 

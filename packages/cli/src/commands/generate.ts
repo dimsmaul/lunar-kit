@@ -243,7 +243,7 @@ export default function ${name}Screen() {
 
 function generateFormScreen(name: string): string {
   return `import { View, Text, TextInput } from 'react-native';
-import { Button } from '@/src/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
 export default function ${name}Screen() {

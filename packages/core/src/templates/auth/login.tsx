@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import { Button } from '@/src/components/ui/button';
+import { Button } from '@/components/ui/button';
 
 export default function LoginScreen() {
   return (
