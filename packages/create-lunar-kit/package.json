@@ -1,6 +1,6 @@
 {
   "name": "create-lunar-kit",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "description": "Create a new React Native app with Lunar Kit and NativeWind pre-configured",
   "author": "Your Name",
   "license": "MIT",
@@ -25,7 +25,7 @@
   ],
   "dependencies": {
     "@clack/prompts": "^1.1.0",
-    "@lunar-kit/core": "workspace:*",
+    "@lunar-kit/core": "0.1.19",
     "chalk": "^5.4.1",
     "commander": "^12.1.0",
     "execa": "^9.6.1",
