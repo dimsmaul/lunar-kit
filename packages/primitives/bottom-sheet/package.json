@@ -1,0 +1,56 @@
+{
+  "name": "@lunar-primitive/bottom-sheet",
+  "version": "0.0.0",
+  "description": "Bottom sheet primitive for Lunar Kit - handles gesture, snap points, and animations",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./src/index.ts",
+  "source": "./src/index.ts",
+  "react-native": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "react-native": "./src/index.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "react-native",
+    "lunar-kit",
+    "bottom-sheet",
+    "primitive"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "prepublishOnly": "bun run build"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-reanimated": "*",
+    "react-native-gesture-handler": "*"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.0",
+    "@types/react-native": "^0.72.0",
+    "esbuild-plugin-alias": "^0.2.1",
+    "react": "*",
+    "react-native": "*",
+    "react-native-reanimated": "*",
+    "react-native-gesture-handler": "*",
+    "tsup": "^8.5.1",
+    "typescript": "~5.9.3"
+  }
+}

@@ -5,7 +5,8 @@
   "description": "Universal React Native UI components",
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "packages/primitives/*"
   ],
   "scripts": {
     "dev": "bun --filter example start",
@@ -15,7 +16,14 @@
     "build:cli": "bun --filter @lunar-kit/cli build",
     "build:core": "bun --filter @lunar-kit/core build",
     "build:create": "bun --filter create-lunar-kit build",
-    "build": "bun run build:core && bun run build:cli && bun run build:create"
+    "build:primitives": "bun run --filter '@lunar-primitive/*' build",
+    "build": "bun run build:core && bun run build:cli && bun run build:create",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:publish": "changeset publish",
+    "release:check": "changeset status",
+    "release:version": "changeset version",
+    "release:publish": "changeset publish"
   },
   "keywords": [
     "react-native",
@@ -24,5 +32,8 @@
     "nativewind"
   ],
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@changesets/cli": "^2.27.10"
+  }
 }

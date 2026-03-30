@@ -1,0 +1,78 @@
+name: Release Primitives
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: Release Primitives
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          commit: "chore(primitives): release version packages"
+          title: "chore(primitives): release version packages"
+          publish: bun run changeset:publish
+          version: bun run changeset:version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Build Primitives
+        if: steps.changesets.outputs.published == 'true'
+        run: bun run build:primitives
+
+      - name: Publish Primitives to npm
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          echo "📦 Publishing @lunar-primitive/* packages..."
+          bun publish --access public --filter '@lunar-primitive/*'
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Get published version
+        if: steps.changesets.outputs.published == 'true'
+        id: version
+        run: |
+          VERSION=$(jq -r '.version' packages/primitives/adaptive-modal/package.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Published version: v$VERSION"
+
+      - name: Create GitHub Release for Primitives
+        if: steps.changesets.outputs.published == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: primitives-v${{ steps.version.outputs.version }}
+          name: "Primitives Release v${{ steps.version.outputs.version }}"
+          body_path: .changeset/README.md
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
