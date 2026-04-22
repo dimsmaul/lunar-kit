@@ -25,10 +25,10 @@ async function loadConfig(): Promise<LunarConfig | null> {
 
 export async function generateScreen(name: string) {
   const spinner = ora('Generating screen...').start();
-  
+
   try {
     const config = await loadConfig();
-    
+
     if (!config) {
       spinner.fail('lunar-kit.config.json not found. Did you create this project with create-lunar-kit?');
       return;
@@ -89,10 +89,10 @@ export async function generateScreen(name: string) {
 
 export async function generateComponent(name: string) {
   const spinner = ora('Generating component...').start();
-  
+
   try {
     const config = await loadConfig();
-    
+
     if (!config) {
       spinner.fail('lunar-kit.config.json not found.');
       return;
@@ -127,10 +127,10 @@ export function ${fileName}({}: ${fileName}Props) {
 
 export async function generateStore(name: string) {
   const spinner = ora('Generating store...').start();
-  
+
   try {
     const config = await loadConfig();
-    
+
     if (!config?.storesDir) {
       spinner.fail('Stores not configured in this project.');
       return;
@@ -138,7 +138,7 @@ export async function generateStore(name: string) {
 
     const fileName = name.charAt(0).toLowerCase() + name.slice(1);
     const storeName = name.charAt(0).toUpperCase() + name.slice(1);
-    
+
     const storeContent = `import { create } from 'zustand';
 
 interface ${storeName}State {
@@ -167,17 +167,17 @@ export const use${storeName}Store = create<${storeName}State>((set) => ({
 
 export async function generateHook(name: string) {
   const spinner = ora('Generating hook...').start();
-  
+
   try {
     const config = await loadConfig();
-    
+
     if (!config?.hooksDir) {
       spinner.fail('Hooks directory not configured.');
       return;
     }
 
     const hookName = name.startsWith('use') ? name : `use${name.charAt(0).toUpperCase() + name.slice(1)}`;
-    
+
     const hookContent = `import { useState, useEffect } from 'react';
 
 export function ${hookName}() {
@@ -243,7 +243,7 @@ export default function ${name}Screen() {
 
 function generateFormScreen(name: string): string {
   return `import { View, Text, TextInput } from 'react-native';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/lunar-kit/components/button';
 import { useState } from 'react';
 
 export default function ${name}Screen() {

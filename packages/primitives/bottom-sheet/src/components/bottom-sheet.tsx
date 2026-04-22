@@ -1,8 +1,24 @@
 import * as React from 'react';
-import { Modal, View, Pressable, Dimensions, type ViewStyle } from 'react-native';
+import { Dimensions, Modal, View, type ViewStyle } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
-import { useBottomSheet, type UseBottomSheetProps } from '../hooks/use-bottom-sheet';
+import { useBottomSheet } from '../hooks/use-bottom-sheet';
+
+// ─── Render Mode ─────────────────────────────────────────────────────────────
+// The children of <BottomSheet> are rendered TWICE:
+//   'inline'  → triggers show, content hides   (normal page flow)
+//   'modal'   → content shows, triggers hide   (inside the modal)
+
+export type BottomSheetRenderMode = 'inline' | 'modal';
+
+export const BottomSheetRenderModeContext =
+  React.createContext<BottomSheetRenderMode>('inline');
+
+export function useBottomSheetRenderMode(): BottomSheetRenderMode {
+  return React.useContext(BottomSheetRenderModeContext);
+}
+
+// ─── Contexts ─────────────────────────────────────────────────────────────────
 
 export interface BottomSheetContextValue {
   open: boolean;
@@ -24,38 +40,49 @@ export interface BottomSheetInternalContextValue {
   lowestSnapHeight: number;
 }
 
-export const BottomSheetContext = React.createContext<BottomSheetContextValue | null>(null);
-export const BottomSheetInternalContext = React.createContext<BottomSheetInternalContextValue | null>(null);
+export const BottomSheetContext =
+  React.createContext<BottomSheetContextValue | null>(null);
+
+export const BottomSheetInternalContext =
+  React.createContext<BottomSheetInternalContextValue | null>(null);
 
 export function useBottomSheetContext() {
-  const context = React.useContext(BottomSheetContext);
-  if (!context) {
-    throw new Error('BottomSheet components must be used within BottomSheet');
-  }
-  return context;
+  const ctx = React.useContext(BottomSheetContext);
+  if (!ctx) throw new Error('BottomSheet components must be used within <BottomSheet>');
+  return ctx;
 }
 
 export function useBottomSheetInternal() {
-  const context = React.useContext(BottomSheetInternalContext);
-  if (!context) {
-    throw new Error('BottomSheet internal components must be used within BottomSheet');
-  }
-  return context;
+  const ctx = React.useContext(BottomSheetInternalContext);
+  if (!ctx) throw new Error('BottomSheet internal components must be used within <BottomSheet>');
+  return ctx;
 }
 
-export interface BottomSheetProps extends UseBottomSheetProps {
+// ─── Props ────────────────────────────────────────────────────────────────────
+
+export interface BottomSheetProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  snapPoints?: string[];
+  defaultSnapPoint?: number;
   children: React.ReactNode;
   style?: ViewStyle;
 }
 
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export function BottomSheet({
-  open,
-  onOpenChange,
-  snapPoints,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
+  snapPoints = ['50%'],
   defaultSnapPoint = 0,
   children,
   style,
 }: BottomSheetProps) {
+  const [internalOpen, setInternalOpen] = React.useState(false);
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const onOpenChange = controlledOnOpenChange ?? setInternalOpen;
+
   const {
     animatedHeight,
     backdropOpacity,
@@ -67,45 +94,46 @@ export function BottomSheet({
     backdropAnimatedStyle,
     visible,
     handleClose,
-  } = useBottomSheet({
-    open,
-    onOpenChange,
-    snapPoints,
-    defaultSnapPoint,
-  });
+  } = useBottomSheet({ open, onOpenChange, snapPoints, defaultSnapPoint });
 
   const snapHeights = React.useMemo(() => {
-    return snapPoints.map((point) => {
-      const percentage = parseInt(point) / 100;
-      return Dimensions.get('window').height * percentage;
-    });
+    const screenHeight = Dimensions.get('window').height;
+    return snapPoints.map((p) => (parseInt(p) / 100) * screenHeight);
   }, [snapPoints]);
 
-  if (!visible) return null;
+  const contextValue = React.useMemo(
+    () => ({ open, onOpenChange, snapPoints, currentSnapPoint: defaultSnapPoint }),
+    [open, onOpenChange, snapPoints, defaultSnapPoint]
+  );
+
+  const internalContextValue = React.useMemo(
+    () => ({
+      animatedHeight,
+      backdropOpacity,
+      dismissTranslateY,
+      dragAreaHeight,
+      currentSnapIndex,
+      panGesture,
+      sheetAnimatedStyle,
+      backdropAnimatedStyle,
+      handleClose,
+      lowestSnapHeight: snapHeights[0],
+    }),
+    [animatedHeight, backdropOpacity, dismissTranslateY, dragAreaHeight,
+      currentSnapIndex, panGesture, sheetAnimatedStyle, backdropAnimatedStyle,
+      handleClose, snapHeights]
+  );
 
   return (
-    <BottomSheetContext.Provider
-      value={{
-        open,
-        onOpenChange,
-        snapPoints,
-        currentSnapPoint: defaultSnapPoint,
-      }}
-    >
-      <BottomSheetInternalContext.Provider
-        value={{
-          animatedHeight,
-          backdropOpacity,
-          dismissTranslateY,
-          dragAreaHeight,
-          currentSnapIndex,
-          panGesture,
-          sheetAnimatedStyle,
-          backdropAnimatedStyle,
-          handleClose,
-          lowestSnapHeight: snapHeights[0],
-        }}
-      >
+    <BottomSheetContext.Provider value={contextValue}>
+      <BottomSheetInternalContext.Provider value={internalContextValue}>
+
+        {/* ── Inline render: triggers visible, content hidden ── */}
+        <BottomSheetRenderModeContext.Provider value="inline">
+          {children}
+        </BottomSheetRenderModeContext.Provider>
+
+        {/* ── Modal render: content visible, triggers hidden ── */}
         <Modal
           visible={visible}
           transparent
@@ -114,30 +142,35 @@ export function BottomSheet({
           onRequestClose={handleClose}
         >
           <GestureHandlerRootView style={{ flex: 1 }}>
-            <View style={{ flex: 1 }}>
-              {/* Backdrop */}
-              <Animated.View
-                style={[
-                  { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' },
-                  backdropAnimatedStyle,
-                ]}
-              >
-                <Pressable onPress={handleClose} style={{ flex: 1 }} />
-              </Animated.View>
+            {/* Semi-transparent backdrop */}
+            <Animated.View
+              style={[
+                {
+                  position: 'absolute',
+                  top: 0, left: 0, right: 0, bottom: 0,
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                },
+                backdropAnimatedStyle,
+              ]}
+              pointerEvents="box-only"
+              onTouchEnd={handleClose}
+            />
 
-              {/* Bottom Sheet */}
-              <Animated.View
-                style={[
-                  { position: 'absolute', bottom: 0, left: 0, right: 0 },
-                  sheetAnimatedStyle,
-                  style,
-                ]}
-              >
+            {/* Sheet panel — slides up from bottom */}
+            <Animated.View
+              style={[
+                { position: 'absolute', bottom: 0, left: 0, right: 0 },
+                sheetAnimatedStyle,
+                style,
+              ]}
+            >
+              <BottomSheetRenderModeContext.Provider value="modal">
                 {children}
-              </Animated.View>
-            </View>
+              </BottomSheetRenderModeContext.Provider>
+            </Animated.View>
           </GestureHandlerRootView>
         </Modal>
+
       </BottomSheetInternalContext.Provider>
     </BottomSheetContext.Provider>
   );

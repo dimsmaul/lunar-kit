@@ -11,9 +11,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const { setColorScheme } = useColorScheme();
     const theme = useThemeStore((state) => state.theme);
 
-    const activeColorScheme =
+    const activeColorScheme: 'light' | 'dark' | 'system' =
         theme === 'system'
-            ? deviceTheme ?? 'light'
+            ? (deviceTheme === 'unspecified' ? 'light' : deviceTheme) ?? 'light'
             : theme;
 
     useEffect(() => {

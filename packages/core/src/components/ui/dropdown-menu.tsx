@@ -7,9 +7,9 @@ import {
   StyleSheet,
   useWindowDimensions,
   Platform,
-  Modal,
   StatusBar,
 } from 'react-native';
+import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -325,12 +325,13 @@ export function DropdownMenuContent({
   };
 
   return (
-    <Modal
+    <AdaptiveModal
       visible={visible}
-      transparent
+      onDismiss={() => onOpenChange(false)}
+      backdropColor="transparent"
+      closeOnBackdropPress={false}
       animationType="none"
       statusBarTranslucent
-      onRequestClose={() => onOpenChange(false)}
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
         <Pressable
@@ -370,7 +371,7 @@ export function DropdownMenuContent({
           </Pressable>
         </Animated.View>
       </View>
-    </Modal>
+    </AdaptiveModal>
   );
 }
 
@@ -537,7 +538,7 @@ export function DropdownMenuSub({ children, trigger, leftIcon, rightIcon }: Drop
         {leftIcon && <View className="w-5 items-center">{renderIcon(leftIcon)}</View>}
         <View className="flex-1">
           {typeof trigger === 'string' ? (
-            <Text size="sm" className="text-foreground">{trigger}</Text>
+            <Text className="text-foreground">{trigger}</Text>
           ) : (
             trigger
           )}
@@ -545,7 +546,7 @@ export function DropdownMenuSub({ children, trigger, leftIcon, rightIcon }: Drop
         {rightIcon && <View className="w-5 items-center">{renderIcon(rightIcon)}</View>}
         {/* Chevron kanan sebagai indikator ada sub-menu */}
         <View className="w-5 items-center">
-          <Text size="sm" className="text-muted-foreground">›</Text>
+          <Text className="text-muted-foreground">›</Text>
         </View>
       </Pressable>
 
@@ -612,12 +613,13 @@ export function DropdownMenuSubContent({
   };
 
   return (
-    <Modal
+    <AdaptiveModal
       visible={visible}
-      transparent
+      onDismiss={() => onOpenChange(false)}
+      backdropColor="transparent"
+      closeOnBackdropPress={false}
       animationType="none"
       statusBarTranslucent
-      onRequestClose={() => onOpenChange(false)}
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
         <Pressable
@@ -653,6 +655,6 @@ export function DropdownMenuSubContent({
           </Pressable>
         </Animated.View>
       </View>
-    </Modal>
+    </AdaptiveModal>
   );
 }

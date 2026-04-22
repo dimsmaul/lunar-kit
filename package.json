@@ -6,7 +6,9 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "packages/primitives/*"
+    "packages/primitives/*",
+    "packages/stubs/*",
+    "docs"
   ],
   "scripts": {
     "dev": "bun --filter example start",

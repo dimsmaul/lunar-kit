@@ -32,12 +32,14 @@
     "prepublishOnly": "bun run build"
   },
   "peerDependencies": {
+    "@lunar-primitive/adaptive-modal": "*",
     "react": "*",
     "react-native": "*",
     "react-native-reanimated": "*",
     "react-native-gesture-handler": "*"
   },
   "dependencies": {
+    "@lunar-primitive/adaptive-modal": "workspace:*",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.6.0"
   },

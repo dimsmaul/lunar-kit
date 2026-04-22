@@ -306,7 +306,7 @@ export function MultiSelectSheet({
     return (
         <View className={cn('w-full', className)}>
             {label && (
-                <Text size="sm" variant='label' className="mb-2">
+                <Text variant='label' className="mb-2">
                     {label}
                 </Text>
             )}
@@ -399,7 +399,7 @@ export function MultiSelectSheet({
             </BottomSheet>
 
             {error && (
-                <Text size="sm" className="text-destructive mt-1">
+                <Text className="text-destructive mt-1">
                     {error}
                 </Text>
             )}
