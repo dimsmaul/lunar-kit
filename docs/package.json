@@ -1,0 +1,40 @@
+{
+  "name": "docs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start",
+    "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
+    "postinstall": "fumadocs-mdx",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@lunar-kit/core": "workspace:*",
+    "fumadocs-core": "16.8.1",
+    "fumadocs-mdx": "14.3.1",
+    "fumadocs-ui": "16.8.1",
+    "lucide-react": "^1.8.0",
+    "next": "16.2.4",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "tailwind-merge": "^3.5.0",
+    "nativewind": "^4.2.0",
+    "react-native-web": "^0.19.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/mdx": "^2.0.13",
+    "@types/node": "^25.6.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/react-native": "^0.73.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.10",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.3",
+    "eslint-config-next": "16.2.4",
+    "eslint": "^10.2.1"
+  }
+}

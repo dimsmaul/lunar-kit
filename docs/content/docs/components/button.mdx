@@ -1,0 +1,603 @@
+---
+title: Button Component
+description: Universal Button component for React Native and Web with multiple variants, sizes, and states
+---
+
+import { ComponentPreview } from '@/components/component-preview';
+import { ButtonDemo } from '@/components/button-demo';
+
+# Button Component
+
+A universal, reusable button component that works seamlessly on **iOS**, **Android**, and **Web**. Built with React Native primitives and NativeWind styling.
+
+## Overview
+
+The Button component provides:
+- ✅ **6 visual variants** (default, outline, destructive, secondary, ghost, link)
+- ✅ **3 size options** (sm, default, lg) + icon-only mode
+- ✅ **Loading states** with activity indicator
+- ✅ **Icon support** (left & right icons)
+- ✅ **Disabled state** management
+- ✅ **Full accessibility** support
+- ✅ **Cross-platform** (iOS, Android, Web)
+
+## Installation
+
+Add Button to your project with the CLI:
+
+```bash
+lunar add button
+```
+
+Or install the full core library:
+
+```bash
+npm install @lunar-kit/core
+# or
+bun add @lunar-kit/core
+```
+
+Then import and use:
+
+```tsx
+import { Button } from '@lunar-kit/core';
+```
+
+## Props & TypeScript
+
+```tsx
+interface ButtonProps extends React.ComponentPropsWithoutRef<typeof Pressable> {
+  /** Visual variant of the button */
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  
+  /** Button size */
+  size?: 'sm' | 'default' | 'lg' | 'icon';
+  
+  /** Content of the button */
+  children: React.ReactNode;
+  
+  /** Whether the button is disabled */
+  disabled?: boolean;
+  
+  /** Loading state - shows spinner, disables interaction */
+  loading?: boolean;
+  
+  /** Optional left icon/element */
+  leftIcon?: React.ReactNode;
+  
+  /** Optional right icon/element */
+  rightIcon?: React.ReactNode;
+  
+  /** Custom className for button container */
+  className?: string;
+  
+  /** Custom className for text */
+  textClassName?: string;
+  
+  /** Pressable event handler */
+  onPress?: (e: GestureResponderEvent) => void;
+}
+```
+
+## Basic Usage
+
+The simplest way to use Button:
+
+```tsx
+import { Button } from '@lunar-kit/core';
+import { View } from 'react-native';
+
+export function BasicButton() {
+  const handlePress = () => {
+    console.log('Button pressed!');
+  };
+
+  return (
+    <View style={{ gap: 12, padding: 20 }}>
+      <Button onPress={handlePress}>
+        Press me
+      </Button>
+    </View>
+  );
+}
+```
+
+<ComponentPreview
+  title="Basic Button"
+  description="Simple default button"
+  height={120}
+>
+  <ButtonDemo>Press me</ButtonDemo>
+</ComponentPreview>
+
+## Variants
+
+The Button component supports 6 different visual styles for different use cases.
+
+### Default Variant
+
+Primary action buttons for main user interactions.
+
+```tsx
+<Button variant="default" onPress={handleAction}>
+  Continue
+</Button>
+```
+
+### Outline Variant
+
+Secondary action buttons with bordered style.
+
+```tsx
+<Button variant="outline" onPress={handleCancel}>
+  Cancel
+</Button>
+```
+
+### Destructive Variant
+
+Use for dangerous actions like delete or logout.
+
+```tsx
+<Button variant="destructive" onPress={handleDelete}>
+  Delete
+</Button>
+```
+
+### Secondary Variant
+
+Alternative primary action with secondary color scheme.
+
+```tsx
+<Button variant="secondary" onPress={handleSecondary}>
+  Learn More
+</Button>
+```
+
+### Ghost Variant
+
+Minimal style - background disappears on certain states.
+
+```tsx
+<Button variant="ghost" onPress={handleGhost}>
+  Skip
+</Button>
+```
+
+### Link Variant
+
+Text-only buttons with underline.
+
+```tsx
+<Button variant="link" onPress={handleLink}>
+  View Details
+</Button>
+```
+
+<ComponentPreview
+  title="All Variants"
+  description="Default, Outline, Destructive, Secondary, Ghost, Link"
+  height={280}
+>
+  <ButtonDemo showAll />
+</ComponentPreview>
+
+## Sizes
+
+Buttons come in three sizes plus icon-only mode:
+
+```tsx
+// Small button
+<Button size="sm">Small</Button>
+
+// Default button (standard)
+<Button size="default">Normal</Button>
+
+// Large button
+<Button size="lg">Large</Button>
+
+// Icon-only button
+<Button size="icon">
+  <Icon name="settings" />
+</Button>
+```
+
+<ComponentPreview
+  title="Small Button"
+  description="size='sm'"
+  height={120}
+>
+  <ButtonDemo size="sm">Small</ButtonDemo>
+</ComponentPreview>
+
+<ComponentPreview
+  title="Default Button"
+  description="size='default' (standard)"
+  height={120}
+>
+  <ButtonDemo size="default">Normal</ButtonDemo>
+</ComponentPreview>
+
+<ComponentPreview
+  title="Large Button"
+  description="size='lg'"
+  height={120}
+>
+  <ButtonDemo size="lg">Large</ButtonDemo>
+</ComponentPreview>
+
+## Loading State
+
+Display a loading indicator while processing user action.
+
+```tsx
+import { Button } from '@lunar-kit/core';
+import { useState } from 'react';
+
+export function LoadingButton() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setIsLoading(false);
+  };
+
+  return (
+    <Button loading={isLoading} onPress={handleSubmit}>
+      {isLoading ? 'Loading...' : 'Submit'}
+    </Button>
+  );
+}
+```
+
+<ComponentPreview
+  title="Loading State"
+  description="Button with loading indicator"
+  height={120}
+>
+  <ButtonDemo loading>Submitting...</ButtonDemo>
+</ComponentPreview>
+
+## Disabled State
+
+Prevent user interaction with disabled buttons.
+
+```tsx
+<Button disabled>
+  Disabled
+</Button>
+
+<Button disabled variant="outline">
+  Disabled Outline
+</Button>
+```
+
+<ComponentPreview
+  title="Disabled State"
+  description="Buttons with disabled prop"
+  height={120}
+>
+  <ButtonDemo disabled>Disabled</ButtonDemo>
+</ComponentPreview>
+
+## With Icons
+
+Add icons on left or right side of the button.
+
+```tsx
+import { Button } from '@lunar-kit/core';
+import { ChevronRight, Download } from 'lucide-react-native';
+
+export function IconButtons() {
+  return (
+    <>
+      {/* Left Icon */}
+      <Button leftIcon={<Download size={16} />}>
+        Download
+      </Button>
+
+      {/* Right Icon */}
+      <Button rightIcon={<ChevronRight size={16} />}>
+        Continue
+      </Button>
+
+      {/* Both Icons */}
+      <Button 
+        leftIcon={<Download size={16} />}
+        rightIcon={<ChevronRight size={16} />}
+      >
+        Export Data
+      </Button>
+    </>
+  );
+}
+```
+
+## Full Width Button
+
+Make button fill parent container width.
+
+```tsx
+import { Button } from '@lunar-kit/core';
+import { View } from 'react-native';
+
+export function FullWidthButton() {
+  return (
+    <View style={{ width: '100%', paddingHorizontal: 16 }}>
+      <Button className="w-full">
+        Full Width Action
+      </Button>
+    </View>
+  );
+}
+```
+
+## Form Integration
+
+Common usage with form validation:
+
+```tsx
+import { Button } from '@lunar-kit/core';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+export function LoginForm() {
+  const { register, handleSubmit, formState: { isSubmitting } } = useForm({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (data) => {
+    // Send to API
+    await loginUser(data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register('email')} placeholder="Email" />
+      <input {...register('password')} type="password" placeholder="Password" />
+      <Button loading={isSubmitting} type="submit">
+        {isSubmitting ? 'Logging in...' : 'Login'}
+      </Button>
+    </form>
+  );
+}
+```
+
+## Accessibility
+
+The Button component includes excellent accessibility support:
+
+```tsx
+// ARIA labels for icon-only buttons
+<Button 
+  size="icon" 
+  aria-label="Close dialog"
+>
+  <X size={16} />
+</Button>
+
+// Semantic HTML - uses <button> element
+<Button type="button">Action</Button>
+
+// Keyboard navigation - automatic focus management
+// Screen reader - text and aria-labels announced
+```
+
+**Accessibility Features:**
+- ✅ Native button semantics (keyboard navigation)
+- ✅ Automatic focus indicators
+- ✅ ARIA label support for icons
+- ✅ Loading state announced to screen readers
+- ✅ Disabled state properly communicated
+
+## Advanced Usage
+
+### Custom Styling
+
+Override default styles with `className`:
+
+```tsx
+import { Button } from '@lunar-kit/core';
+
+export function CustomButton() {
+  return (
+    <Button 
+      className="rounded-full px-6 shadow-lg"
+      style={{ elevation: 5 }}
+    >
+      Custom Styled
+    </Button>
+  );
+}
+```
+
+### Custom Text Styling
+
+Style text separately with `textClassName`:
+
+```tsx
+<Button textClassName="text-lg font-bold tracking-widest uppercase">
+  Premium Action
+</Button>
+```
+
+### Pressable Callbacks
+
+All Pressable events are supported:
+
+```tsx
+import { Button } from '@lunar-kit/core';
+
+export function EventButtons() {
+  return (
+    <Button
+      onPress={() => console.log('pressed')}
+      onLongPress={() => console.log('long press')}
+      onPressIn={() => console.log('press in')}
+      onPressOut={() => console.log('press out')}
+    >
+      Tap me
+    </Button>
+  );
+}
+```
+
+## Usage in Your Project
+
+### CLI Generation
+
+Generate a button variant as a reusable component:
+
+```bash
+# Generate a custom button component in your project
+lunar generate component CustomButton
+```
+
+Then extend the Lunar Kit Button:
+
+```tsx
+// src/components/CustomButton.tsx
+import { Button, type ButtonProps } from '@lunar-kit/core';
+
+export function CustomButton(props: ButtonProps) {
+  return (
+    <Button 
+      variant={props.variant} 
+      size={props.size}
+      className="rounded-full"
+      {...props} 
+    />
+  );
+}
+```
+
+### Theme Customization
+
+Buttons inherit theme colors from your Lunar Kit theme:
+
+```tsx
+// Apps automatically use your theme colors:
+// - Primary (default button)
+// - Destructive (destructive variant)
+// - Secondary (secondary variant)
+// - Foreground colors (text)
+```
+
+## Complete Example
+
+A complete button showcase:
+
+```tsx
+import { Button } from '@lunar-kit/core';
+import { View, ScrollView } from 'react-native';
+import { useState } from 'react';
+
+export function ButtonShowcase() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleAction = async () => {
+    setIsLoading(true);
+    await new Promise(r => setTimeout(r, 1500));
+    setIsLoading(false);
+  };
+
+  return (
+    <ScrollView style={{ flex: 1, padding: 16 }} contentContainerStyle={{ gap: 16 }}>
+      {/* Sizes */}
+      <Button size="sm">Small Button</Button>
+      <Button size="default">Default Button</Button>
+      <Button size="lg">Large Button</Button>
+
+      {/* Variants */}
+      <Button variant="default">Default Action</Button>
+      <Button variant="outline">Secondary Action</Button>
+      <Button variant="destructive">Delete</Button>
+      <Button variant="ghost">Skip</Button>
+      <Button variant="link">Learn More</Button>
+
+      {/* States */}
+      <Button loading={isLoading} onPress={handleAction}>
+        {isLoading ? 'Processing...' : 'Submit'}
+      </Button>
+      <Button disabled>Disabled Button</Button>
+
+      {/* Full Width */}
+      <Button className="w-full">Full Width Button</Button>
+    </ScrollView>
+  );
+}
+```
+
+## Best Practices
+
+1. **Use semantically correct variants**
+   - Use `destructive` for delete/logout actions
+   - Use `outline` for secondary actions
+   - Use `link` for tertiary navigation
+
+2. **Loading states**
+   - Show loading while processing
+   - Disable interaction during loading
+   - Provide visual feedback
+
+3. **Icon usage**
+   - Pair icons with text when possible
+   - Use icons only with `aria-label`
+   - Keep icons consistent in size
+
+4. **Accessibility**
+   - Always provide text labels
+   - Use `aria-label` for icon buttons
+   - Ensure sufficient color contrast
+
+5. **Responsive design**
+   - Use `size="sm"` on mobile
+   - Stack buttons vertically on small screens
+   - Full-width on mobile, inline on desktop
+
+## Styling with Tailwind
+
+The Button component uses NativeWind-compatible Tailwind classes:
+
+```tsx
+// These Tailwind classes work on Button:
+<Button className="rounded-full px-8 py-3 shadow-lg">
+  Custom Tailwind
+</Button>
+
+// Responsive utilities:
+<Button 
+  className="w-full sm:w-auto"
+  size={{ base: 'sm', md: 'default' }}
+>
+  Responsive Button
+</Button>
+```
+
+## API Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | string | 'default' | Visual style: default, destructive, outline, secondary, ghost, link |
+| `size` | string | 'default' | Button size: sm, default, lg, icon |
+| `disabled` | boolean | false | Disables interaction |
+| `loading` | boolean | false | Shows loading spinner |
+| `leftIcon` | ReactNode | - | Icon on left side |
+| `rightIcon` | ReactNode | - | Icon on right side |
+| `className` | string | - | Custom container styles |
+| `textClassName` | string | - | Custom text styles |
+| `onPress` | function | - | Press event handler |
+| `children` | ReactNode | - | Button label or content |
+
+## See Also
+
+- [Input Component](/docs/components/input) - Text input for forms
+- [Dialog Component](/docs/components/dialog) - Modal dialogs with buttons
