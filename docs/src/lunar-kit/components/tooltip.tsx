@@ -20,7 +20,7 @@ import Animated, {
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../lib/utils';
 import { Text } from './text';
-import { AdaptiveModal } from '../support/adaptive-modal';
+import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 
 type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
 

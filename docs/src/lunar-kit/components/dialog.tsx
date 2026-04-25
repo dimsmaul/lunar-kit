@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, Pressable, Animated, Platform } from 'react-native';
 import { cn } from '../lib/utils';
 import { Text } from './text';
-import { AdaptiveModal } from '../support/adaptive-modal';
+import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 
 interface DialogProps {
   open?: boolean;

@@ -22,7 +22,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../lib/utils';
 import { Text } from './text';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { AdaptiveModal } from '../support/adaptive-modal';
+import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 
 
 const dropdownContentVariants = cva(
