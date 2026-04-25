@@ -29,17 +29,17 @@ export default function ProgressView() {
 
         <View className="gap-4">
           <View className="gap-1">
-            <Text size="sm">Height & Color</Text>
+            <Text >Height & Color</Text>
             <Progress value={75} className="h-1 bg-blue-100" indicatorClassName="bg-blue-600" />
           </View>
 
           <View className="gap-1">
-            <Text size="sm">Variant: Success</Text>
+            <Text >Variant: Success</Text>
             <Progress value={100} indicatorClassName="bg-green-500" />
           </View>
 
           <View className="gap-1">
-            <Text size="sm">Variant: Destructive</Text>
+            <Text >Variant: Destructive</Text>
             <Progress value={25} indicatorClassName="bg-destructive" />
           </View>
         </View>

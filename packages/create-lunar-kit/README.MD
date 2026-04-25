@@ -152,9 +152,9 @@ After creation, you can start building immediately:
 ```typescript
 // app/index.tsx
 import { View } from 'react-native';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Text } from '@/components/ui/text';
+import { Button } from '@/lunar-kit/components/button';
+import { Card } from '@/lunar-kit/components/card';
+import { Text } from '@/lunar-kit/components/text';
 
 export default function HomeScreen() {
   return (
@@ -248,7 +248,7 @@ const { theme, toggleTheme } = useTheme();
 Full TypeScript support with proper types:
 
 ```typescript
-import type { ButtonProps } from '@/components/ui/button';
+import type { ButtonProps } from '@/lunar-kit/components/button';
 ```
 
 ### File-based Routing

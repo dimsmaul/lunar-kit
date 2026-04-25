@@ -58,7 +58,7 @@ export default function SelectSheetView() {
             description="Choose one option from the list"
           />
           {singleValue && (
-            <Text size="sm" className="text-muted-foreground mt-2">
+            <Text className="text-muted-foreground mt-2">
               Selected: {options.find(opt => opt.value === singleValue)?.label}
             </Text>
           )}
@@ -86,7 +86,7 @@ export default function SelectSheetView() {
             showCount
           />
           {multiValue.length > 0 && (
-            <Text size="sm" className="text-muted-foreground mt-2">
+            <Text className="text-muted-foreground mt-2">
               Selected {multiValue.length} items
             </Text>
           )}
@@ -112,7 +112,7 @@ export default function SelectSheetView() {
             searchable
           />
           {countryValue && (
-            <Text size="sm" className="text-muted-foreground mt-2">
+            <Text className="text-muted-foreground mt-2">
               Selected: {countryValue}
             </Text>
           )}
@@ -140,7 +140,7 @@ export default function SelectSheetView() {
             showCount
           />
           {skillsValue.length > 0 && (
-            <Text size="sm" className="text-muted-foreground mt-2">
+            <Text className="text-muted-foreground mt-2">
               Selected: {skillsValue.join(', ')}
             </Text>
           )}
@@ -155,10 +155,10 @@ export default function SelectSheetView() {
 
         {/* Display Total Loaded */}
         <View className="items-center py-4 bg-muted rounded-lg">
-          <Text size="sm" className="text-muted-foreground">
+          <Text className="text-muted-foreground">
             Loaded {options.length} options
           </Text>
-          <Text size="sm" className="text-muted-foreground mt-1">
+          <Text className="text-muted-foreground mt-1">
             Scroll to bottom in sheet to load more
           </Text>
         </View>

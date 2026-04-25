@@ -1,0 +1,218 @@
+---
+sidebar_position: 13
+title: Form
+---
+
+import FormDemo from '@/demo/FormDemo';
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+# Form
+
+Building forms with React Hook Form integration and validation.
+
+<FormDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add form`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormDescription,
+  FormMessage,
+  useFormField,
+} from '@/components/ui/form';`} />
+
+### Basic Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const formSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
+type FormData = z.infer<typeof formSchema>;
+
+export function LoginForm() {
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+  };
+
+  return (
+    <Form {...form}>
+      <View className="gap-4">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <Input
+                value={field.value}
+                onChangeText={field.onChange}
+                onBlur={field.onBlur}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <Input
+                value={field.value}
+                onChangeText={field.onChange}
+                onBlur={field.onBlur}
+                secureTextEntry
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button onPress={form.handleSubmit(onSubmit)}>
+          Sign In
+        </Button>
+      </View>
+    </Form>
+  );
+}`} />
+
+### With Description
+
+<DynamicCodeBlock lang="tsx" code={`<FormField
+  control={form.control}
+  name="username"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Username</FormLabel>
+      <Input
+        value={field.value}
+        onChangeText={field.onChange}
+      />
+      <FormDescription>
+        This is your public display name.
+      </FormDescription>
+      <FormMessage />
+    </FormItem>
+  )}
+/>`} />
+
+### With Checkbox
+
+<DynamicCodeBlock lang="tsx" code={`<FormField
+  control={form.control}
+  name="terms"
+  render={({ field }) => (
+    <FormItem>
+      <Checkbox
+        checked={field.value}
+        onCheckedChange={field.onChange}
+      >
+        <CheckboxLabel>Accept terms and conditions</CheckboxLabel>
+      </Checkbox>
+      <FormMessage />
+    </FormItem>
+  )}
+/>`} />
+
+### With Select
+
+<DynamicCodeBlock lang="tsx" code={`<FormField
+  control={form.control}
+  name="country"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Country</FormLabel>
+      <Select value={field.value} onValueChange={field.onChange}>
+        <SelectTrigger>
+          <SelectValue placeholder="Select country" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="us" label="United States" />
+          <SelectItem value="uk" label="United Kingdom" />
+          <SelectItem value="ca" label="Canada" />
+        </SelectContent>
+      </Select>
+      <FormMessage />
+    </FormItem>
+  )}
+/>`} />
+
+## API Reference
+
+### Form
+
+The form provider component (re-export of `FormProvider`).
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `...methods` | `UseFormReturn` | Required | React Hook Form methods |
+
+### FormField
+
+Controller component for form fields.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `control` | `Control` | Required | Form control from useForm |
+| `name` | `string` | Required | Field name |
+| `render` | `({ field, fieldState }) => ReactNode` | Required | Render function |
+
+### FormItem
+
+Container for a form field.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Field content |
+| `className` | `string` | — | Additional classes |
+
+### FormLabel
+
+Label for a form field.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Label text |
+| `className` | `string` | — | Additional classes |
+
+### FormDescription
+
+Helper text for a form field.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Description text |
+| `className` | `string` | — | Additional classes |
+
+### FormMessage
+
+Displays validation error messages.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | — | Custom message |
+| `className` | `string` | — | Additional classes |

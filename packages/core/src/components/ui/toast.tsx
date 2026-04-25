@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { View, Dimensions } from 'react-native';
-import Animated, { 
-    useSharedValue, 
-    useAnimatedStyle, 
-    withTiming, 
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    withTiming,
     runOnJS,
     withSpring
 } from 'react-native-reanimated';
@@ -17,18 +17,18 @@ import { Info, AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react-nati
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.3;
 
-export function Toast({ 
-    id, 
-    title, 
-    description, 
-    variant = 'default', 
+export function Toast({
+    id,
+    title,
+    description,
+    variant = 'default',
     duration = 3000,
     position = 'top',
     direction = 'top'
 }: ToastType) {
     const { colors } = useThemeColors();
     const removeToast = useToastStore((state) => state.removeToast);
-    
+
     // Initial values based on direction (now more subtle)
     const getInitialTranslate = () => {
         const offset = 20;
@@ -36,7 +36,7 @@ export function Toast({
             case 'left': return { x: -offset, y: 0 };
             case 'right': return { x: offset, y: 0 };
             case 'bottom': return { x: 0, y: offset };
-            case 'top': 
+            case 'top':
             default: return { x: 0, y: -offset };
         }
     };
@@ -56,7 +56,7 @@ export function Toast({
             dismiss();
         }, duration);
         return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const dismiss = () => {
@@ -71,14 +71,14 @@ export function Toast({
             translateY.value = event.translationY;
         })
         .onEnd((event) => {
-            const shouldDismiss = 
-                Math.abs(event.translationX) > SWIPE_THRESHOLD || 
+            const shouldDismiss =
+                Math.abs(event.translationX) > SWIPE_THRESHOLD ||
                 Math.abs(event.translationY) > SWIPE_THRESHOLD;
 
             if (shouldDismiss) {
                 const destX = event.translationX > 0 ? SCREEN_WIDTH : -SCREEN_WIDTH;
                 const destY = event.translationY > 0 ? 100 : -100;
-                
+
                 // If horizontal swipe is stronger, exit horizontally
                 if (Math.abs(event.translationX) > Math.abs(event.translationY)) {
                     translateX.value = withTiming(destX, { duration: 300 }, () => runOnJS(removeToast)(id));
@@ -136,7 +136,7 @@ export function Toast({
 
     return (
         <GestureDetector gesture={panGesture}>
-            <Animated.View 
+            <Animated.View
                 style={animatedStyle}
                 className={cn(
                     "m-2 p-4 rounded-xl border flex-row items-center gap-3 shadow-lg",
@@ -146,7 +146,7 @@ export function Toast({
                 <View>{getIcon()}</View>
                 <View className="flex-1">
                     {title && <Text variant="title" size="sm" className={textStyles[variant]}>{title}</Text>}
-                    {description && <Text size="sm" className={cn("opacity-90", textStyles[variant])}>{description}</Text>}
+                    {description && <Text className={cn("opacity-90", textStyles[variant])}>{description}</Text>}
                 </View>
             </Animated.View>
         </GestureDetector>

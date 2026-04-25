@@ -18,15 +18,15 @@ export default function CarouselView() {
       <View className="py-4 gap-8">
         <View className="gap-2">
           <Text variant="header" size="sm" className="px-4">Image Carousel</Text>
-          <Carousel 
+          <Carousel
             data={IMAGES}
             renderItem={({ item }) => (
-              <View 
+              <View
                 className="overflow-hidden rounded-2xl bg-muted"
                 style={{ width: SCREEN_WIDTH - 64, height: 250 }}
               >
-                <Image 
-                  source={{ uri: item }} 
+                <Image
+                  source={{ uri: item }}
                   className="w-full h-full"
                   resizeMode="cover"
                 />
@@ -37,13 +37,13 @@ export default function CarouselView() {
 
         <View className="gap-2">
           <Text variant="header" size="sm" className="px-4">Card Carousel</Text>
-          <Carousel 
+          <Carousel
             data={[1, 2, 3, 4, 5]}
             itemWidth={200}
             renderItem={({ item }) => (
               <Card className="p-6 h-40 items-center justify-center bg-primary">
                 <Text variant="title" className="text-white">Feature {item}</Text>
-                <Text size="sm" className="text-white/80 text-center mt-2">Experimental UI kit component</Text>
+                <Text className="text-white/80 text-center mt-2">Experimental UI kit component</Text>
               </Card>
             )}
           />

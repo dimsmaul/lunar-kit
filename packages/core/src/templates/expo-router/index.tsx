@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Alert } from 'react-native';
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { Button } from '@/lunar-kit/components/button';
+import { Text } from '@/lunar-kit/components/text';
 
 export default function IndexScreen() {
   return (

@@ -2,6 +2,17 @@
   "name": "@lunar-primitive/adaptive-modal",
   "version": "0.0.0",
   "description": "Adaptive modal primitive for Lunar Kit - bridges React Native Modal for web",
+  "author": "Dimas Maulana Ahmad",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dimsmaul/lunar-kit",
+    "directory": "packages/primitives/adaptive-modal"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

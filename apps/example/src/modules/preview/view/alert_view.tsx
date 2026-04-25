@@ -39,7 +39,7 @@ export default function AlertView() {
         <Alert variant="info">
           <View>
             <Text className="font-bold text-blue-900 dark:text-blue-100">Update Available</Text>
-            <Text size="sm" className="text-blue-800 dark:text-blue-200">A new version of the app is ready to install.</Text>
+            <Text className="text-blue-800 dark:text-blue-200">A new version of the app is ready to install.</Text>
           </View>
         </Alert>
       </View>

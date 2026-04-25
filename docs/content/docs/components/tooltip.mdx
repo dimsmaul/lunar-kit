@@ -1,0 +1,63 @@
+---
+sidebar_position: 11
+title: Tooltip
+---
+
+import TooltipDemo from '@/demo/TooltipDemo';
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.
+
+<TooltipDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add tooltip`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';`} />
+
+### Basic Usage
+
+<DynamicCodeBlock lang='tsx' code={`<Tooltip>
+  <TooltipTrigger asChild>
+    <Button variant="outline" size="icon">
+      <Plus size={16} />
+    </Button>
+  </TooltipTrigger>
+  <TooltipContent>
+    Add to library
+  </TooltipContent>
+</Tooltip>`} />
+
+
+## API Reference
+
+### Tooltip
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Content |
+
+### TooltipTrigger
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Trigger element |
+| `asChild` | `boolean` | `false` | Merges props with child component |
+
+### TooltipContent
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Tooltip content |
+| `side` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | Preferred side |
+| `sideOffset` | `number` | `4` | Distance from trigger |
+| `className` | `string` | — | Custom styles |

@@ -1,43 +1,40 @@
 import * as React from 'react';
-import { Modal, Platform, View, StyleSheet } from 'react-native';
-
-export interface ModalConfig {
-  backdropOpacity?: number;
-  animationType?: 'none' | 'fade' | 'slide';
-  transparent?: boolean;
-  statusBarTranslucent?: boolean;
-}
+import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Portal } from './portal';
 
 export interface AdaptiveModalProps {
   /**
-   * Controls whether the modal is visible
+   * Controls whether the modal is visible.
    */
   visible: boolean;
   /**
-   * Callback when modal is dismissed
+   * Called when the backdrop is pressed or the back button is triggered.
    */
   onDismiss?: () => void;
   /**
-   * Content to render inside the modal
+   * Content to render inside the modal.
    */
   children: React.ReactNode;
   /**
-   * Custom backdrop styles
+   * Color of the backdrop overlay.
+   * @default 'rgba(0,0,0,0.5)'
    */
-  backdropStyle?: any;
+  backdropColor?: string;
   /**
-   * Custom content styles
-   */
-  contentStyle?: any;
-  /**
-   * Whether to close on backdrop press
+   * Whether pressing the backdrop closes the modal.
    * @default true
    */
   closeOnBackdropPress?: boolean;
   /**
-   * Modal configuration options
+   * Animation type for native Modal.
+   * @default 'none'
    */
-  config?: ModalConfig;
+  animationType?: 'none' | 'fade' | 'slide';
+  /**
+   * Whether to render under the status bar on Android.
+   * @default true
+   */
+  statusBarTranslucent?: boolean;
 }
 
 export interface AdaptiveModalRef {
@@ -51,122 +48,72 @@ export const AdaptiveModal = React.forwardRef<AdaptiveModalRef, AdaptiveModalPro
       visible,
       onDismiss,
       children,
-      backdropStyle,
-      contentStyle,
+      backdropColor = 'rgba(0,0,0,0.5)',
       closeOnBackdropPress = true,
-      config = {},
+      animationType = 'none',
+      statusBarTranslucent = true,
     },
     ref
   ) => {
-    const {
-      backdropOpacity = 0.5,
-      animationType = Platform.OS === 'ios' ? 'fade' : 'slide',
-      transparent = true,
-      statusBarTranslucent = true,
-    } = config;
-
     React.useImperativeHandle(ref, () => ({
-      dismiss: () => {
-        onDismiss?.();
-      },
+      dismiss: () => onDismiss?.(),
       present: () => {
-        // Present is controlled via `visible` prop
+        // Controlled via `visible` prop
       },
     }));
 
     if (!visible) return null;
 
-    // Web: Use fixed positioning overlay
+    // ── Web ────────────────────────────────────────────────────────────────
     if (Platform.OS === 'web') {
       return (
-        <View style={[styles.webBackdrop, backdropStyle, { backgroundColor: `rgba(0, 0, 0, ${backdropOpacity})` }]}>
-          <View style={[styles.webContent, contentStyle]}>
-            {children}
-          </View>
-          {closeOnBackdropPress && (
-            <View
-              style={styles.webBackdropOverlay}
-              onStartShouldSetResponder={() => {
-                onDismiss?.();
-                return true;
-              }}
-            />
-          )}
-        </View>
+        <Portal>
+          {/* Full-screen backdrop */}
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: backdropColor,
+              zIndex: 50,
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            {/* Backdrop press layer (behind content) */}
+            {closeOnBackdropPress && (
+              <div
+                onClick={onDismiss}
+                style={{ position: 'absolute', inset: 0, zIndex: 0 }}
+              />
+            )}
+
+            {/* Content slot — no forced centering; callers style themselves */}
+            <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}>
+              {children}
+            </div>
+          </div>
+        </Portal>
       );
     }
 
-    // Native: Use React Native Modal
+    // ── Native ─────────────────────────────────────────────────────────────
+    // Render a transparent Modal. Children own ALL layout — no wrapper Views
+    // that could interfere with flex/absolute positioning or gesture handling.
+    // Callers must provide their own backdrop and positioning.
     return (
       <Modal
         visible={visible}
-        transparent={transparent}
+        transparent
         animationType={animationType}
         statusBarTranslucent={statusBarTranslucent}
         onRequestClose={() => {
-          if (closeOnBackdropPress) {
-            onDismiss?.();
-          }
+          if (closeOnBackdropPress) onDismiss?.();
         }}
       >
-        <View style={[styles.nativeBackdrop, backdropStyle, { backgroundColor: `rgba(0, 0, 0, ${backdropOpacity})` }]}>
-          <View style={[styles.nativeContent, contentStyle]}>
-            {children}
-          </View>
-        </View>
+        {children}
       </Modal>
     );
   }
 );
 
 AdaptiveModal.displayName = 'AdaptiveModal';
-
-const styles = StyleSheet.create({
-  webBackdrop: {
-    position: 'fixed' as any,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  webContent: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    width: '90%',
-    maxWidth: 448,
-    padding: 16,
-  },
-  webBackdropOverlay: {
-    position: 'absolute' as any,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: -1,
-  },
-  nativeBackdrop: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  nativeContent: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    width: '90%',
-    maxWidth: 448,
-    padding: 16,
-  },
-});

@@ -81,7 +81,7 @@ export default function BannerView() {
         </Text>
         <View>
           <Banner variant="info" title="Custom Content">
-            <Text size="sm" className="text-blue-900 dark:text-blue-100 mt-2">
+            <Text className="text-blue-900 dark:text-blue-100 mt-2">
               You can add any custom content here.
             </Text>
             <Button variant="link" size="sm" className="mt-2 self-start p-0">

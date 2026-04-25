@@ -163,7 +163,7 @@ export function SelectTrigger({
             </Pressable>
 
             {error && (
-                <Text size="sm" className="text-destructive mt-2">
+                <Text className="text-destructive mt-2">
                     {error}
                 </Text>
             )}
@@ -254,7 +254,7 @@ export function SelectGroup({ className, children }: SelectGroupProps) {
 export function SelectLabel({ className, children }: SelectLabelProps) {
     return (
         <View className={cn('px-4 py-2', className)}>
-            <Text size="sm" variant="body" className="uppercase tracking-wide text-muted-foreground">
+            <Text variant="body" className="uppercase tracking-wide text-muted-foreground">
                 {children}
             </Text>
         </View>

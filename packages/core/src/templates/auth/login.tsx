@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/lunar-kit/components/button';
 
 export default function LoginScreen() {
   return (

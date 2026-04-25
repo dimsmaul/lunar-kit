@@ -1,0 +1,157 @@
+---
+sidebar_position: 11
+title: Date Range Picker
+---
+
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+import DateRangePickerDemo from '@/demo/DateRangePickerDemo'
+
+A component that allows users to select a range of dates from a calendar.
+
+<DateRangePickerDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add date-range-picker`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import {
+  DateRangePicker,
+  DateRangePickerTrigger,
+  DateRangePickerContent,
+  DateRangePickerValue,
+} from '@/components/ui/date-range-picker';`} />
+
+### Basic Usage
+
+<DynamicCodeBlock lang="tsx" code={`const [startDate, setStartDate] = useState<Date>();
+const [endDate, setEndDate] = useState<Date>();
+
+<DateRangePicker
+  startDate={startDate}
+  endDate={endDate}
+  onRangeChange={(start, end) => {
+    setStartDate(start);
+    setEndDate(end);
+  }}
+>
+  <DateRangePickerTrigger>
+    <DateRangePickerValue placeholder="Select date range" />
+  </DateRangePickerTrigger>
+  <DateRangePickerContent />
+</DateRangePicker>`} />
+
+### With Min/Max Dates
+
+<DynamicCodeBlock lang="tsx" code={`<DateRangePicker
+  startDate={startDate}
+  endDate={endDate}
+  onRangeChange={handleRangeChange}
+  minDate={new Date()}
+  maxDate={new Date(2025, 11, 31)}
+>
+  {/* ... */}
+</DateRangePicker>`} />
+
+### Maximum Days
+
+Limit the maximum number of days that can be selected:
+
+<DynamicCodeBlock lang="tsx" code={`<DateRangePicker
+  startDate={startDate}
+  endDate={endDate}
+  onRangeChange={handleRangeChange}
+  maxDays={7}  // Maximum 7 days selection
+>
+  {/* ... */}
+</DateRangePicker>`} />
+
+### Trigger Variants
+
+<DynamicCodeBlock lang="tsx" code={`// Default
+<DateRangePicker variant="default" {...props}>
+  {/* ... */}
+</DateRangePicker>
+
+// Outline
+<DateRangePicker variant="outline" {...props}>
+  {/* ... */}
+</DateRangePicker>
+
+// Filled
+<DateRangePicker variant="filled" {...props}>
+  {/* ... */}
+</DateRangePicker>`} />
+
+### Trigger Sizes
+
+<DynamicCodeBlock lang="tsx" code={`<DateRangePicker size="sm" {...props}>
+  {/* ... */}
+</DateRangePicker>
+
+<DateRangePicker size="md" {...props}>
+  {/* ... */}
+</DateRangePicker>
+
+<DateRangePicker size="lg" {...props}>
+  {/* ... */}
+</DateRangePicker>`} />
+
+### Custom Format
+
+<DynamicCodeBlock lang="tsx" code={`<DateRangePickerValue
+  placeholder="Choose dates"
+  format="DD/MM/YYYY"
+/>
+
+<DateRangePickerValue
+  placeholder="Choose dates"
+  format="MMMM D, YYYY"
+/>`} />
+
+## API Reference
+
+### DateRangePicker
+
+Root component.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `startDate` | `Date` | — | Range start date |
+| `endDate` | `Date` | — | Range end date |
+| `onRangeChange` | `(start, end) => void` | — | Callback when range changes |
+| `minDate` | `Date` | — | Minimum selectable date |
+| `maxDate` | `Date` | — | Maximum selectable date |
+| `maxDays` | `number` | — | Maximum days in range |
+| `variant` | `'default' \| 'outline' \| 'filled'` | `'default'` | Trigger variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Trigger size |
+
+### DateRangePickerTrigger
+
+The button that opens the picker.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Trigger content |
+| `className` | `string` | — | Additional classes |
+
+### DateRangePickerContent
+
+The calendar popup with action buttons.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `className` | `string` | — | Additional classes |
+
+### DateRangePickerValue
+
+Display component for the selected range.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `placeholder` | `string` | `'Select date range'` | Placeholder text |
+| `format` | `string` | `'MMM DD, YYYY'` | Date format |
+| `showIcon` | `boolean` | `true` | Show calendar icon |
+| `className` | `string` | — | Additional classes |

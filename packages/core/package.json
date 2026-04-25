@@ -65,6 +65,8 @@
     "zustand": "*"
   },
   "dependencies": {
+    "@lunar-primitive/adaptive-modal": "workspace:*",
+    "@lunar-primitive/bottom-sheet": "workspace:*",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.6.0"
   },
