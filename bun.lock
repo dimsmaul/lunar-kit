@@ -204,9 +204,8 @@
     },
     "packages/primitives/bottom-sheet": {
       "name": "@lunar-primitive/bottom-sheet",
-      "version": "0.0.0",
+      "version": "0.0.2",
       "dependencies": {
-        "@lunar-primitive/adaptive-modal": "workspace:*",
         "clsx": "^2.1.1",
         "tailwind-merge": "^2.6.0",
       },
