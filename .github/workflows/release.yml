@@ -47,11 +47,11 @@ jobs:
 
       - name: Publish to npm
         run: |
-          cd packages/core && npm publish
-          cd ../cli && npm publish
-          cd ../create-lunar-kit && npm publish
-          cd ../primitives/adaptive-modal && npm publish
-          cd ../primitives/bottom-sheet && npm publish
+          (cd packages/core && npm publish)
+          (cd packages/cli && npm publish)
+          (cd packages/create-lunar-kit && npm publish)
+          (cd packages/primitives/adaptive-modal && npm publish)
+          (cd packages/primitives/bottom-sheet && npm publish)
 
       - name: Create release
         run: |
