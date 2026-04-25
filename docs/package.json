@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "@lunar-primitive/adaptive-modal": "*",
-    "@lunar-primitive/bottom-sheet": "*",
+    "@lunar-primitive/adaptive-modal": "^0.0.1",
+    "@lunar-primitive/bottom-sheet": "^0.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.19",
