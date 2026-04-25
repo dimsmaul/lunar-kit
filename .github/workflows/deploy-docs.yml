@@ -1,0 +1,34 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - 'docs-v2/**'
+      - '.github/workflows/deploy-docs.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        working-directory: ./docs
+        run: bun install
+
+      - name: Build
+        working-directory: ./docs
+        run: bun run build
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./docs
+          production: ${{ github.ref == 'refs/heads/main' }}

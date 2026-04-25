@@ -6,7 +6,9 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "packages/primitives/*"
+    "packages/primitives/*",
+    "packages/stubs/*",
+    "docs"
   ],
   "scripts": {
     "dev": "bun --filter example start",
@@ -17,13 +19,10 @@
     "build:core": "bun --filter @lunar-kit/core build",
     "build:create": "bun --filter create-lunar-kit build",
     "build:primitives": "bun run --filter '@lunar-primitive/*' build",
-    "build": "bun run build:core && bun run build:cli && bun run build:create",
-    "changeset": "changeset",
-    "changeset:version": "changeset version",
-    "changeset:publish": "changeset publish",
-    "release:check": "changeset status",
-    "release:version": "changeset version",
-    "release:publish": "changeset publish"
+    "build": "bun run build:core && bun run build:cli && bun run build:create && bun run build:primitives",
+    "bump:patch": "bun scripts/bump-versions.ts patch",
+    "bump:minor": "bun scripts/bump-versions.ts minor",
+    "bump:major": "bun scripts/bump-versions.ts major"
   },
   "keywords": [
     "react-native",

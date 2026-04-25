@@ -123,7 +123,7 @@ export function Banner({
                     </Text>
                 )}
                 {description && (
-                    <Text size="sm" className={cn(textColor)}>
+                    <Text className={cn(textColor)}>
                         {description}
                     </Text>
                 )}

@@ -1,0 +1,514 @@
+---
+sidebar_position: 3
+title: Theme
+description: Configure themes and dark mode in Lunar Kit
+---
+
+import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
+
+# Theme Configuration
+
+Lunar Kit uses CSS variables for theming, making it easy to customize colors and support dark mode.
+
+## Color System
+
+The theme is based on semantic color tokens that adapt to light and dark modes:
+
+| Token | Description |
+|-------|-------------|
+| `background` | Main background color |
+| `foreground` | Main text color |
+| `card` | Card/surface background |
+| `card-foreground` | Card text color |
+| `primary` | Primary brand color |
+| `primary-foreground` | Text on primary color |
+| `secondary` | Secondary color |
+| `secondary-foreground` | Text on secondary color |
+| `muted` | Muted/subtle background |
+| `muted-foreground` | Muted text color |
+| `accent` | Accent/highlight color |
+| `accent-foreground` | Text on accent color |
+| `destructive` | Error/danger color |
+| `destructive-foreground` | Text on destructive color |
+| `border` | Border color |
+| `input` | Input border color |
+| `ring` | Focus ring color |
+
+## CSS Variables
+
+Colors are defined in `global.css` using HSL values:
+
+<DynamicCodeBlock lang="css" code={`/* src/global.css */
+@layer base {
+  :root {
+    /* Light mode colors */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+  }
+
+  .dark {
+    /* Dark mode colors */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}`} />
+
+## Tailwind Configuration
+
+Colors are mapped in `tailwind.config.js`:
+
+<DynamicCodeBlock lang="js" code={`// tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  // ...
+  theme: {
+    extend: {
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+    },
+  },
+};`} />
+
+## Dark Mode
+
+### Using NativeWind
+
+Lunar Kit supports dark mode through NativeWind's `dark:` prefix:
+
+<DynamicCodeBlock lang="tsx" code={`<View className="bg-background dark:bg-background">
+  <Text className="text-foreground">
+    This text adapts to the theme
+  </Text>
+</View>`} />
+
+### Theme Provider
+
+Set up a theme provider to manage theme state:
+
+<DynamicCodeBlock lang="tsx" code={`// src/providers/theme-provider.tsx
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useColorScheme } from 'nativewind';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+type Theme = 'light' | 'dark' | 'system';
+
+interface ThemeContextValue {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  resolvedTheme: 'light' | 'dark';
+}
+
+const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const { colorScheme, setColorScheme } = useColorScheme();
+  const [theme, setThemeState] = useState<Theme>('system');
+
+  useEffect(() => {
+    // Load saved theme
+    AsyncStorage.getItem('theme').then((saved) => {
+      if (saved) {
+        setThemeState(saved as Theme);
+        if (saved !== 'system') {
+          setColorScheme(saved as 'light' | 'dark');
+        }
+      }
+    });
+  }, []);
+
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme);
+    AsyncStorage.setItem('theme', newTheme);
+    if (newTheme === 'system') {
+      setColorScheme(undefined);
+    } else {
+      setColorScheme(newTheme);
+    }
+  };
+
+  return (
+    <ThemeContext.Provider
+      value={{
+        theme,
+        setTheme,
+        resolvedTheme: colorScheme ?? 'light',
+      }}
+    >
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within ThemeProvider');
+  }
+  return context;
+}`} />
+
+### Using the Theme Hook
+
+<DynamicCodeBlock lang="tsx" code={`import { useTheme } from '@/providers/theme-provider';
+
+export function ThemeSwitcher() {
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
+  return (
+    <View>
+      <Text>Current theme: {resolvedTheme}</Text>
+      <Button onPress={() => setTheme('light')}>Light</Button>
+      <Button onPress={() => setTheme('dark')}>Dark</Button>
+      <Button onPress={() => setTheme('system')}>System</Button>
+    </View>
+  );
+}`} />
+
+## Use Theme Colors
+
+Lunar Kit provides a type-safe way to access your theme colors through the `useThemeColors` hook. This approach ensures you always get the correct color value based on the current theme (light/dark).
+
+### Setup
+
+To ensure your colors are consistent across both Tailwind classes and runtime JavaScript (e.g., in `useThemeColors`), we recommend using a "Single Source of Truth" approach.
+Instead of manually keeping `global.css` and your JS constants in sync, define your colors in `lib/theme.ts` and export them as CSS variables using NativeWind's `vars`.
+
+Create `lib/theme.ts`:
+
+<DynamicCodeBlock lang="ts" code={`// lib/theme.ts
+import { vars } from 'nativewind';
+
+// 1. Define your theme colors using HSL values
+const lightThemeVars = {
+  '--background': '0 0% 100%',
+  '--foreground': '222.2 84% 4.9%',
+  '--card': '0 0% 100%',
+  '--card-foreground': '222.2 84% 4.9%',
+  '--primary': '240 5.9% 10%',
+  '--primary-foreground': '0 0% 98%',
+  '--secondary': '210 40% 96.1%',
+  '--secondary-foreground': '222.2 47.4% 11.2%',
+  '--muted': '210 40% 96.1%',
+  '--muted-foreground': '215.4 16.3% 46.9%',
+  '--accent': '210 40% 96.1%',
+  '--accent-foreground': '222.2 47.4% 11.2%',
+  '--destructive': '0 84.2% 60.2%',
+  '--destructive-foreground': '210 40% 98%',
+  '--border': '214.3 31.8% 91.4%',
+  '--input': '214.3 31.8% 91.4%',
+  '--ring': '240 5.9% 10%',
+};
+
+const darkThemeVars = {
+  '--background': '222.2 84% 4.9%',
+  '--foreground': '210 40% 98%',
+  '--card': '222.2 84% 4.9%',
+  '--card-foreground': '210 40% 98%',
+  '--primary': '60 9.1% 97.8%',
+  '--primary-foreground': '222.2 47.4% 11.2%',
+  '--secondary': '217.2 32.6% 17.5%',
+  '--secondary-foreground': '210 40% 98%',
+  '--muted': '217.2 32.6% 17.5%',
+  '--muted-foreground': '215 20.2% 65.1%',
+  '--accent': '217.2 32.6% 17.5%',
+  '--accent-foreground': '210 40% 98%',
+  '--destructive': '0 84% 60%',
+  '--destructive-foreground': '210 40% 98%',
+  '--border': '217.2 32.6% 17.5%',
+  '--input': '217.2 32.6% 17.5%',
+  '--ring': '60 9.1% 97.8%',
+};
+
+// 2. Export vars for NativeWind to inject into CSS
+export const lightTheme = vars(lightThemeVars);
+export const darkTheme = vars(darkThemeVars);
+
+// 3. Helper to convert HSL to Hex for runtime usage
+function hslToHex(hsl: string): string {
+  const [h, s, l] = hsl.split(' ').map(parseFloat);
+  const a = (s * Math.min(l, 100 - l)) / 10000;
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round((255 * color) / 100)
+      .toString(16)
+      .padStart(2, '0');
+  };
+  return \`#\${f(0)}\${f(8)}\${f(4)}\`;
+}
+
+function convertThemeToHex(themeVars: Record<string, string>) {
+  return {
+    background: hslToHex(themeVars['--background']),
+    foreground: hslToHex(themeVars['--foreground']),
+    card: hslToHex(themeVars['--card']),
+    cardForeground: hslToHex(themeVars['--card-foreground']),
+    primary: hslToHex(themeVars['--primary']),
+    primaryForeground: hslToHex(themeVars['--primary-foreground']),
+    secondary: hslToHex(themeVars['--secondary']),
+    secondaryForeground: hslToHex(themeVars['--secondary-foreground']),
+    muted: hslToHex(themeVars['--muted']),
+    mutedForeground: hslToHex(themeVars['--muted-foreground']),
+    accent: hslToHex(themeVars['--accent']),
+    accentForeground: hslToHex(themeVars['--accent-foreground']),
+    destructive: hslToHex(themeVars['--destructive']),
+    destructiveForeground: hslToHex(themeVars['--destructive-foreground']),
+    border: hslToHex(themeVars['--border']),
+    input: hslToHex(themeVars['--input']),
+    ring: hslToHex(themeVars['--ring']),
+  };
+}
+
+// 4. Export the hex color objects for useThemeColors
+export const lightThemeColors = convertThemeToHex(lightThemeVars);
+export const darkThemeColors = convertThemeToHex(darkThemeVars);`} />
+
+Then create the hook that consumes these exported colors:
+
+<DynamicCodeBlock lang="ts" code={`// src/hooks/useThemeColors.ts
+import { useMemo } from 'react';
+import { useColorScheme } from 'nativewind';
+import { lightThemeColors, darkThemeColors } from '@/lib/theme';
+
+export function useThemeColors() {
+  const { colorScheme } = useColorScheme();
+
+  const colors = useMemo(() => {
+    const result = colorScheme === 'dark' ? darkThemeColors : lightThemeColors;
+    return result;
+  }, [colorScheme]);
+
+  return { colors, colorScheme: colorScheme ?? 'light' };
+}`} />
+
+### Global Configuration
+
+Update your `_layout.tsx` to handle theme changes globally:
+
+<DynamicCodeBlock lang="tsx" code={`// app/_layout.tsx
+import React from 'react';
+import '../src/global.css';
+import { Stack } from 'expo-router';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ThemeProvider } from '@/providers/theme-provider';
+import { useColorScheme } from 'nativewind';
+import { useThemeColors } from '@/hooks/useThemeColors';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+export default function RootLayout() {
+  const { colorScheme } = useColorScheme();
+  const { colors } = useThemeColors();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <ThemeProvider>
+          <Stack 
+            screenOptions={{
+              headerShown: false,
+              contentStyle: {
+                backgroundColor: colors.background,
+              },
+            }} 
+            key={colorScheme} 
+          />
+        </ThemeProvider>
+      </GestureHandlerRootView>
+    </QueryClientProvider>
+  );
+}`} />
+
+### Usage in Components
+
+<DynamicCodeBlock lang="tsx" code={`import { useThemeColors } from '@/hooks/useThemeColors';
+import { Check } from 'lucide-react-native';
+
+function MyComponent() {
+  const { colors, colorScheme } = useThemeColors();
+  const isDark = colorScheme === 'dark';
+
+  return (
+    <View style={{ backgroundColor: colors.card }}>
+      <Check color={colors.primary} size={24} />
+      <Text style={{ color: colors.foreground }}>
+        Current mode: {isDark ? 'Dark' : 'Light'}
+      </Text>
+    </View>
+  );
+}`} />
+
+## Custom Themes
+
+### Creating a Custom Theme
+
+You can create custom themes by modifying the CSS variables:
+
+<DynamicCodeBlock lang="css" code={`/* src/global.css */
+/* Blue Theme */
+:root {
+  --primary: 217 91% 60%;           /* Blue */
+  --primary-foreground: 0 0% 100%;
+}
+
+/* Green Theme */
+.theme-green {
+  --primary: 142 76% 36%;           /* Green */
+  --primary-foreground: 0 0% 100%;
+}
+
+/* Purple Theme */
+.theme-purple {
+  --primary: 263 70% 50%;           /* Purple */
+  --primary-foreground: 0 0% 100%;
+}`} />
+
+### Theme Presets
+
+Here are some popular theme presets you can use:
+
+#### Slate (Default)
+<DynamicCodeBlock lang="css" code={`:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --primary: 222.2 47.4% 11.2%;
+}`} />
+
+#### Zinc
+<DynamicCodeBlock lang="css" code={`:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --primary: 240 5.9% 10%;
+}`} />
+
+#### Stone
+<DynamicCodeBlock lang="css" code={`:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --primary: 24 9.8% 10%;
+}`} />
+
+#### Rose
+<DynamicCodeBlock lang="css" code={`:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --primary: 346.8 77.2% 49.8%;
+}`} />
+
+#### Blue
+<DynamicCodeBlock lang="css" code={`:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+}`} />
+
+## Using Colors in Components
+
+### With NativeWind Classes
+
+<DynamicCodeBlock lang="tsx" code={`<Button className="bg-primary text-primary-foreground">
+  Primary Button
+</Button>
+
+<View className="bg-card border border-border rounded-lg p-4">
+  <Text className="text-card-foreground">Card Content</Text>
+</View>
+
+<Text className="text-muted-foreground">
+  Muted text for descriptions
+</Text>`} />
+
+### With Style Props
+
+When you need to use colors with style props (for libraries like react-native-svg):
+
+<DynamicCodeBlock lang="tsx" code={`import { useThemeColors } from '@/hooks/useThemeColors';
+import Svg, { Circle } from 'react-native-svg';
+
+function ThemedSvg() {
+  const { colors } = useThemeColors();
+
+  return (
+    <Svg width={100} height={100}>
+      <Circle
+        cx={50}
+        cy={50}
+        r={40}
+        fill={colors.primary}
+        stroke={colors.border}
+      />
+    </Svg>
+  );
+}`} />
+
+## Best Practices
+
+1. **Use semantic tokens** — Use `primary`, `secondary`, etc. instead of specific color values
+2. **Test both modes** — Always check your UI in both light and dark modes
+3. **Contrast ratios** — Ensure text is readable against backgrounds
+4. **Consistent usage** — Use the same tokens consistently across your app
+5. **Avoid hardcoded colors** — Use theme colors instead of hex values
+
+---
+
+Next, learn about the [CLI](/docs/cli) to add components to your project!

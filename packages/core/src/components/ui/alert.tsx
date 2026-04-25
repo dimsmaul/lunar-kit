@@ -96,7 +96,7 @@ export function Alert({
             )}
             <View className="flex-1">
                 {typeof children === 'string' ? (
-                    <Text size="sm" className={cn('font-medium', textColor)}>
+                    <Text className={cn('font-medium', textColor)}>
                         {children}
                     </Text>
                 ) : (

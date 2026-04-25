@@ -1,0 +1,24 @@
+# Lunar Kit Codeowners
+
+# Default owners
+* @dimsmaul
+
+# Core components
+/packages/core/ @dimsmaul
+/packages/core/src/components/ @dimsmaul
+
+# Primitives
+/packages/primitives/ @dimsmaul
+/packages/primitives/adaptive-modal/ @dimsmaul
+/packages/primitives/bottom-sheet/ @dimsmaul
+
+# CLI
+/packages/cli/ @dimsmaul
+/packages/create-lunar-kit/ @dimsmaul
+
+# Documentation
+/docs-v2/ @dimsmaul
+/CLAUDE.md @dimsmaul
+
+# Release & CI
+/.github/workflows/ @dimsmaul

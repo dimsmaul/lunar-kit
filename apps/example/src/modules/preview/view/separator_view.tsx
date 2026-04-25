@@ -30,12 +30,12 @@ export default function SeparatorView() {
 
         <View className="gap-4">
           <View className="gap-2">
-            <Text size="sm">Thick & Colored</Text>
+            <Text >Thick & Colored</Text>
             <Separator className="h-1 bg-blue-500 rounded-full" />
           </View>
 
           <View className="gap-2">
-            <Text size="sm">Custom Margins</Text>
+            <Text >Custom Margins</Text>
             <View className="bg-muted p-4 rounded-lg">
               <Text>Part 1</Text>
               <Separator className="my-4 bg-primary/20" />

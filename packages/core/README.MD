@@ -111,9 +111,9 @@ const componentsPath = LOCAL_COMPONENTS_PATH;
 After using `lunar-kit add <component>`, import components directly:
 
 ```typescript
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Dialog } from '@/components/ui/dialog';
+import { Button } from '@/lunar-kit/components/button';
+import { Card } from '@/lunar-kit/components/card';
+import { Dialog } from '@/lunar-kit/components/dialog';
 
 export default function MyScreen() {
   return (
@@ -131,7 +131,7 @@ export default function MyScreen() {
 ### Button Component
 
 ```typescript
-import { Button } from '@/components/ui/button';
+import { Button } from '@/lunar-kit/components/button';
 
 <Button variant="default" size="default">
   Default Button
@@ -153,8 +153,8 @@ import { Button } from '@/components/ui/button';
 ### Card Component
 
 ```typescript
-import { Card } from '@/components/ui/card';
-import { Text } from '@/components/ui/text';
+import { Card } from '@/lunar-kit/components/card';
+import { Text } from '@/lunar-kit/components/text';
 
 <Card>
   <Card.Header>
@@ -173,8 +173,8 @@ import { Text } from '@/components/ui/text';
 ### Dialog Component
 
 ```typescript
-import { Dialog } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Dialog } from '@/lunar-kit/components/dialog';
+import { Button } from '@/lunar-kit/components/button';
 
 const [open, setOpen] = useState(false);
 

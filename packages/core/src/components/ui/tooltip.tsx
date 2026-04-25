@@ -2,11 +2,11 @@ import * as React from 'react';
 import {
   View,
   Pressable,
-  Modal,
   LayoutRectangle,
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
+import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -151,10 +151,10 @@ export function TooltipContent({
   React.useEffect(() => {
     if (open) {
       switch (side) {
-        case 'top':    translateY.value = ANIM_OFFSET;  translateX.value = 0; break;
+        case 'top': translateY.value = ANIM_OFFSET; translateX.value = 0; break;
         case 'bottom': translateY.value = -ANIM_OFFSET; translateX.value = 0; break;
-        case 'left':   translateX.value = ANIM_OFFSET;  translateY.value = 0; break;
-        case 'right':  translateX.value = -ANIM_OFFSET; translateY.value = 0; break;
+        case 'left': translateX.value = ANIM_OFFSET; translateY.value = 0; break;
+        case 'right': translateX.value = -ANIM_OFFSET; translateY.value = 0; break;
       }
       setVisible(true);
       opacity.value = withTiming(1, { duration: 150 });
@@ -165,10 +165,10 @@ export function TooltipContent({
         if (finished) runOnJS(setVisible)(false);
       });
       switch (side) {
-        case 'top':    translateY.value = withTiming(ANIM_OFFSET, { duration: 100 });  break;
+        case 'top': translateY.value = withTiming(ANIM_OFFSET, { duration: 100 }); break;
         case 'bottom': translateY.value = withTiming(-ANIM_OFFSET, { duration: 100 }); break;
-        case 'left':   translateX.value = withTiming(ANIM_OFFSET, { duration: 100 });  break;
-        case 'right':  translateX.value = withTiming(-ANIM_OFFSET, { duration: 100 }); break;
+        case 'left': translateX.value = withTiming(ANIM_OFFSET, { duration: 100 }); break;
+        case 'right': translateX.value = withTiming(-ANIM_OFFSET, { duration: 100 }); break;
       }
     }
   }, [open]);
@@ -228,12 +228,13 @@ export function TooltipContent({
   };
 
   return (
-    <Modal
+    <AdaptiveModal
       visible={visible}
-      transparent
+      onDismiss={() => onOpenChange(false)}
+      backdropColor="transparent"
+      closeOnBackdropPress={false}
       animationType="none"
       statusBarTranslucent
-      onRequestClose={() => onOpenChange(false)}
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
         <Pressable
@@ -258,7 +259,7 @@ export function TooltipContent({
           <Pressable onPress={(e) => e.stopPropagation()}>
             <View className={cn(tooltipContentVariants({ shadow }), className)}>
               {typeof children === 'string' ? (
-                <Text size="sm" className="text-foreground">
+                <Text className="text-foreground">
                   {children}
                 </Text>
               ) : (
@@ -268,6 +269,6 @@ export function TooltipContent({
           </Pressable>
         </Animated.View>
       </View>
-    </Modal>
+    </AdaptiveModal>
   );
 }

@@ -66,7 +66,7 @@ export const Textarea = React.forwardRef<TextInput, TextareaProps>(
                 />
 
                 {error && (
-                    <Text size="sm" className="text-destructive mt-2">
+                    <Text className="text-destructive mt-2">
                         {error}
                     </Text>
                 )}
