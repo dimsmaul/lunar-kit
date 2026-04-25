@@ -10,10 +10,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+        uses: actions/checkout@v4
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@bd4efb3f3e765dc0e78e683974e45619f9c07849
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
