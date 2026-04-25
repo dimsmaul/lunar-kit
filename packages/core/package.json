@@ -1,6 +1,6 @@
 {
   "name": "@lunar-kit/core",
-  "version": "0.1.21-beta.v0",
+  "version": "0.2.0",
   "description": "Shared registry and components for Lunar Kit",
   "type": "module",
   "main": "./dist/index.js",
@@ -65,8 +65,8 @@
     "zustand": "*"
   },
   "dependencies": {
-    "@lunar-primitive/adaptive-modal": "workspace:*",
-    "@lunar-primitive/bottom-sheet": "workspace:*",
+    "@lunar-primitive/adaptive-modal": "0.1.0",
+    "@lunar-primitive/bottom-sheet": "0.1.0",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.6.0"
   },

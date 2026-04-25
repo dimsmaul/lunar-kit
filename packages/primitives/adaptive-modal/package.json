@@ -1,6 +1,6 @@
 {
   "name": "@lunar-primitive/adaptive-modal",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Adaptive modal primitive for Lunar Kit - bridges React Native Modal for web",
   "author": "Dimas Maulana Ahmad",
   "license": "MIT",
