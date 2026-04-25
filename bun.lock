@@ -53,8 +53,8 @@
       "version": "0.1.0",
       "dependencies": {
         "@hookform/resolvers": "^5.2.2",
-        "@lunar-primitive/adaptive-modal": "*",
-        "@lunar-primitive/bottom-sheet": "*",
+        "@lunar-primitive/adaptive-modal": "^0.0.1",
+        "@lunar-primitive/bottom-sheet": "^0.0.2",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "dayjs": "^1.11.19",
@@ -73,6 +73,7 @@
         "react-native-reanimated": "^4.2.2",
         "react-native-web": "^0.21.2",
         "tailwind-merge": "^3.4.0",
+        "zod": "^3.24.0",
       },
       "devDependencies": {
         "@types/mdx": "2.0.13",
@@ -203,9 +204,8 @@
     },
     "packages/primitives/bottom-sheet": {
       "name": "@lunar-primitive/bottom-sheet",
-      "version": "0.0.0",
+      "version": "0.0.2",
       "dependencies": {
-        "@lunar-primitive/adaptive-modal": "workspace:*",
         "clsx": "^2.1.1",
         "tailwind-merge": "^2.6.0",
       },
@@ -3097,6 +3097,10 @@
 
     "lighthouse-logger/debug": ["debug@2.6.9", "", { "dependencies": { "ms": "2.0.0" } }, "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA=="],
 
+    "lunar-kit-docs-v4/@lunar-primitive/adaptive-modal": ["@lunar-primitive/adaptive-modal@0.0.1", "", { "peerDependencies": { "react": "*", "react-dom": "*", "react-native": "*" } }, "sha512-RBA8UClF9xtAzaeAjJi3EMLVN+muemOMwkHFFcj1sLr6EV99JXApqj1zGv1XoLLJ8EW0+Us5zt3AduwrrxZaXw=="],
+
+    "lunar-kit-docs-v4/@lunar-primitive/bottom-sheet": ["@lunar-primitive/bottom-sheet@0.0.2", "", { "dependencies": { "clsx": "^2.1.1", "tailwind-merge": "^2.6.0" }, "peerDependencies": { "@lunar-primitive/adaptive-modal": "*", "react": "*", "react-native": "*", "react-native-gesture-handler": "*", "react-native-reanimated": "*" } }, "sha512-PLOvNjTXDiLsL+hVOkjRd73Wvdh5WggyQihSgrh8Ol/GfPYTNKapRfRHlsdjcsB1RykzEuQAtCt3rghwFdJSXA=="],
+
     "lunar-kit-docs-v4/@types/node": ["@types/node@20.19.39", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-orrrD74MBUyK8jOAD/r0+lfa1I2MO6I+vAkmAWzMYbCcgrN4lCrmK52gRFQq/JRxfYPfonkr4b0jcY7Olqdqbw=="],
 
     "lunar-kit-docs-v4/react": ["react@19.2.3", "", {}, "sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA=="],
@@ -3110,6 +3114,8 @@
     "lunar-kit-docs-v4/tailwind-merge": ["tailwind-merge@3.5.0", "", {}, "sha512-I8K9wewnVDkL1NTGoqWmVEIlUcB9gFriAEkXkfCjX5ib8ezGxtR3xD7iZIxrfArjEsH7F1CHD4RFUtxefdqV/A=="],
 
     "lunar-kit-docs-v4/tailwindcss": ["tailwindcss@3.4.19", "", { "dependencies": { "@alloc/quick-lru": "^5.2.0", "arg": "^5.0.2", "chokidar": "^3.6.0", "didyoumean": "^1.2.2", "dlv": "^1.1.3", "fast-glob": "^3.3.2", "glob-parent": "^6.0.2", "is-glob": "^4.0.3", "jiti": "^1.21.7", "lilconfig": "^3.1.3", "micromatch": "^4.0.8", "normalize-path": "^3.0.0", "object-hash": "^3.0.0", "picocolors": "^1.1.1", "postcss": "^8.4.47", "postcss-import": "^15.1.0", "postcss-js": "^4.0.1", "postcss-load-config": "^4.0.2 || ^5.0 || ^6.0", "postcss-nested": "^6.2.0", "postcss-selector-parser": "^6.1.2", "resolve": "^1.22.8", "sucrase": "^3.35.0" }, "bin": { "tailwind": "lib/cli.js", "tailwindcss": "lib/cli.js" } }, "sha512-3ofp+LL8E+pK/JuPLPggVAIaEuhvIz4qNcf3nA1Xn2o/7fb7s/TYpHhwGDv1ZU3PkBluUVaF8PyCHcm48cKLWQ=="],
+
+    "lunar-kit-docs-v4/zod": ["zod@3.25.76", "", {}, "sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ=="],
 
     "mdast-util-find-and-replace/escape-string-regexp": ["escape-string-regexp@5.0.0", "", {}, "sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw=="],
 
@@ -3560,6 +3566,8 @@
     "jest-validate/chalk/ansi-styles": ["ansi-styles@4.3.0", "", { "dependencies": { "color-convert": "^2.0.1" } }, "sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg=="],
 
     "lighthouse-logger/debug/ms": ["ms@2.0.0", "", {}, "sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A=="],
+
+    "lunar-kit-docs-v4/@lunar-primitive/bottom-sheet/tailwind-merge": ["tailwind-merge@2.6.1", "", {}, "sha512-Oo6tHdpZsGpkKG88HJ8RR1rg/RdnEkQEfMoEk2x1XRI3F1AxeU+ijRXpiVUF4UbLfcxxRGw6TbUINKYdWVsQTQ=="],
 
     "lunar-kit-docs-v4/react-native/@react-native/assets-registry": ["@react-native/assets-registry@0.84.1", "", {}, "sha512-lAJ6PDZv95FdT9s9uhc9ivhikW1Zwh4j9XdXM7J2l4oUA3t37qfoBmTSDLuPyE3Bi+Xtwa11hJm0BUTT2sc/gg=="],
 

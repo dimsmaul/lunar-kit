@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, Pressable, Animated, Platform } from 'react-native';
 import { cn } from '../lib/utils';
 import { Text } from './text';
-import { AdaptiveModal } from '../support/adaptive-modal';
+import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 
 interface DialogProps {
   open?: boolean;
@@ -145,7 +145,7 @@ export function DialogContent({ children, className }: DialogContentProps) {
   // ✅ Web: render pakai View biasa + CSS transition via style
   if (Platform.OS === 'web') {
     return (
-      <AdaptiveModal visible={visible} onRequestClose={() => onOpenChange(false)}>
+      <AdaptiveModal visible={visible} onDismiss={() => onOpenChange(false)}>
         {/* Backdrop */}
         <Pressable
           onPress={() => onOpenChange(false)}
@@ -187,7 +187,7 @@ export function DialogContent({ children, className }: DialogContentProps) {
 
   // ✅ Native: pakai Animated seperti semula
   return (
-    <AdaptiveModal visible={visible} onRequestClose={() => onOpenChange(false)}>
+    <AdaptiveModal visible={visible} onDismiss={() => onOpenChange(false)}>
       <Pressable
         onPress={() => onOpenChange(false)}
         className="flex-1 bg-black/50 dark:bg-black/70 items-center justify-center p-4"
@@ -393,7 +393,7 @@ export function DialogClose({ children }: { children: React.ReactNode }) {
 // //       visible={visible}
 // //       transparent
 // //       animationType="none"
-// //       onRequestClose={() => onOpenChange(false)}
+// //       onDismiss={() => onOpenChange(false)}
 // //     >
 // //       <Pressable
 // //         onPress={() => onOpenChange(false)}
@@ -542,7 +542,7 @@ export function DialogClose({ children }: { children: React.ReactNode }) {
 //       visible={open}
 //       transparent
 //       animationType="fade"
-//       onRequestClose={() => onOpenChange(false)}
+//       onDismiss={() => onOpenChange(false)}
 //     >
 //       {/* Backdrop */}
 //       <Pressable

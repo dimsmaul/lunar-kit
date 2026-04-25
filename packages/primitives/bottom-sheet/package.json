@@ -1,6 +1,6 @@
 {
   "name": "@lunar-primitive/bottom-sheet",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Bottom sheet primitive for Lunar Kit - handles gesture, snap points, and animations",
   "author": "Dimas Maulana Ahmad",
   "license": "MIT",
@@ -50,7 +50,6 @@
     "react-native-gesture-handler": "*"
   },
   "dependencies": {
-    "@lunar-primitive/adaptive-modal": "workspace:*",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.6.0"
   },
