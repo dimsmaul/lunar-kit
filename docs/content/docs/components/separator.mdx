@@ -1,0 +1,41 @@
+---
+sidebar_position: 27
+title: Separator
+---
+
+import SeparatorDemo from '@/demo/SeparatorDemo';
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+A visual separator component that supports horizontal and vertical orientations.
+
+<SeparatorDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add separator`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { Separator } from '@/lunar-kit/components/separator';`} />
+
+### Horizontal
+
+<DynamicCodeBlock lang="tsx" code={`<Separator />`} />
+
+### Vertical
+
+<DynamicCodeBlock lang="tsx" code={`<View className="flex-row items-center h-10 gap-2">
+  <Text>Left</Text>
+  <Separator orientation="vertical" />
+  <Text>Right</Text>
+</View>`} />
+
+## API Reference
+
+### Separator
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Orientation of the separator |
+| `decorative` | `boolean` | `true` | If false, adds `aria-role="separator"` |
+| `className` | `string` | — | Additional classes |

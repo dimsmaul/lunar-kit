@@ -1,0 +1,140 @@
+---
+sidebar_position: 4
+title: Banner
+---
+
+import BannerDemo from '@/demo/BannerDemo';
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+A banner component for displaying important information, alerts, or notifications.
+
+<BannerDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add banner`} />
+
+## Usage
+
+
+<DynamicCodeBlock lang="tsx" code={`import { Banner } from '@/lunar-kit/components/banner';`} />
+
+### Basic Usage
+
+<DynamicCodeBlock lang="tsx" code={`<Banner
+  title="Information"
+  description="This is an informational message."
+/>`} />
+
+### Variants
+
+<DynamicCodeBlock lang="tsx" code={`// Default
+<Banner
+  variant="default"
+  title="Default Banner"
+  description="This is a default banner."
+/>
+
+// Info
+<Banner
+  variant="info"
+  title="Did you know?"
+  description="You can customize the appearance of banners."
+/>
+
+// Success
+<Banner
+  variant="success"
+  title="Success!"
+  description="Your changes have been saved."
+/>
+
+// Warning
+<Banner
+  variant="warning"
+  title="Warning"
+  description="Please review your information carefully."
+/>
+
+// Destructive/Error
+<Banner
+  variant="destructive"
+  title="Error"
+  description="Something went wrong. Please try again."
+/>`} />
+
+### Dismissible
+
+Allow users to dismiss the banner:
+
+<DynamicCodeBlock lang="tsx" code={`const [showBanner, setShowBanner] = useState(true);
+
+{showBanner && (
+  <Banner
+    variant="info"
+    title="New Feature"
+    description="Check out our latest update!"
+    dismissible
+    onDismiss={() => setShowBanner(false)}
+  />
+)}`} />
+
+### Custom Icon
+
+Replace the default icon:
+
+<DynamicCodeBlock lang="tsx" code={`import { Sparkles } from 'lucide-react-native';
+
+<Banner
+  variant="info"
+  title="Pro Tip"
+  description="Use keyboard shortcuts to speed up your workflow."
+  icon={<Sparkles size={20} color="#3b82f6" />}
+/>`} />
+
+### Without Icon
+
+Hide the icon entirely:
+
+<DynamicCodeBlock lang="tsx" code={`<Banner
+  variant="default"
+  title="Notice"
+  description="This banner has no icon."
+  showIcon={false}
+/>`} />
+
+### With Custom Content
+
+Add any content to the banner:
+
+<DynamicCodeBlock lang="tsx" code={`<Banner variant="warning" title="Subscription Expiring">
+  <View className="mt-2">
+    <Text className="text-yellow-900 dark:text-yellow-100">
+      Your subscription expires in 3 days.
+    </Text>
+    <Button
+      variant="outline"
+      size="sm"
+      className="mt-2"
+      onPress={renewSubscription}
+    >
+      Renew Now
+    </Button>
+  </View>
+</Banner>`} />
+
+## API Reference
+
+### Banner
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'default' \| 'info' \| 'success' \| 'warning' \| 'destructive'` | `'default'` | Visual variant |
+| `title` | `string` | — | Banner title |
+| `description` | `string` | — | Banner description |
+| `children` | `ReactNode` | — | Custom content |
+| `icon` | `ReactNode` | — | Custom icon |
+| `showIcon` | `boolean` | `true` | Show/hide icon |
+| `dismissible` | `boolean` | `false` | Allow dismissal |
+| `onDismiss` | `() => void` | — | Callback when dismissed |
+| `className` | `string` | — | Additional classes |

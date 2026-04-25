@@ -5,12 +5,23 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
-  experimental: {
-    esmExternals: true,
+  transpilePackages: ['nativewind', 'react-native-css-interop'],
+  typescript: {
+    ignoreBuildErrors: true,
   },
   turbopack: {
     resolveAlias: {
-      'react-native$': 'react-native-web',
+      'react-native': 'react-native-web',
+      'lucide-react-native': 'lucide-react',
+      'expo-router': '@lk-stubs/expo-router',
+      'expo-modules-core': '@lk-stubs/expo-modules-core',
+      'react-native-gesture-handler': '@lk-stubs/react-native-gesture-handler',
+      'react-native-reanimated': '@lk-stubs/react-native-reanimated',
+      'react-native-screens': '@lk-stubs/react-native-screens',
+      '@react-navigation/native': '@lk-stubs/react-navigation-native',
+      '@react-navigation/bottom-tabs': '@lk-stubs/react-navigation-bottom-tabs',
+      '@react-navigation/native-stack': '@lk-stubs/react-navigation-native-stack',
+      'react-native-safe-area-context': '@lk-stubs/react-native-safe-area-context',
     },
     resolveExtensions: [
       '.web.js',
@@ -22,36 +33,6 @@ const config = {
       '.ts',
       '.tsx',
     ],
-  },
-  webpack: (config, { isServer }) => {
-    // Alias react-native to react-native-web
-    config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      'react-native$': 'react-native-web',
-    };
-
-    // Add web extensions
-    config.resolve.extensions = [
-      '.web.js',
-      '.web.jsx',
-      '.web.ts',
-      '.web.tsx',
-      ...(config.resolve.extensions || []),
-    ];
-
-    // Mark react-native-web as external on server to avoid bundling issues
-    if (isServer) {
-      if (!config.externals) {
-        config.externals = [];
-      }
-      if (Array.isArray(config.externals)) {
-        config.externals.push('react-native');
-      } else {
-        config.externals = [config.externals, 'react-native'];
-      }
-    }
-
-    return config;
   },
 };
 

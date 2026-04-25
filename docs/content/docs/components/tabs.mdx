@@ -1,0 +1,109 @@
+---
+sidebar_position: 17
+title: Tabs
+---
+
+import TabsDemo from '@/demo/TabsDemo';
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+A tabbed interface component for switching between different views or sections.
+
+<TabsDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add tabs`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/lunar-kit/components/tabs';`} />
+
+### Basic Usage
+
+<DynamicCodeBlock lang="tsx" code={`const [activeTab, setActiveTab] = useState('tab1');
+
+<Tabs value={activeTab} onValueChange={setActiveTab}>
+  <TabsList>
+    <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+    <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+    <TabsTrigger value="tab3">Tab 3</TabsTrigger>
+  </TabsList>
+  
+  <TabsContent value="tab1">
+    <Text>Content for Tab 1</Text>
+  </TabsContent>
+  
+  <TabsContent value="tab2">
+    <Text>Content for Tab 2</Text>
+  </TabsContent>
+  
+  <TabsContent value="tab3">
+    <Text>Content for Tab 3</Text>
+  </TabsContent>
+</Tabs>`} />
+
+### Variants
+
+<DynamicCodeBlock lang="tsx" code={`// Underline (default)
+<Tabs variant="underline" value={tab} onValueChange={setTab}>
+  {/* ... */}
+</Tabs>
+
+// Pill
+<Tabs variant="pill" value={tab} onValueChange={setTab}>
+  {/* ... */}
+</Tabs>`} />
+
+### Disabled Tabs
+
+<DynamicCodeBlock lang="tsx" code={`<Tabs value={activeTab} onValueChange={setActiveTab}>
+  <TabsList>
+    <TabsTrigger value="tab1">Active</TabsTrigger>
+    <TabsTrigger value="tab2" disabled>Disabled</TabsTrigger>
+    <TabsTrigger value="tab3">Active</TabsTrigger>
+  </TabsList>
+  {/* Content */}
+</Tabs>`} />
+
+## API Reference
+
+### Tabs
+
+Root component that manages tab state.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | Required | Active tab value |
+| `onValueChange` | `(value: string) => void` | Required | Change callback |
+| `variant` | `'underline' \| 'pill'` | `'underline'` | Visual variant |
+| `className` | `string` | — | Additional classes |
+
+### TabsList
+
+Container for tab triggers.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | TabsTrigger components |
+| `className` | `string` | — | Additional classes |
+
+### TabsTrigger
+
+Individual tab button.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | Required | Tab identifier |
+| `children` | `string` | Required | Tab label |
+| `disabled` | `boolean` | `false` | Disable the tab |
+| `className` | `string` | — | Additional classes |
+
+### TabsContent
+
+Content panel for a tab.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | Required | Tab identifier |
+| `children` | `ReactNode` | Required | Tab content |
+| `className` | `string` | — | Additional classes |

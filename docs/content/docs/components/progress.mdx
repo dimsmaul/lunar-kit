@@ -1,0 +1,50 @@
+---
+sidebar_position: 25
+title: Progress
+---
+
+import ProgressDemo from '@/demo/ProgressDemo';
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+A progress bar component with smooth spring animation for value transitions.
+
+<ProgressDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add progress`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { Progress } from '@/lunar-kit/components/progress';`} />
+
+### Basic Usage
+
+<DynamicCodeBlock lang="tsx" code={`<Progress value={50} />`} />
+
+### Custom Indicator Style
+
+<DynamicCodeBlock lang="tsx" code={`<Progress
+  value={75}
+  indicatorClassName="bg-green-500"
+/>`} />
+
+### Animated Value
+
+<DynamicCodeBlock lang="tsx" code={`const [progress, setProgress] = React.useState(0);
+
+// Progress bar smoothly animates between values
+<Progress value={progress} />
+
+// Update programmatically
+setProgress(100)`} />
+
+## API Reference
+
+### Progress
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | `0` | Progress value (0-100) |
+| `className` | `string` | — | Additional classes for track |
+| `indicatorClassName` | `string` | — | Additional classes for indicator bar |

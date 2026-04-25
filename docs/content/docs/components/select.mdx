@@ -1,0 +1,106 @@
+---
+sidebar_position: 16
+title: Select
+---
+
+import SelectDemo from '@/demo/SelectDemo';
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+A dropdown component for selecting from a list of options.
+
+<SelectDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add select`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectGroup,
+  SelectLabel,
+  SelectSeparator,
+} from '@/lunar-kit/components/select';
+
+const [value, setValue] = useState('');
+
+<Select value={value} onValueChange={setValue}>
+  <SelectTrigger>
+    <SelectValue placeholder="Select an option" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="option1" label="Option 1" />
+    <SelectItem value="option2" label="Option 2" />
+    <SelectItem value="option3" label="Option 3" />
+  </SelectContent>
+</Select>`} />
+
+### With Groups (Select)
+
+<DynamicCodeBlock lang="tsx" code={`<Select value={value} onValueChange={setValue}>
+  <SelectTrigger>
+    <SelectValue placeholder="Select a fruit" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectGroup>
+      <SelectLabel>Fruits</SelectLabel>
+      <SelectItem value="apple" label="Apple" />
+      <SelectItem value="banana" label="Banana" />
+    </SelectGroup>
+    <SelectSeparator />
+    <SelectGroup>
+      <SelectLabel>Vegetables</SelectLabel>
+      <SelectItem value="carrot" label="Carrot" />
+      <SelectItem value="broccoli" label="Broccoli" />
+    </SelectGroup>
+  </SelectContent>
+</Select>`} />
+
+### Disabled
+
+<DynamicCodeBlock lang="tsx" code={`<Select value={value} onValueChange={setValue} disabled>
+  {/* ... */}
+</Select>`} />
+
+## API Reference
+
+### Select
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | — | Selected value |
+| `onValueChange` | `(value: string) => void` | — | Change callback |
+| `disabled` | `boolean` | `false` | Disable the select |
+| `children` | `ReactNode` | Required | Select components |
+
+### SelectTrigger
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Trigger size |
+| `variant` | `'outline' \| 'underline'` | `'outline'` | Visual variant |
+| `prefix` | `ReactNode` | — | Left adornment |
+| `suffix` | `ReactNode` | — | Right adornment |
+| `error` | `boolean` | `false` | Error state |
+| `className` | `string` | — | Additional classes |
+
+### SelectContent
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | Required | Select items |
+| `className` | `string` | — | Additional classes |
+
+### SelectItem
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | Required | Option value |
+| `label` | `string` | Required | Display label |
+| `disabled` | `boolean` | `false` | Disable this item |
+| `className` | `string` | — | Additional classes |

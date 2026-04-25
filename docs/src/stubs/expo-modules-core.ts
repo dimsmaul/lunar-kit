@@ -1,0 +1,11 @@
+const noop = () => {};
+export const TurboModuleRegistry = { get: () => null, enrich: () => ({}) };
+export const requireNativeComponent = () => noop;
+export const unstable_batchedUpdates = noop;
+export const NativeModulesProxy = {};
+export const EventEmitter = class { addListener() {} removeAllListeners() {} emit() {} };
+export const CodedError = class extends Error {};
+export const UnavailabilityError = class extends Error {};
+export const Platform = { OS: 'web', select: (spec: any) => spec.web ?? spec.default };
+export const uuid = { v4: () => '' };
+export default {};

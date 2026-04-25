@@ -1,0 +1,72 @@
+---
+sidebar_position: 20
+title: Alert
+---
+
+import AlertDemo from '@/demo/AlertDemo';
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+A contextual alert component for displaying feedback messages with different severity variants.
+
+<AlertDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add alert`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { Alert } from '@/lunar-kit/components/alert';`} />
+
+### Basic Usage
+
+<DynamicCodeBlock lang="tsx" code={`<Alert>This is an alert message</Alert>`} />
+
+### Variants
+
+<DynamicCodeBlock lang="tsx" code={`<Alert variant="default">Default alert message</Alert>
+<Alert variant="info">Info alert message</Alert>
+<Alert variant="success">Success alert message</Alert>
+<Alert variant="warning">Warning alert message</Alert>
+<Alert variant="destructive">Destructive alert message</Alert>`} />
+
+### Custom Icon
+
+Replace the default icon:
+
+<DynamicCodeBlock lang="tsx" code={`import { Bell } from 'lucide-react-native';
+
+<Alert variant="info" icon={<Bell size={18} color="#3b82f6" />}>
+  Custom icon alert
+</Alert>`} />
+
+### Without Icon
+
+Hide the icon entirely:
+
+<DynamicCodeBlock lang="tsx" code={`<Alert variant="default" showIcon={false}>
+  No icon alert
+</Alert>`} />
+
+### With Custom Content
+
+Pass any React node as children:
+
+<DynamicCodeBlock lang="tsx" code={`<Alert variant="warning">
+  <View>
+    <Text className="font-bold">Warning Title</Text>
+    <Text className="text-sm">Warning description text</Text>
+  </View>
+</Alert>`} />
+
+## API Reference
+
+### Alert
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'default' \| 'info' \| 'success' \| 'warning' \| 'destructive'` | `'default'` | Visual variant |
+| `children` | `ReactNode` | Required | Alert content (string or custom elements) |
+| `icon` | `ReactNode` | Auto-selected per variant | Custom icon element |
+| `showIcon` | `boolean` | `true` | Show/hide the icon |
+| `className` | `string` | — | Additional classes for container |
