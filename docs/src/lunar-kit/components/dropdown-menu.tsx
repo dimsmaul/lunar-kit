@@ -22,7 +22,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../lib/utils';
 import { Text } from './text';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { AdaptiveModal } from '../support/adaptive-modal';
+import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 
 
 const dropdownContentVariants = cva(
@@ -334,7 +334,7 @@ export function DropdownMenuContent({
     <AdaptiveModal
       visible={visible}
       statusBarTranslucent
-      onRequestClose={() => onOpenChange(false)}
+      onDismiss={() => onOpenChange(false)}
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
         <Pressable
@@ -622,7 +622,7 @@ export function DropdownMenuSubContent({
     <AdaptiveModal
       visible={visible}
       statusBarTranslucent
-      onRequestClose={() => onOpenChange(false)}
+      onDismiss={() => onOpenChange(false)}
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
         <Pressable

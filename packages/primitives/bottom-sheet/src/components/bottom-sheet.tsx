@@ -98,7 +98,7 @@ export function BottomSheet({
 
   const snapHeights = React.useMemo(() => {
     const screenHeight = Dimensions.get('window').height;
-    return snapPoints.map((p) => (parseInt(p) / 100) * screenHeight);
+    return snapPoints.map((p) => (Number.parseInt(p) / 100) * screenHeight);
   }, [snapPoints]);
 
   const contextValue = React.useMemo(

@@ -10,9 +10,9 @@ interface VersionParts {
 function parseVersion(version: string): VersionParts {
   const parts = version.replace(/^v/, '').split('.');
   return {
-    major: parseInt(parts[0]) || 0,
-    minor: parseInt(parts[1]) || 0,
-    patch: parseInt(parts[2]) || 0,
+    major: Number.parseInt(parts[0]) || 0,
+    minor: Number.parseInt(parts[1]) || 0,
+    patch: Number.parseInt(parts[2]) || 0,
   };
 }
 

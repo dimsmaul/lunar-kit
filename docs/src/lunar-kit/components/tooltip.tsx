@@ -20,7 +20,7 @@ import Animated, {
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../lib/utils';
 import { Text } from './text';
-import { AdaptiveModal } from '../support/adaptive-modal';
+import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 
 type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
 
@@ -383,7 +383,7 @@ export function TooltipContent({
   // ✅ Web
   if (Platform.OS === 'web') {
     return (
-      <AdaptiveModal visible={visible} onRequestClose={() => onOpenChange(false)}>
+      <AdaptiveModal visible={visible} onDismiss={() => onOpenChange(false)}>
         {/* Backdrop transparan */}
         <Pressable
           style={StyleSheet.absoluteFillObject}

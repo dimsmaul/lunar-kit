@@ -1,1 +1,1 @@
-export { AdaptiveModal, type AdaptiveModalProps, type AdaptiveModalRef, type ModalConfig } from '@lunar-primitive/adaptive-modal';
+export { AdaptiveModal, type AdaptiveModalProps, type AdaptiveModalRef } from '@lunar-primitive/adaptive-modal';

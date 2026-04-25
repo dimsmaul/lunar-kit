@@ -24,7 +24,7 @@ import { cn } from '../lib/utils';
 import { Text } from './text';
 import { Checkbox } from './checkbox';
 import { Radio } from './radio';
-import { AdaptiveModal } from '../support/adaptive-modal';
+import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const VELOCITY_THRESHOLD = 300;
@@ -235,7 +235,7 @@ export function BottomSheetContent({
 
   const snapHeights = React.useMemo(() => {
     return snapPoints.map((point) => {
-      const percentage = parseInt(point) / 100;
+      const percentage = Number.parseInt(point) / 100;
       return SCREEN_HEIGHT * percentage;
     });
   }, [snapPoints]);
@@ -375,7 +375,7 @@ export function BottomSheetContent({
       <AdaptiveModal
         visible={visible}
         statusBarTranslucent
-        onRequestClose={handleClose}
+        onDismiss={handleClose}
       >
         <GestureHandlerRootView style={{ flex: 1 }}>
           <View style={{ flex: 1 }}>
@@ -694,7 +694,7 @@ export function BottomSheetClose({
 // import { Text } from './text';
 // import { Checkbox } from './checkbox';
 // import { Radio } from './radio';
-// import { AdaptiveModal } from '../support/adaptive-modal';
+// import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 
 // const SCREEN_HEIGHT = Dimensions.get('window').height;
 // const VELOCITY_THRESHOLD = 300;
@@ -922,7 +922,7 @@ export function BottomSheetClose({
 
 //   const snapHeights = React.useMemo(() => {
 //     return snapPoints.map((point) => {
-//       const percentage = parseInt(point) / 100;
+//       const percentage = Number.parseInt(point) / 100;
 //       return SCREEN_HEIGHT * percentage;
 //     });
 //   }, [snapPoints]);

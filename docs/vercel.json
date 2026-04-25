@@ -3,12 +3,6 @@
   "outputDirectory": ".next",
   "framework": "nextjs",
   "installCommand": "bun install",
-  "env": {
-    "NEXT_PUBLIC_SITE_URL": {
-      "production": "https://docs.lunar-kit.dev",
-      "preview": "https://$VERCEL_URL"
-    }
-  },
   "regions": ["sfo1"],
   "public": true
 }
