@@ -1,7 +1,7 @@
 'use client'
 
-import Demonstration from '../components/demonstration'
-import { Input } from '@lunar-kit/core'
+import Demonstration from '@/components/demontration'
+import { Input } from '@/lunar-kit/components/input'
 import { View } from 'react-native'
 import React from 'react'
 
@@ -12,7 +12,7 @@ const InputDemo = () => {
             <View className='w-full max-w-sm flex items-center justify-center p-4'>
                 <Input placeholder="Type here..." value={value} onChangeText={setValue} />
             </View>
-        } code={`import { Input } from "@/lunar-kit/components/input"
+        } code={`import { Input } from "@/components/ui/input"
 import React from "react"
 
 export function InputDemo() {

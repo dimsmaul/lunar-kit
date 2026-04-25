@@ -1,7 +1,7 @@
 'use client'
 
-import Demonstration from '../components/demonstration'
-import { Button } from '@lunar-kit/core'
+import Demonstration from '@/components/demontration'
+import { Button } from '@/lunar-kit/components/button'
 import { Alert, View } from 'react-native'
 import React from 'react'
 
@@ -9,9 +9,9 @@ const ButtonDemo = () => {
   return (
     <Demonstration components={
       <View>
-        <Button variant={'default'} onPress={() => Alert.alert('tes')}>Button</Button>
+        <Button variant={'default'} onPress={()=> Alert.alert('tes')}>Button</Button>
       </View>
-    } code={`import { Button } from '@lunar-kit/core'button'
+    } code={`import { Button } from '@/components/ui/button'
 
 const ButtonPreview = () => {
   return (
@@ -21,7 +21,7 @@ const ButtonPreview = () => {
   )
 }
 
-export default ButtonPreview`} />
+export default ButtonPreview`}/>
   )
 }
 

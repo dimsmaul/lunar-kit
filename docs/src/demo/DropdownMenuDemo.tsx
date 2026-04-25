@@ -1,6 +1,6 @@
 'use client'
 
-import Demonstration from '../components/demonstration'
+import Demonstration from '@/components/demontration'
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -11,8 +11,8 @@ import {
     DropdownMenuGroup,
     DropdownMenuSub,
     DropdownMenuSubContent,
-} from '@lunar-kit/core';
-import { Button } from '@lunar-kit/core';
+} from '@/lunar-kit/components/dropdown-menu';
+import { Button } from '@/lunar-kit/components/button';
 import { View } from 'react-native'
 import React from 'react'
 import { CreditCard, Star, User, Users } from 'lucide-react-native';
@@ -55,8 +55,8 @@ const DropdownMenuDemo = () => {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuGroup,
-} from '@lunar-kit/core'dropdown-menu'
-import { Button } from '@lunar-kit/core'button'
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
 
 export function DropdownMenuDemo() {
   return (

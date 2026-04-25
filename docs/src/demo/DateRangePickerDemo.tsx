@@ -1,7 +1,7 @@
 'use client'
 
-import Demonstration from '@/components/demonstration'
-import { DateRangePicker, DateRangePickerContent, DateRangePickerTrigger, DateRangePickerValue } from '@lunar-kit/core'
+import Demonstration from '@/components/demontration'
+import { DateRangePicker, DateRangePickerContent, DateRangePickerTrigger, DateRangePickerValue } from '@/lunar-kit/components/date-range-picker'
 import { View } from 'react-native'
 import React from 'react'
 
@@ -33,7 +33,7 @@ const DateRangePickerDemo = () => {
   DateRangePickerContent,
   DateRangePickerTrigger,
   DateRangePickerValue,
-} from '@lunar-kit/core'date-range-picker'
+} from '@/components/ui/date-range-picker'
 import React from "react"
 
 export function DateRangePickerDemo() {

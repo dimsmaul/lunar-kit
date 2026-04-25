@@ -1,8 +1,8 @@
 'use client'
 
-import Demonstration from '../components/demonstration'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@lunar-kit/core'
-import { Text } from '@lunar-kit/core'
+import Demonstration from '@/components/demontration'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/lunar-kit/components/tabs'
+import { Text } from '@/lunar-kit/components/text'
 import { View } from 'react-native'
 import React from 'react'
 
@@ -24,8 +24,8 @@ const TabsDemo = () => {
           </TabsContent>
         </Tabs>
       </View>
-    } code={`import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/lunar-kit/components/tabs"
-import { Text } from "@/lunar-kit/components/text"
+    } code={`import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Text } from "@/components/ui/text"
 import React from "react"
 
 export const TabsDemo = () => {

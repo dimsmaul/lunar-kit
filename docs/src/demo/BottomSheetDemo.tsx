@@ -1,9 +1,9 @@
 'use client'
 
-import Demonstration from '../components/demonstration'
-import { BottomSheet, BottomSheetTrigger, BottomSheetContent, BottomSheetHeader, BottomSheetTitle, BottomSheetBody, BottomSheetFooter, BottomSheetClose, BottomSheetDragArea, BottomSheetDescription } from '@lunar-kit/core'
-import { Button } from '@lunar-kit/core'
-import { Text } from '@lunar-kit/core'
+import Demonstration from '@/components/demontration'
+import { BottomSheet, BottomSheetTrigger, BottomSheetContent, BottomSheetHeader, BottomSheetTitle, BottomSheetBody, BottomSheetFooter, BottomSheetClose, BottomSheetDragArea, BottomSheetDescription } from '@/lunar-kit/components/bottom-sheet'
+import { Button } from '@/lunar-kit/components/button'
+import { Text } from '@/lunar-kit/components/text'
 import { View } from 'react-native'
 
 const BottomSheetDemo = () => {
@@ -50,9 +50,9 @@ const BottomSheetDemo = () => {
     BottomSheetBody,
     BottomSheetFooter,
     BottomSheetClose
-} from '@lunar-kit/core'bottom-sheet'
-import { Button } from '@lunar-kit/core'button'
-import { Text } from '@lunar-kit/core'text'
+} from '@/components/ui/bottom-sheet'
+import { Button } from '@/components/ui/button'
+import { Text } from '@/components/ui/text'
 import { View } from 'react-native'
 
 export function BottomSheetDemo() {

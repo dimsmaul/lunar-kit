@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    /* Primary: Darker gray for light mode */
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    /* Primary: Moon white for dark mode */
+    --primary: 60 9.1% 97.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 60 9.1% 97.8%;
+  }
+}
+
+/* ===== Fumadocs UI — Lunar Theme Overrides ===== */
+:root {
+  --fd-background: 0 0% 100%;
+  --fd-foreground: 222.2 84% 4.9%;
+  --fd-card: 0 0% 100%;
+  --fd-card-foreground: 222.2 84% 4.9%;
+  --fd-popover: 0 0% 100%;
+  --fd-popover-foreground: 222.2 84% 4.9%;
+  --fd-primary: 240 5.9% 10%;
+  --fd-primary-foreground: 0 0% 98%;
+  --fd-secondary: 210 40% 96.1%;
+  --fd-secondary-foreground: 222.2 47.4% 11.2%;
+  --fd-muted: 210 40% 96.1%;
+  --fd-muted-foreground: 215.4 16.3% 46.9%;
+  --fd-accent: 210 40% 96.1%;
+  --fd-accent-foreground: 222.2 47.4% 11.2%;
+  --fd-border: 214.3 31.8% 91.4%;
+  --fd-ring: 240 5.9% 10%;
+}
+
+.dark {
+  --fd-background: 222.2 84% 4.9%;
+  --fd-foreground: 210 40% 98%;
+  --fd-card: 222.2 70% 8%;
+  --fd-card-foreground: 210 40% 98%;
+  --fd-popover: 222.2 70% 8%;
+  --fd-popover-foreground: 210 40% 98%;
+  --fd-primary: 60 9.1% 97.8%;
+  --fd-primary-foreground: 222.2 47.4% 11.2%;
+  --fd-secondary: 217.2 32.6% 14%;
+  --fd-secondary-foreground: 210 40% 98%;
+  --fd-muted: 217.2 32.6% 12%;
+  --fd-muted-foreground: 215 20.2% 65.1%;
+  --fd-accent: 217.2 32.6% 17.5%;
+  --fd-accent-foreground: 210 40% 98%;
+  --fd-border: 217.2 32.6% 17.5%;
+  --fd-ring: 217.2 32.6% 30%;
+}

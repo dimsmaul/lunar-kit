@@ -1,7 +1,7 @@
 'use client'
 
-import Demonstration from '../components/demonstration'
-import { DatePicker, DatePickerContent, DatePickerTrigger, DatePickerValue } from '@lunar-kit/core'
+import Demonstration from '@/components/demontration'
+import { DatePicker, DatePickerContent, DatePickerTrigger, DatePickerValue } from '@/lunar-kit/components/date-picker'
 import { View } from 'react-native'
 import React from 'react'
 
@@ -26,7 +26,7 @@ const DatePickerDemo = () => {
   DatePickerContent,
   DatePickerTrigger,
   DatePickerValue,
-} from '@lunar-kit/core'date-picker'
+} from '@/components/ui/date-picker'
 import React from "react"
 
 export function DatePickerDemo() {

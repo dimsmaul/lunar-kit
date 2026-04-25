@@ -1,7 +1,7 @@
 'use client'
 
-import Demonstration from '../components/demonstration'
-import { Avatar, AvatarFallback, AvatarImage } from '@lunar-kit/core'
+import Demonstration from '@/components/demontration'
+import { Avatar, AvatarFallback, AvatarImage } from '@/lunar-kit/components/avatar'
 import { View } from 'react-native'
 import React from 'react'
 
@@ -12,7 +12,7 @@ const AvatarDemo = () => {
         <Avatar source={{ uri: 'https://github.com/shadcn.png' }} alt="@shadcn" fallback="CN" />
         <Avatar fallback="JD" />
       </View>
-    } code={`import { Avatar } from "@/lunar-kit/components/avatar"
+    } code={`import { Avatar } from "@/components/ui/avatar"
 
 export function AvatarDemo() {
   return (
@@ -24,7 +24,7 @@ export function AvatarDemo() {
       <Avatar fallback="JD" />
     </View>
   )
-}`} />
+}`}/>
   )
 }
 

@@ -1,22 +1,56 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { createPreset } = require('fumadocs-ui/tailwind-plugin');
+
 /** @type {import('tailwindcss').Config} */
-export default {
-    content: [
-        './src/**/*.{js,ts,jsx,tsx,mdx}',
-        './content/**/*.{md,mdx}',
-        './node_modules/fumadocs-ui/dist/**/*.js',
-        '../packages/core/src/**/*.{js,ts,jsx,tsx}',
-    ],
-    theme: {
-        extend: {
-            colors: {
-                primary: 'hsl(262, 80%, 50%)',
-                secondary: 'hsl(49, 100%, 50%)',
-                destructive: 'hsl(0, 100%, 50%)',
-                muted: 'hsl(240, 3.7%, 15.9%)',
-                accent: 'hsl(262, 80%, 50%)',
-                foreground: 'hsl(0, 0%, 100%)',
-                background: 'hsl(240, 10%, 3.9%)',
-            },
+module.exports = {
+  content: [
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    './content/**/*.{md,mdx}',
+    './mdx-components.tsx',
+    './node_modules/fumadocs-ui/dist/**/*.js',
+  ],
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  presets: [createPreset(), require('nativewind/preset')],
+  theme: {
+    extend: {
+      colors: {
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
         },
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+      },
     },
-};
+  },
+  plugins: [],
+}
+

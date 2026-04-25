@@ -2,175 +2,70 @@ name: Release
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main]
+
+permissions:
+  contents: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
-
     steps:
-      - name: Check for release trigger
-        id: check
-        run: |
-          COMMIT_MSG=$(cat <<'COMMIT_EOF'
-          ${{ github.event.head_commit.message }}
-          COMMIT_EOF
-          )
-          
-          if [ "${{ github.ref_name }}" == "main" ]; then
-            if echo "$COMMIT_MSG" | grep -qiE 'release:\s*[0-9]+\.[0-9]+\.[0-9]+'; then
-              VERSION=$(echo "$COMMIT_MSG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?' | head -1)
-              echo "✅ Manual release detected: v${VERSION}"
-              echo "should_release=true" >> $GITHUB_OUTPUT
-              echo "release_type=stable" >> $GITHUB_OUTPUT
-              echo "version=${VERSION}" >> $GITHUB_OUTPUT
-              echo "auto_bump=false" >> $GITHUB_OUTPUT
-            else
-              echo "🚀 Automated release triggered on merge to main"
-              echo "should_release=true" >> $GITHUB_OUTPUT
-              echo "release_type=stable" >> $GITHUB_OUTPUT
-              echo "auto_bump=true" >> $GITHUB_OUTPUT
-            fi
-          elif [ "${{ github.ref_name }}" == "dev" ]; then
-            if echo "$COMMIT_MSG" | grep -qiE 'beta:\s*[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+'; then
-              VERSION=$(echo "$COMMIT_MSG" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+' | head -1)
-              echo "🧪 Manual Beta detected: v${VERSION}"
-              echo "should_release=true" >> $GITHUB_OUTPUT
-              echo "release_type=beta" >> $GITHUB_OUTPUT
-              echo "version=${VERSION}" >> $GITHUB_OUTPUT
-              echo "auto_bump=false" >> $GITHUB_OUTPUT
-            else
-              echo "🧪 Automated beta triggered on push to dev"
-              echo "should_release=true" >> $GITHUB_OUTPUT
-              echo "release_type=beta" >> $GITHUB_OUTPUT
-              echo "auto_bump=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "⏭️ Skipping release for branch ${{ github.ref_name }}"
-            echo "should_release=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Checkout repository
-        if: steps.check.outputs.should_release == 'true'
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Setup Bun
-        if: steps.check.outputs.should_release == 'true'
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Setup Node.js
-        if: steps.check.outputs.should_release == 'true'
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: 'https://registry.npmjs.org'
+        uses: oven-sh/setup-bun@v1
 
       - name: Install dependencies
-        if: steps.check.outputs.should_release == 'true'
         run: bun install
 
-      - name: Determine next version
+      - name: Extract version from commit
         id: version
-        if: steps.check.outputs.should_release == 'true'
         run: |
-          if [ "${{ steps.check.outputs.release_type }}" == "beta" ]; then
-            if [ "${{ steps.check.outputs.auto_bump }}" == "true" ]; then
-              STABLE_VERSION=$(npm info create-lunar-kit version)
-              NEXT_VERSION="${STABLE_VERSION}-beta.${{ github.run_number }}"
-              echo "version=${NEXT_VERSION}" >> $GITHUB_OUTPUT
-              echo "npm_tag=beta" >> $GITHUB_OUTPUT
-              echo "🧪 Automated Beta Version: $NEXT_VERSION"
-            else
-              echo "version=${{ steps.check.outputs.version }}" >> $GITHUB_OUTPUT
-              echo "npm_tag=beta" >> $GITHUB_OUTPUT
-              echo "🧪 Manual Beta Version: ${{ steps.check.outputs.version }}"
-            fi
-          elif [ "${{ steps.check.outputs.auto_bump }}" == "true" ]; then
-            CURRENT_VERSION=$(npm info create-lunar-kit version)
-            IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
-            NEXT_VERSION="$major.$minor.$((patch + 1))"
-            echo "version=${NEXT_VERSION}" >> $GITHUB_OUTPUT
-            echo "npm_tag=latest" >> $GITHUB_OUTPUT
-            echo "⏭️ Auto-bumping Stable: $CURRENT_VERSION -> $NEXT_VERSION"
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          if [[ $COMMIT_MSG =~ release:\ (major|minor|patch) ]]; then
+            TYPE="${BASH_REMATCH[1]}"
+            echo "type=$TYPE" >> $GITHUB_OUTPUT
           else
-            echo "version=${{ steps.check.outputs.version }}" >> $GITHUB_OUTPUT
-            echo "npm_tag=latest" >> $GITHUB_OUTPUT
+            echo "type=patch" >> $GITHUB_OUTPUT
           fi
 
-      - name: Sync version across all packages
-        if: steps.check.outputs.should_release == 'true'
-        run: |
-          VERSION=${{ steps.version.outputs.version }}
-          echo "📦 Syncing all packages to version $VERSION"
+      - name: Bump versions
+        run: bun scripts/bump-versions.ts ${{ steps.version.outputs.type }}
 
-          for pkg in . packages/core packages/cli packages/create-lunar-kit; do
-            jq --arg v "$VERSION" '.version = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
-            echo "  ✅ $pkg/package.json version → $VERSION"
-          done
+      - name: Build packages
+        run: bun run build
 
-          # Use exact version for internal dependencies during publish
-          for pkg in packages/cli packages/create-lunar-kit; do
-            jq --arg v "$VERSION" '.dependencies["@lunar-kit/core"] = $v' "$pkg/package.json" > tmp.json && mv tmp.json "$pkg/package.json"
-            echo "  🔗 $pkg @lunar-kit/core dep → $VERSION"
-          done
-
-      - name: Commit and Push version updates
-        if: steps.check.outputs.should_release == 'true'
-        run: |
-          VERSION=${{ steps.version.outputs.version }}
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          if [ "${{ steps.check.outputs.release_type }}" == "stable" ]; then
-            git add .
-            git commit -m "chore: release v${VERSION} [skip ci]"
-            git tag -a "v${VERSION}" -m "Release v${VERSION}"
-            git push origin main --tags
-            echo "🏷️ Tagged and pushed stable v${VERSION}"
-          elif [ "${{ steps.check.outputs.release_type }}" == "beta" ] && [ "${{ steps.check.outputs.auto_bump }}" == "false" ]; then
-            git tag -a "v${VERSION}" -m "Beta Release v${VERSION}"
-            git push origin "v${VERSION}"
-            echo "🏷️ Tagged beta v${VERSION}"
-          else
-            echo "⏭️ Skipping git commit/tag for automated beta"
-          fi
-
-      - name: Build all packages
-        if: steps.check.outputs.should_release == 'true'
-        run: |
-          bun run --filter @lunar-kit/core build
-          bun run --filter @lunar-kit/cli build
-          bun run --filter create-lunar-kit build
-
-      - name: Publish all packages
-        if: steps.check.outputs.should_release == 'true'
-        run: |
-          TAG=${{ steps.version.outputs.npm_tag }}
-          npm publish --access public --workspace packages/core --tag $TAG
-          npm publish --access public --workspace packages/cli --tag $TAG
-          npm publish --access public --workspace packages/create-lunar-kit --tag $TAG
+      - name: Setup npm auth
+        run: npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create GitHub Release (Stable Only)
-        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.release_type == 'stable'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.version.outputs.version }}
-          name: v${{ steps.version.outputs.version }}
-          body: |
-            ## 📦 Lunar Kit v${{ steps.version.outputs.version }}
+      - name: Publish to npm
+        run: |
+          cd packages/core && npm publish
+          cd ../cli && npm publish
+          cd ../create-lunar-kit && npm publish
+          cd ../primitives/adaptive-modal && npm publish
+          cd ../primitives/bottom-sheet && npm publish
 
-            ### Published packages
-            - `@lunar-kit/core@${{ steps.version.outputs.version }}`
-            - `@lunar-kit/cli@${{ steps.version.outputs.version }}`
-            - `create-lunar-kit@${{ steps.version.outputs.version }}`
-          generate_release_notes: true
+      - name: Create release
+        run: |
+          VERSION=$(cat packages/core/package.json | grep '"version"' | head -1 | sed 's/.*"version": "\([^"]*\)".*/\1/')
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "chore: bump release versions"
+          git tag "v${VERSION}"
+          git push origin v${VERSION}
+          
+          gh release create "v${VERSION}" \
+            --title "Release v${VERSION}" \
+            --generate-notes \
+            --draft=false
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

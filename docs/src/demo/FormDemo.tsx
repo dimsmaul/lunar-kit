@@ -1,6 +1,6 @@
 'use client'
 
-import Demonstration from '../components/demonstration'
+import Demonstration from '@/components/demontration'
 import {
   Form,
   FormField,
@@ -8,9 +8,9 @@ import {
   FormLabel,
   FormDescription,
   FormMessage,
-} from '@lunar-kit/core';
-import { Input } from '@lunar-kit/core';
-import { Button } from '@lunar-kit/core';
+} from '@/lunar-kit/components/form';
+import { Input } from '@/lunar-kit/components/input';
+import { Button } from '@/lunar-kit/components/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -88,9 +88,9 @@ const FormDemo = () => {
     } code={`import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Form, FormField, FormItem, FormLabel, FormMessage } from '@lunar-kit/core'form';
-import { Input } from '@lunar-kit/core'input';
-import { Button } from '@lunar-kit/core'button';
+import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { View } from 'react-native';
 
 const formSchema = z.object({

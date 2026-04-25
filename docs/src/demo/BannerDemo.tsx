@@ -1,7 +1,7 @@
 'use client'
 
-import Demonstration from '../components/demonstration'
-import { Banner } from '@lunar-kit/core'
+import Demonstration from '@/components/demontration'
+import { Banner } from '@/lunar-kit/components/banner'
 import { View } from 'react-native'
 import React from 'react'
 
@@ -19,17 +19,17 @@ const BannerDemo = () => {
           description="Your changes have been saved."
         />
         <Banner
-          variant="warning"
-          title="Warning"
-          description="Please review your information carefully."
+            variant="warning"
+            title="Warning"
+            description="Please review your information carefully."
         />
         <Banner
-          variant="destructive"
-          title="Error"
-          description="Something went wrong. Please try again."
+            variant="destructive"
+            title="Error"
+            description="Something went wrong. Please try again."
         />
       </View>
-    } code={`import { Banner } from '@lunar-kit/core'banner'
+    } code={`import { Banner } from '@/components/ui/banner'
 import { View } from 'react-native'
 
 export function BannerDemo() {
@@ -56,7 +56,7 @@ export function BannerDemo() {
       />
     </View>
   )
-}`} />
+}`}/>
   )
 }
 

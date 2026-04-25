@@ -1,7 +1,7 @@
 'use client'
 
-import Demonstration from '../components/demonstration'
-import { Calendar } from '@lunar-kit/core'
+import Demonstration from '@/components/demontration'
+import { Calendar } from '@/lunar-kit/components/calendar'
 import { View } from 'react-native'
 import React from 'react'
 
@@ -18,7 +18,7 @@ const CalendarDemo = () => {
                     className="rounded-md"
                 />
             </View>
-        } code={`import { Calendar } from "@/lunar-kit/components/calendar"
+        } code={`import { Calendar } from "@/components/ui/calendar"
 import React from "react"
     
 export function CalendarDemo() {
