@@ -15,13 +15,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@bd4efb3f3e765dc0e78e683974e45619f9c07849
 
       - name: Install dependencies
         run: bun install
@@ -39,11 +39,11 @@ jobs:
 
       - name: Publish beta to npm
         run: |
-          cd packages/core && npm publish --tag beta
-          cd ../cli && npm publish --tag beta
-          cd ../create-lunar-kit && npm publish --tag beta
-          cd ../primitives/adaptive-modal && npm publish --tag beta
-          cd ../primitives/bottom-sheet && npm publish --tag beta
+          (cd packages/core && npm publish --tag beta)
+          (cd packages/cli && npm publish --tag beta)
+          (cd packages/create-lunar-kit && npm publish --tag beta)
+          (cd packages/primitives/adaptive-modal && npm publish --tag beta)
+          (cd packages/primitives/bottom-sheet && npm publish --tag beta)
 
       - name: Create beta release tag
         run: |

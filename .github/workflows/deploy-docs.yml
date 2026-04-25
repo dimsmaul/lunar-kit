@@ -11,10 +11,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@bd4efb3f3e765dc0e78e683974e45619f9c07849
 
       - name: Install dependencies
         working-directory: ./docs
@@ -25,7 +25,7 @@ jobs:
         run: bun run build
 
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
+        uses: amondnet/vercel-action@84e1ee61a306307be3a9a247da254ac2750ab6dc
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}

@@ -48,7 +48,7 @@ export const darkTheme = vars(darkThemeVars);
 
 // Helper function untuk convert HSL string ke hex
 function hslToHex(hsl: string): string {
-  const [h, s, l] = hsl.split(' ').map(parseFloat);
+  const [h, s, l] = hsl.split(' ').map(Number.parseFloat);
   const a = (s * Math.min(l, 100 - l)) / 10000;
   const f = (n: number) => {
     const k = (n + h / 30) % 12;

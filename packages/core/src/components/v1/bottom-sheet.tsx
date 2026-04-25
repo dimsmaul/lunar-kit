@@ -145,7 +145,7 @@ export function BottomSheetContent({ children, className }: BottomSheetContentPr
 
   const snapHeights = React.useMemo(() => {
     return snapPoints.map((point) => {
-      const percentage = parseInt(point) / 100;
+      const percentage = Number.parseInt(point) / 100;
       return SCREEN_HEIGHT * percentage;
     });
   }, [snapPoints]);
@@ -684,7 +684,7 @@ export function BottomSheetClose({ children }: { children: React.ReactNode }) {
 
 //     const snapHeights = React.useMemo(() => {
 //         return snapPoints.map(point => {
-//             const percentage = parseInt(point) / 100;
+//             const percentage = Number.parseInt(point) / 100;
 //             return SCREEN_HEIGHT * percentage;
 //         });
 //     }, [snapPoints]);

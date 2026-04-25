@@ -2,8 +2,8 @@ import fs from 'fs-extra';
 import path from 'node:path';
 import chalk from 'chalk';
 import ora, { Ora } from 'ora';
-import { execSync } from 'node:child_process';
 import { loadConfig } from '../utils/helpers.js';
+import { execFileNoThrow } from '../utils/execFileNoThrow.js';
 import {
   LOCAL_REGISTRY_PATH,
   LOCAL_COMPONENTS_PATH
@@ -241,16 +241,17 @@ export async function addComponent(componentName: string) {
     if (componentRegistry.dependencies?.length > 0) {
       spinner.text = 'Installing dependencies...';
       const packageManager = config.packageManager || 'pnpm';
-      const installCmd = packageManager === 'npm' ? 'npm install' : `${packageManager} add`;
-      
-      try {
-        execSync(`${installCmd} ${componentRegistry.dependencies.join(' ')}`, {
-          stdio: 'ignore',
-          cwd: process.cwd(),
-        });
-      } catch (error) {
+      const [cmd, ...baseArgs] = packageManager === 'npm'
+        ? ['npm', 'install']
+        : [packageManager, 'add'];
+
+      const result = await execFileNoThrow(cmd, [...baseArgs, ...componentRegistry.dependencies], {
+        cwd: process.cwd(),
+      });
+
+      if (!result.success) {
         spinner.fail('Failed to install dependencies');
-        console.log(chalk.dim(`Run: ${installCmd} ${componentRegistry.dependencies.join(' ')}`));
+        console.log(chalk.dim(`Run: ${cmd} ${baseArgs.join(' ')} ${componentRegistry.dependencies.join(' ')}`));
         return;
       }
     }
