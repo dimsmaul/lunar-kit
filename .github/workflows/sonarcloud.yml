@@ -31,4 +31,4 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=dimsmaul_lunar-kit
-            -Dsonar.organization=lunar-kit
+            -Dsonar.organization=Eularix
