@@ -1,12 +1,11 @@
 ---
-sidebar_position: 11
+sidebar_position: 1
 title: Tooltip
 ---
-
-import TooltipDemo from '@/demo/TooltipDemo';
+import TooltipDemo from '@/demo/TooltipDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.
+Tooltip component for your UI needs.
 
 <TooltipDemo />
 
@@ -16,48 +15,24 @@ A popup that displays information related to an element when the element receive
 
 ## Usage
 
-<DynamicCodeBlock lang="tsx" code={`import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from '@/components/ui/tooltip';
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';`} />
+<DynamicCodeBlock lang="tsx" code={`import { Tooltip } from '@lunar-kit/core';
 
-### Basic Usage
+export default function Example() {
+  return <Tooltip />;
+}`} />
 
-<DynamicCodeBlock lang='tsx' code={`<Tooltip>
-  <TooltipTrigger asChild>
-    <Button variant="outline" size="icon">
-      <Plus size={16} />
-    </Button>
-  </TooltipTrigger>
-  <TooltipContent>
-    Add to library
-  </TooltipContent>
-</Tooltip>`} />
+## Examples
 
+### Basic
 
-## API Reference
+<DynamicCodeBlock lang="tsx" code={`<Tooltip />`} />
 
-### Tooltip
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Content |
+| `shadow` | `'none'` \| `'sm'` \| `'md'` \| `'lg'` | `'sm'` | — |
 
-### TooltipTrigger
+---
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Trigger element |
-| `asChild` | `boolean` | `false` | Merges props with child component |
-
-### TooltipContent
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Tooltip content |
-| `side` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | Preferred side |
-| `sideOffset` | `number` | `4` | Distance from trigger |
-| `className` | `string` | — | Custom styles |
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/tooltip.tsx).

@@ -1,13 +1,11 @@
 ---
-sidebar_position: 9
+sidebar_position: 1
 title: Checkbox
 ---
-
+import CheckboxDemo from '@/demo/CheckboxDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-import CheckboxDemo from '@/demo/CheckboxDemo';
-
-A control that allows the user to toggle between checked and not checked.
+Checkbox component for your UI needs.
 
 <CheckboxDemo />
 
@@ -17,102 +15,24 @@ A control that allows the user to toggle between checked and not checked.
 
 ## Usage
 
-<DynamicCodeBlock lang="tsx" code={`import { Checkbox, CheckboxLabel, CheckboxDescription } from '@/components/ui/checkbox';`} />
+<DynamicCodeBlock lang="tsx" code={`import { Checkbox } from '@lunar-kit/core';
 
-### Basic Usage
+export default function Example() {
+  return <Checkbox />;
+}`} />
 
-<DynamicCodeBlock lang="tsx" code={`const [checked, setChecked] = useState(false);
+## Examples
 
-<Checkbox checked={checked} onCheckedChange={setChecked} />`} />
+### Basic
 
-### With Label
+<DynamicCodeBlock lang="tsx" code={`<Checkbox />`} />
 
-<DynamicCodeBlock lang="tsx" code={`<Checkbox checked={checked} onCheckedChange={setChecked}>
-  <CheckboxLabel>Accept terms and conditions</CheckboxLabel>
-</Checkbox>`} />
-
-### With Description
-
-<DynamicCodeBlock lang="tsx" code={`<Checkbox checked={checked} onCheckedChange={setChecked}>
-  <View>
-    <CheckboxLabel>Marketing emails</CheckboxLabel>
-    <CheckboxDescription>
-      Receive emails about new products, features, and more.
-    </CheckboxDescription>
-  </View>
-</Checkbox>`} />
-
-### Sizes
-
-<DynamicCodeBlock lang="tsx" code={`<Checkbox size="sm" checked={checked} onCheckedChange={setChecked}>
-  <CheckboxLabel>Small</CheckboxLabel>
-</Checkbox>
-
-<Checkbox size="md" checked={checked} onCheckedChange={setChecked}>
-  <CheckboxLabel>Medium (default)</CheckboxLabel>
-</Checkbox>
-
-<Checkbox size="lg" checked={checked} onCheckedChange={setChecked}>
-  <CheckboxLabel>Large</CheckboxLabel>
-</Checkbox>`} />
-
-### Indeterminate State
-
-For "select all" scenarios:
-
-<DynamicCodeBlock lang="tsx" code={`const [items, setItems] = useState([
-  { id: 1, checked: true },
-  { id: 2, checked: false },
-  { id: 3, checked: true },
-]);
-
-const allChecked = items.every(item => item.checked);
-const someChecked = items.some(item => item.checked);
-
-<Checkbox
-  checked={allChecked}
-  indeterminate={someChecked && !allChecked}
-  onCheckedChange={(checked) => {
-    setItems(items.map(item => ({ ...item, checked })));
-  }}
->
-  <CheckboxLabel>Select All</CheckboxLabel>
-</Checkbox>`} />
-
-### Disabled State
-
-<DynamicCodeBlock lang="tsx" code={`<Checkbox disabled checked={false}>
-  <CheckboxLabel>Disabled unchecked</CheckboxLabel>
-</Checkbox>
-
-<Checkbox disabled checked={true}>
-  <CheckboxLabel>Disabled checked</CheckboxLabel>
-</Checkbox>`} />
-
-## API Reference
-
-### Checkbox
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `checked` | `boolean` | `false` | Whether checkbox is checked |
-| `onCheckedChange` | `(checked: boolean) => void` | — | Callback when state changes |
-| `children` | `ReactNode` | — | Label content |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Checkbox size |
-| `disabled` | `boolean` | `false` | Disable the checkbox |
-| `indeterminate` | `boolean` | `false` | Show indeterminate state |
-| `className` | `string` | — | Additional classes |
+| `size` | `'sm'` \| `'md'` \| `'lg'` | `'md'` | — |
 
-### CheckboxLabel
+---
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Label text |
-| `className` | `string` | — | Additional classes |
-
-### CheckboxDescription
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Description text |
-| `className` | `string` | — | Additional classes |
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/checkbox.tsx).

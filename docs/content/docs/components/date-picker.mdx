@@ -1,13 +1,11 @@
 ---
-sidebar_position: 10
-title: Date Picker
+sidebar_position: 1
+title: DatePicker
 ---
-
+import DatePickerDemo from '@/demo/DatePickerDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-import DatePickerDemo from '@/demo/DatePickerDemo';
-
-A component that allows users to select a date from a calendar popup.
+DatePicker component for your UI needs.
 
 <DatePickerDemo />
 
@@ -17,167 +15,25 @@ A component that allows users to select a date from a calendar popup.
 
 ## Usage
 
-<DynamicCodeBlock lang="tsx" code={`import {
-  DatePicker,
-  DatePickerTrigger,
-  DatePickerContent,
-  DatePickerValue,
-} from '@/components/ui/date-picker';`} />
+<DynamicCodeBlock lang="tsx" code={`import { DatePicker } from '@lunar-kit/core';
 
-### Basic Usage
+export default function Example() {
+  return <DatePicker />;
+}`} />
 
-<DynamicCodeBlock lang="tsx" code={`const [date, setDate] = useState<Date>();
+## Examples
 
-<DatePicker value={date} onValueChange={setDate}>
-  <DatePickerTrigger>
-    <DatePickerValue placeholder="Select a date" />
-  </DatePickerTrigger>
-  <DatePickerContent />
-</DatePicker>`} />
+### Basic
 
-### Variants
+<DynamicCodeBlock lang="tsx" code={`<DatePicker />`} />
 
-<DynamicCodeBlock lang="tsx" code={`// Date picker (default)
-<DatePicker variant="date" value={date} onValueChange={setDate}>
-  {/* ... */}
-</DatePicker>
-
-// Month picker
-<DatePicker variant="month" value={date} onValueChange={setDate}>
-  {/* ... */}
-</DatePicker>
-
-// Year picker
-<DatePicker variant="year" value={date} onValueChange={setDate}>
-  {/* ... */}
-</DatePicker>`} />
-
-### Trigger Variants
-
-<DynamicCodeBlock lang="tsx" code={`// Default - bordered input look
-<DatePicker value={date} onValueChange={setDate} triggerVariant="default">
-  {/* ... */}
-</DatePicker>
-
-// Outline
-<DatePicker value={date} onValueChange={setDate} triggerVariant="outline">
-  {/* ... */}
-</DatePicker>
-
-// Filled
-<DatePicker value={date} onValueChange={setDate} triggerVariant="filled">
-  {/* ... */}
-</DatePicker>`} />
-
-### Trigger Sizes
-
-<DynamicCodeBlock lang="tsx" code={`<DatePicker value={date} onValueChange={setDate} triggerSize="sm">
-  {/* ... */}
-</DatePicker>
-
-<DatePicker value={date} onValueChange={setDate} triggerSize="md">
-  {/* ... */}
-</DatePicker>
-
-<DatePicker value={date} onValueChange={setDate} triggerSize="lg">
-  {/* ... */}
-</DatePicker>`} />
-
-### Custom Date Format
-
-<DynamicCodeBlock lang="tsx" code={`<DatePickerValue 
-  placeholder="Pick a date"
-  format="YYYY-MM-DD"
-/>
-
-<DatePickerValue 
-  placeholder="Pick a date"
-  format="DD/MM/YYYY"
-/>
-
-<DatePickerValue 
-  placeholder="Pick a date"
-  format="MMMM D, YYYY"  // December 25, 2024
-/>`} />
-
-### With Min/Max Dates
-
-<DynamicCodeBlock lang="tsx" code={`<DatePicker
-  value={date}
-  onValueChange={setDate}
-  minDate={new Date()}
-  maxDate={new Date(2025, 11, 31)}
->
-  <DatePickerTrigger>
-    <DatePickerValue placeholder="Select a future date" />
-  </DatePickerTrigger>
-  <DatePickerContent />
-</DatePicker>`} />
-
-### Without Icon
-
-<DynamicCodeBlock lang="tsx" code={`<DatePickerValue 
-  placeholder="Select date"
-  showIcon={false}
-/>`} />
-
-## API Reference
-
-### DatePicker
-
-Root component.
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `value` | `Date` | — | Selected date |
-| `onValueChange` | `(date: Date) => void` | — | Callback when date changes |
-| `variant` | `'date' \| 'month' \| 'year'` | `'date'` | Picker variant |
-| `minDate` | `Date` | — | Minimum selectable date |
-| `maxDate` | `Date` | — | Maximum selectable date |
-| `triggerVariant` | `'default' \| 'outline' \| 'filled'` | `'default'` | Trigger style |
-| `triggerSize` | `'sm' \| 'md' \| 'lg'` | `'md'` | Trigger size |
+| `variant` | `'default'` \| `'outline'` \| `'filled'` | `'default'` | Visual style variant |
+| `size` | `'sm'` \| `'md'` \| `'lg'` | `'md'` | — |
 
-### DatePickerTrigger
+---
 
-The button that opens the calendar.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Trigger content |
-| `className` | `string` | — | Additional classes |
-
-### DatePickerContent
-
-The calendar popup.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `className` | `string` | — | Additional classes |
-
-### DatePickerValue
-
-Display component for the selected date.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `placeholder` | `string` | `'Select date'` | Placeholder text |
-| `format` | `string` | `'MMM DD, YYYY'` | Date format (dayjs) |
-| `showIcon` | `boolean` | `true` | Show calendar icon |
-| `className` | `string` | — | Additional classes |
-
-## Date Formats
-
-Using dayjs format tokens:
-
-| Token | Output | Example |
-|-------|--------|---------|
-| `YYYY` | 4-digit year | 2024 |
-| `YY` | 2-digit year | 24 |
-| `MMMM` | Full month | December |
-| `MMM` | Short month | Dec |
-| `MM` | 2-digit month | 12 |
-| `M` | Month | 12 |
-| `DD` | 2-digit day | 05 |
-| `D` | Day | 5 |
-| `dddd` | Full weekday | Tuesday |
-| `ddd` | Short weekday | Tue |
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/date-picker.tsx).

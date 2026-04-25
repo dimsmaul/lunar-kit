@@ -8,17 +8,20 @@ import React from 'react'
 const BadgeDemo = () => {
   return (
     <Demonstration components={
-      <View className='flex-row gap-2 flex-wrap'>
-        <Badge>Badge</Badge>
-        <Badge variant="secondary">Secondary</Badge>
-        <Badge variant="outline">Outline</Badge>
-        <Badge variant="destructive">Destructive</Badge>
+      <View className="gap-2">
+        <Badge variant="default">Example</Badge>
+        <Badge variant="secondary">Example</Badge>
+        <Badge variant="success">Example</Badge>
       </View>
-    } code={`import { Badge } from "@/components/ui/badge"
+    } code={`import { Badge } from '@/components/ui/badge'
 
-export function BadgeDemo() {
-  return <Badge>Badge</Badge>
-}`}/>
+const BadgePreview = () => {
+  return (
+    <Badge variant="default">Example</Badge>
+  )
+}
+
+export default BadgePreview`}/>
   )
 }
 

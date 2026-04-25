@@ -1,0 +1,44 @@
+---
+sidebar_position: 1
+title: Slider
+---
+import SliderDemo from '@/demo/SliderDemo'
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+Slider component for your UI needs.
+
+<SliderDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add slider`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { Slider } from '@lunar-kit/core';
+
+export default function Example() {
+  return <Slider />;
+}`} />
+
+## Examples
+
+### Basic
+
+<DynamicCodeBlock lang="tsx" code={`<Slider />`} />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | undefined |  |
+| `defaultValue` | `number` | undefined |  |
+| `min` | `number` | undefined |  |
+| `max` | `number` | undefined |  |
+| `step` | `number` | undefined |  |
+| `onValueChange` | `(value: number) => void` | undefined |  |
+| `disabled` | `boolean` | undefined |  |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/slider.tsx).

@@ -1,0 +1,39 @@
+---
+sidebar_position: 1
+title: Separator
+---
+import SeparatorDemo from '@/demo/SeparatorDemo'
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+Separator component for your UI needs.
+
+<SeparatorDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add separator`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { Separator } from '@lunar-kit/core';
+
+export default function Example() {
+  return <Separator />;
+}`} />
+
+## Examples
+
+### Basic
+
+<DynamicCodeBlock lang="tsx" code={`<Separator />`} />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `'horizontal' | 'vertical'` | undefined |  |
+| `decorative` | `boolean` | undefined |  |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/separator.tsx).

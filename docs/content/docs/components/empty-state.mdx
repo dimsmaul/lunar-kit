@@ -1,0 +1,42 @@
+---
+sidebar_position: 1
+title: EmptyState
+---
+import EmptyStateDemo from '@/demo/EmptyStateDemo'
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+EmptyState component for your UI needs.
+
+<EmptyStateDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add empty-state`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { EmptyState } from '@lunar-kit/core';
+
+export default function Example() {
+  return <EmptyState />;
+}`} />
+
+## Examples
+
+### Basic
+
+<DynamicCodeBlock lang="tsx" code={`<EmptyState />`} />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | — |  (required) |
+| `description` | `string` | undefined |  |
+| `illustration` | `React.ReactNode` | undefined |  |
+| `actionLabel` | `string` | undefined |  |
+| `onActionPress` | `() => void` | undefined |  |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/empty-state.tsx).

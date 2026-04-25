@@ -1,0 +1,40 @@
+---
+sidebar_position: 1
+title: StepIndicator
+---
+import StepIndicatorDemo from '@/demo/StepIndicatorDemo'
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+StepIndicator component for your UI needs.
+
+<StepIndicatorDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add step-indicator`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { StepIndicator } from '@lunar-kit/core';
+
+export default function Example() {
+  return <StepIndicator />;
+}`} />
+
+## Examples
+
+### Basic
+
+<DynamicCodeBlock lang="tsx" code={`<StepIndicator />`} />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `steps` | `Step[]` | — |  (required) |
+| `currentStep` | `number` | — |  (required) |
+| `orientation` | `'horizontal' | 'vertical'` | undefined |  |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/step-indicator.tsx).

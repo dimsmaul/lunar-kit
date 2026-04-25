@@ -1,0 +1,38 @@
+---
+sidebar_position: 1
+title: Skeleton
+---
+import SkeletonDemo from '@/demo/SkeletonDemo'
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+Skeleton component for your UI needs.
+
+<SkeletonDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add skeleton`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { Skeleton } from '@lunar-kit/core';
+
+export default function Example() {
+  return <Skeleton />;
+}`} />
+
+## Examples
+
+### Basic
+
+<DynamicCodeBlock lang="tsx" code={`<Skeleton />`} />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'rect' | 'circle' | 'text'` | undefined |  |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/skeleton.tsx).

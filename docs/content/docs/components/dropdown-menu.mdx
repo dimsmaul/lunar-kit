@@ -1,12 +1,11 @@
 ---
-sidebar_position: 12
-title: Dropdown Menu
+sidebar_position: 1
+title: DropdownMenu
 ---
-
-import DropdownMenuDemo from '@/demo/DropdownMenuDemo';
+import DropdownMenuDemo from '@/demo/DropdownMenuDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Displays a menu to the user — such as a set of actions or functions — triggered by a button.
+DropdownMenu component for your UI needs.
 
 <DropdownMenuDemo />
 
@@ -16,142 +15,29 @@ Displays a menu to the user — such as a set of actions or functions — trigge
 
 ## Usage
 
-<DynamicCodeBlock lang="tsx" code={`import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuGroup,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';`} />
+<DynamicCodeBlock lang="tsx" code={`import { DropdownMenu } from '@lunar-kit/core';
 
-### Basic Usage
+export default function Example() {
+  return <DropdownMenu />;
+}`} />
 
-<DynamicCodeBlock lang='tsx' code={`<DropdownMenu>
-  <DropdownMenuTrigger asChild>
-    <Button>Open Menu</Button>
-  </DropdownMenuTrigger>
-  <DropdownMenuContent>
-    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-    <DropdownMenuSeparator />
-    <DropdownMenuItem onPress={() => {}}>Profile</DropdownMenuItem>
-    <DropdownMenuItem onPress={() => {}}>Billing</DropdownMenuItem>
-    <DropdownMenuItem onPress={() => {}}>Team</DropdownMenuItem>
-    <DropdownMenuItem onPress={() => {}}>Subscription</DropdownMenuItem>
-  </DropdownMenuContent>
-</DropdownMenu>`} />
+## Examples
 
-### With Icons
+### Basic
 
-<DynamicCodeBlock lang='tsx' code={`import { User, CreditCard, Settings, LogOut } from 'lucide-react-native';
+<DynamicCodeBlock lang="tsx" code={`<DropdownMenu />`} />
 
-<DropdownMenu>
-  <DropdownMenuTrigger asChild>
-    <Button variant="outline">User Options</Button>
-  </DropdownMenuTrigger>
-  <DropdownMenuContent className="w-56">
-    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-    <DropdownMenuSeparator />
-    <DropdownMenuGroup>
-      <DropdownMenuItem leftIcon={<User size={16} />}>
-        Profile
-      </DropdownMenuItem>
-      <DropdownMenuItem leftIcon={<CreditCard size={16} />}>
-        Billing
-      </DropdownMenuItem>
-      <DropdownMenuItem leftIcon={<Settings size={16} />}>
-        Settings
-      </DropdownMenuItem>
-    </DropdownMenuGroup>
-    <DropdownMenuSeparator />
-    <DropdownMenuItem leftIcon={<LogOut size={16} />} destructive>
-      Log out
-    </DropdownMenuItem>
-  </DropdownMenuContent>
-</DropdownMenu>`} />
-
-### With Sub-menu
-
-<DynamicCodeBlock lang='tsx' code={`<DropdownMenu>
-  <DropdownMenuTrigger asChild>
-    <Button variant="outline">Options</Button>
-  </DropdownMenuTrigger>
-  <DropdownMenuContent>
-    <DropdownMenuItem>Profile</DropdownMenuItem>
-    <DropdownMenuSub trigger="More Options">
-      <DropdownMenuSubContent>
-        <DropdownMenuItem>Rename</DropdownMenuItem>
-        <DropdownMenuItem>Duplicate</DropdownMenuItem>
-      </DropdownMenuSubContent>
-    </DropdownMenuSub>
-  </DropdownMenuContent>
-</DropdownMenu>`} />
-
-## API Reference
-
-### DropdownMenu
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Content |
-| `open` | `boolean` | — | Controlled open state |
-| `onOpenChange` | `(open: boolean) => void` | — | Open state change handler |
+| `variant` | `'default'` \| `'destructive'` | `'N/A'` | Visual style variant |
+| `size` | `'sm'` \| `'md'` \| `'lg'` | `'md'` | — |
+| `shadow` | `'none'` \| `'sm'` \| `'md'` \| `'lg'` | `'md'` | — |
+| `defaultVariants` | `'variant'` \| `'disabled'` | `'N/A'` | — |
+| `variants` |  | `'N/A'` | — |
+| `disabled` | `'true'` \| `'false'` | `'N/A'` | — |
 
-### DropdownMenuTrigger
+---
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Trigger content |
-| `asChild` | `boolean` | `false` | Merges props with child component |
-
-### DropdownMenuContent
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Menu items |
-| `align` | `'start' \| 'center' \| 'end'` | `'start'` | Alignment relative to trigger |
-| `side` | `'top' \| 'bottom'` | `'bottom'` | Side relative to trigger |
-| `sideOffset` | `number` | `4` | Distance from trigger |
-| `className` | `string` | — | Custom styles |
-
-### DropdownMenuItem
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Item content |
-| `onPress` | `() => void` | — | Press handler |
-| `disabled` | `boolean` | `false` | Disable item |
-| `destructive` | `boolean` | `false` | Style as destructive action |
-| `leftIcon` | `ReactNode` | — | Icon on left |
-| `rightIcon` | `ReactNode` | — | Icon on right |
-| `className` | `string` | — | Custom styles |
-| `textClassName` | `string` | — | Custom text styles |
-
-### DropdownMenuLabel
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Label content |
-| `className` | `string` | — | Custom styles |
-| `textClassName` | `string` | — | Custom text styles |
-
-### DropdownMenuSub
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Sub-menu content |
-| `trigger` | `ReactNode` | Required | The item acting as trigger |
-
-### DropdownMenuSubContent
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Sub-menu items |
-| `sideOffset` | `number` | `4` | Distance from trigger |
-| `className` | `string` | — | Custom styles |
-| `size` | `'default' \| 'sm' \| 'lg'` | `'default'` | Content size |
-| `shadow` | `'none' \| 'sm' \| 'md' \| 'lg'` | `'md'` | Shadow size |
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/dropdown-menu.tsx).

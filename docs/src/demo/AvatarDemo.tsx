@@ -1,30 +1,27 @@
 'use client'
 
 import Demonstration from '@/components/demontration'
-import { Avatar, AvatarFallback, AvatarImage } from '@/lunar-kit/components/avatar'
+import { Avatar } from '@/lunar-kit/components/avatar'
 import { View } from 'react-native'
 import React from 'react'
 
 const AvatarDemo = () => {
   return (
     <Demonstration components={
-      <View className='flex-row gap-4 items-center'>
-        <Avatar source={{ uri: 'https://github.com/shadcn.png' }} alt="@shadcn" fallback="CN" />
-        <Avatar fallback="JD" />
+      <View className="gap-2">
+        <Avatar variant="default" />
+        <Avatar variant="primary" />
+        <Avatar variant="secondary" />
       </View>
-    } code={`import { Avatar } from "@/components/ui/avatar"
+    } code={`import { Avatar } from '@/components/ui/avatar'
 
-export function AvatarDemo() {
+const AvatarPreview = () => {
   return (
-    <View className="flex-row gap-4">
-      <Avatar 
-        source={{ uri: "https://github.com/shadcn.png" }} 
-        fallback="CN" 
-      />
-      <Avatar fallback="JD" />
-    </View>
+    <Avatar variant="default" />
   )
-}`}/>
+}
+
+export default AvatarPreview`}/>
   )
 }
 

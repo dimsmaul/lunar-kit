@@ -1,0 +1,38 @@
+---
+sidebar_position: 1
+title: RadioGroup
+---
+import RadioGroupDemo from '@/demo/RadioGroupDemo'
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+RadioGroup component for your UI needs.
+
+<RadioGroupDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add radio-group`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { RadioGroup } from '@lunar-kit/core';
+
+export default function Example() {
+  return <RadioGroup />;
+}`} />
+
+## Examples
+
+### Basic
+
+<DynamicCodeBlock lang="tsx" code={`<RadioGroup />`} />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `'vertical'` \| `'horizontal'` | `'vertical'` | — |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/radio-group.tsx).

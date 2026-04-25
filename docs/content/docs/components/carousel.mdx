@@ -1,0 +1,38 @@
+---
+sidebar_position: 1
+title: Carousel
+---
+import CarouselDemo from '@/demo/CarouselDemo'
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+Carousel component for your UI needs.
+
+<CarouselDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add carousel`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { Carousel } from '@lunar-kit/core';
+
+export default function Example() {
+  return <Carousel />;
+}`} />
+
+## Examples
+
+### Basic
+
+<DynamicCodeBlock lang="tsx" code={`<Carousel />`} />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `data` | `T[]` | — |  (required) |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/carousel.tsx).

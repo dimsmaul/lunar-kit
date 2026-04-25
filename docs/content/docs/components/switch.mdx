@@ -1,0 +1,42 @@
+---
+sidebar_position: 1
+title: Switch
+---
+import SwitchDemo from '@/demo/SwitchDemo'
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+Switch component for your UI needs.
+
+<SwitchDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add switch`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { Switch } from '@lunar-kit/core';
+
+export default function Example() {
+  return <Switch />;
+}`} />
+
+## Examples
+
+### Basic
+
+<DynamicCodeBlock lang="tsx" code={`<Switch />`} />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `checked` | `boolean` | undefined |  |
+| `defaultChecked` | `boolean` | undefined |  |
+| `onCheckedChange` | `(checked: boolean) => void` | undefined |  |
+| `disabled` | `boolean` | undefined |  |
+| `thumbClassName` | `string` | undefined |  |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/switch.tsx).

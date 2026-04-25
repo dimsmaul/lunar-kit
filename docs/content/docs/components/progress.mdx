@@ -1,0 +1,39 @@
+---
+sidebar_position: 1
+title: Progress
+---
+import ProgressDemo from '@/demo/ProgressDemo'
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+Progress component for your UI needs.
+
+<ProgressDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add progress`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { Progress } from '@lunar-kit/core';
+
+export default function Example() {
+  return <Progress />;
+}`} />
+
+## Examples
+
+### Basic
+
+<DynamicCodeBlock lang="tsx" code={`<Progress />`} />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | undefined |  |
+| `indicatorClassName` | `string` | undefined |  |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/progress.tsx).

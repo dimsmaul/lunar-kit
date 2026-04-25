@@ -8,55 +8,20 @@ import React from 'react'
 const BannerDemo = () => {
   return (
     <Demonstration components={
-      <View className='w-full max-w-sm gap-4'>
-        <Banner
-          title="Information"
-          description="This is an informational message."
-        />
-        <Banner
-          variant="success"
-          title="Success"
-          description="Your changes have been saved."
-        />
-        <Banner
-            variant="warning"
-            title="Warning"
-            description="Please review your information carefully."
-        />
-        <Banner
-            variant="destructive"
-            title="Error"
-            description="Something went wrong. Please try again."
-        />
+      <View className="gap-2">
+        <Banner variant="default">Example</Banner>
+        <Banner variant="info">Example</Banner>
+        <Banner variant="success">Example</Banner>
       </View>
     } code={`import { Banner } from '@/components/ui/banner'
-import { View } from 'react-native'
 
-export function BannerDemo() {
+const BannerPreview = () => {
   return (
-    <View className="gap-4">
-      <Banner
-        title="Information"
-        description="This is an informational message."
-      />
-      <Banner
-        variant="success"
-        title="Success"
-        description="Your changes have been saved."
-      />
-      <Banner
-          variant="warning"
-          title="Warning"
-          description="Please review your information carefully."
-      />
-      <Banner
-          variant="destructive"
-          title="Error"
-          description="Something went wrong. Please try again."
-      />
-    </View>
+    <Banner variant="default">Example</Banner>
   )
-}`}/>
+}
+
+export default BannerPreview`}/>
   )
 }
 

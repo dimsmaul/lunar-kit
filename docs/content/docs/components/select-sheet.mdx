@@ -1,12 +1,11 @@
 ---
-sidebar_position: 17
-title: Select Sheet
+sidebar_position: 1
+title: SelectSheet
 ---
-
-import SelectSheetDemo from '@/demo/SelectSheetDemo';
+import SelectSheetDemo from '@/demo/SelectSheetDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-A bottom sheet based select component, ideal for mobile interfaces, with support for single and multiple selections, searching, and infinite scrolling.
+SelectSheet component for your UI needs.
 
 <SelectSheetDemo />
 
@@ -16,120 +15,23 @@ A bottom sheet based select component, ideal for mobile interfaces, with support
 
 ## Usage
 
-<DynamicCodeBlock lang="tsx" code={`import { SelectSheet, MultiSelectSheet } from '@/components/ui/select-sheet';
+<DynamicCodeBlock lang="tsx" code={`import { SelectSheet } from '@lunar-kit/core';
 
-const options = [
-  { label: 'Apple', value: 'apple' },
-  { label: 'Banana', value: 'banana' },
-  { label: 'Orange', value: 'orange' },
-];`} />
+export default function Example() {
+  return <SelectSheet />;
+}`} />
 
-### Single Select
+## Examples
 
-<DynamicCodeBlock lang="tsx" code={`<SelectSheet
-  label="Favorite Fruit"
-  options={options}
-  value={value}
-  onValueChange={setValue}
-  placeholder="Select a fruit"
-  title="Choose a Fruit"
-/>`} />
+### Basic
 
-### Multi Select
+<DynamicCodeBlock lang="tsx" code={`<SelectSheet />`} />
 
-<DynamicCodeBlock lang="tsx" code={`<MultiSelectSheet
-  label="Favorite Fruits"
-  options={options}
-  value={selectedValues}
-  onValueChange={setSelectedValues}
-  placeholder="Select fruits"
-  title="Choose Fruits"
-  maxSelection={3}
-/>`} />
-
-### Searchable
-
-<DynamicCodeBlock lang="tsx" code={`<SelectSheet
-  options={options}
-  value={value}
-  onValueChange={setValue}
-  searchable
-  searchPlaceholder="Search fruits..."
-/>`} />
-
-### Infinite Loading
-
-For large datasets, you can implement infinite loading using the \`onLoadMore\`, \`hasMore\`, and \`isLoading\` props.
-
-<DynamicCodeBlock lang="tsx" code={`<SelectSheet
-  options={items}
-  value={value}
-  onValueChange={setValue}
-  onLoadMore={fetchMoreItems}
-  hasMore={true}
-  isLoading={loading}
-/>`} />
-
-### Trigger Variants & Sizes
-
-<DynamicCodeBlock lang="tsx" code={`// Variants
-<SelectSheet variant="outline" {...props} />
-<SelectSheet variant="underline" {...props} />
-
-// Sizes
-<SelectSheet size="sm" {...props} />
-<SelectSheet size="md" {...props} />
-<SelectSheet size="lg" {...props} />`} />
-
-### With Error and Disabled States
-
-<DynamicCodeBlock lang="tsx" code={`// Error state
-<SelectSheet
-  error="Please select a valid option"
-  {...props}
-/>
-
-// Disabled state
-<SelectSheet
-  disabled
-  {...props}
-/>`} />
-
-## API Reference
-
-### SelectSheet
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| \`options\` | \`SelectOption[]\` | Required | List of options (\`&#123; label, value, ... &#125;\`) |
-| \`value\` | \`string \| number\` | — | Selected value |
-| \`onValueChange\` | \`function\` | — | Callback when value changes |
-| \`placeholder\` | \`string\` | \`'Select...'\` | Placeholder text for trigger |
-| \`label\` | \`string\` | — | Input label displayed above |
-| \`error\` | \`string\` | — | Error message to display |
-| \`disabled\` | \`boolean\` | \`false\` | Disable the select |
-| \`variant\` | \`'outline' \| 'underline'\` | \`'outline'\` | Visual variant of the trigger |
-| \`size\` | \`'sm' \| 'md' \| 'lg'\` | \`'md'\` | Size of the trigger |
-| \`className\` | \`string\` | — | Additional wrapper classes |
-| \`title\` | \`string\` | \`'Select an option'\` | Sheet header title |
-| \`description\` | \`string\` | — | Sheet header description |
-| \`snapPoints\` | \`string[]\` | \`['70%']\` | Sheet snap points |
-| \`searchable\` | \`boolean\` | \`false\` | Enable search bar |
-| \`searchPlaceholder\` | \`string\` | \`'Search...'\` | Search input placeholder |
-| \`onSearch\` | \`(query) => void\` | — | Callback when search changes |
-| \`emptyMessage\` | \`string\` | \`'No options found'\` | Custom empty state message |
-| \`onLoadMore\` | \`() => void\` | — | Callback for infinite scrolling |
-| \`hasMore\` | \`boolean\` | \`false\` | Whether more items are available |
-| \`isLoading\` | \`boolean\` | \`false\` | Show loading indicator at footer |
-| \`name\` | \`string\` | — | Input name for form integration |
 
-### MultiSelectSheet
+---
 
-Inherits all properties from \`SelectSheet\`, but adjusts the value shape and adds multiple-selection features:
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| \`value\` | \`(string \| number)[]\` | \`[]\` | Array of selected values |
-| \`onValueChange\` | \`function\` | — | Callback with selected array |
-| \`maxSelection\` | \`number\` | — | Maximum allowed selections |
-| \`showCount\` | \`boolean\` | \`true\` | Show selected count in sheet header |
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/select-sheet.tsx).

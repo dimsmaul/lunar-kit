@@ -1,12 +1,11 @@
 ---
-sidebar_position: 18
+sidebar_position: 1
 title: Text
 ---
-
-import TextDemo from '@/demo/TextDemo';
+import TextDemo from '@/demo/TextDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-A versatile text component with semantic variants and sizes.
+Text component for your UI needs.
 
 <TextDemo />
 
@@ -16,91 +15,26 @@ A versatile text component with semantic variants and sizes.
 
 ## Usage
 
-<DynamicCodeBlock lang="tsx" code={`import { Text } from '@/components/ui/text';`} />
+<DynamicCodeBlock lang="tsx" code={`import { Text } from '@lunar-kit/core';
 
-### Basic Usage
+export default function Example() {
+  return <Text />;
+}`} />
 
-<DynamicCodeBlock lang="tsx" code={`<Text>Default text</Text>`} />
+## Examples
 
-### Variants
+### Basic
 
-<DynamicCodeBlock lang="tsx" code={`// Default
-<Text variant="default">Default text</Text>
+<DynamicCodeBlock lang="tsx" code={`<Text />`} />
 
-// Header - Bold, large text
-<Text variant="header">Header Text</Text>
-
-// Title - Semibold text
-<Text variant="title">Title Text</Text>
-
-// Label - Medium weight, uppercase
-<Text variant="label">Label Text</Text>
-
-// Body - Normal weight
-<Text variant="body">Body text for paragraphs</Text>
-
-// Caption - Small, muted
-<Text variant="caption">Caption text</Text>
-
-// Muted - Dimmed color
-<Text variant="muted">Muted text</Text>
-
-// Error - Destructive color
-<Text variant="error">Error message</Text>
-
-// Success - Green color
-<Text variant="success">Success message</Text>`} />
-
-### Sizes
-
-Each variant has its own size scale:
-
-<DynamicCodeBlock lang="tsx" code={`// Header sizes
-<Text variant="header" size="sm">Small Header (24px)</Text>
-<Text variant="header" size="md">Medium Header (30px)</Text>
-<Text variant="header" size="lg">Large Header (36px)</Text>
-<Text variant="header" size="xl">XL Header (48px)</Text>
-
-// Title sizes
-<Text variant="title" size="sm">Small Title (18px)</Text>
-<Text variant="title" size="md">Medium Title (20px)</Text>
-<Text variant="title" size="lg">Large Title (24px)</Text>
-<Text variant="title" size="xl">XL Title (30px)</Text>
-
-// Body/Default sizes
-<Text size="sm">Small (14px)</Text>
-<Text size="md">Medium (16px)</Text>
-<Text size="lg">Large (18px)</Text>`} />
-
-### Alignment
-
-<DynamicCodeBlock lang="tsx" code={`<Text align="left">Left aligned (default)</Text>
-<Text align="center">Center aligned</Text>
-<Text align="right">Right aligned</Text>`} />
-
-## API Reference
-
-### Text
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `variant` | `'default' \| 'header' \| 'title' \| 'label' \| 'body' \| 'caption' \| 'muted' \| 'error' \| 'success'` | `'default'` | Text variant |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Text size |
-| `align` | `'left' \| 'center' \| 'right'` | `'left'` | Text alignment |
-| `className` | `string` | — | Additional classes |
+| `variant` | `'default' | 'header' | 'title' | 'label' | 'body' | 'caption' | 'muted' | 'error' | 'success'` | undefined |  |
+| `size` | `'sm' | 'md' | 'lg' | 'xl'` | undefined |  |
+| `align` | `'left' | 'center' | 'right'` | undefined |  |
 
-All standard React Native `Text` props are also supported.
+---
 
-## Size Mapping by Variant
-
-| Variant | sm | md | lg | xl |
-|---------|----|----|----|----|
-| header | 24px | 30px | 36px | 48px |
-| title | 18px | 20px | 24px | 30px |
-| label | 12px uppercase | 14px uppercase | 16px uppercase | — |
-| body | 14px | 16px | 18px | — |
-| default | 14px | 16px | 18px | — |
-| muted | 14px | 16px | 18px | — |
-| caption | 12px | 14px | 16px | — |
-| error | 14px | 16px | 18px | — |
-| success | 14px | 16px | 18px | — |
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/text.tsx).

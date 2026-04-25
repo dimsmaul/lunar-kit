@@ -2,215 +2,37 @@
 sidebar_position: 1
 title: Accordion
 ---
-
 import AccordionDemo from '@/demo/AccordionDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-A collapsible content component for showing and hiding sections
+Accordion component for your UI needs.
 
 <AccordionDemo />
 
 ## Installation
 
-<DynamicCodeBlock lang="bash" code={`lunar add accordio`} />
+<DynamicCodeBlock lang="bash" code={`lunar add accordion`} />
 
 ## Usage
 
-<DynamicCodeBlock lang="tsx" code={`import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from '@/components/ui/accordion';`} />
+<DynamicCodeBlock lang="tsx" code={`import { Accordion } from '@lunar-kit/core';
 
-### Basic Usage
-
-<DynamicCodeBlock lang="tsx" code={`import { useState } from 'react';
-
-export function AccordionDemo() {
-  const [value, setValue] = useState<string>('');
-
-  return (
-    <Accordion
-      type="single"
-      value={value}
-      onValueChange={setValue}
-      collapsible
-    >
-      <AccordionItem value="item-1">
-        <AccordionTrigger>Is it accessible?</AccordionTrigger>
-        <AccordionContent>
-          Yes. It adheres to the WAI-ARIA design pattern.
-        </AccordionContent>
-      </AccordionItem>
-
-      <AccordionItem value="item-2">
-        <AccordionTrigger>Is it styled?</AccordionTrigger>
-        <AccordionContent>
-          Yes. It comes with default styles that match your theme.
-        </AccordionContent>
-      </AccordionItem>
-
-      <AccordionItem value="item-3">
-        <AccordionTrigger>Is it animated?</AccordionTrigger>
-        <AccordionContent>
-          Yes. It uses react-native-reanimated for smooth animations.
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
-  );
+export default function Example() {
+  return <Accordion />;
 }`} />
 
-### Multiple Items Open
+## Examples
 
-Allow multiple accordion items to be open at the same time:
+### Basic
 
-<DynamicCodeBlock lang="tsx" code={`export function AccordionMultiple() {
-  const [values, setValues] = useState<string[]>([]);
+<DynamicCodeBlock lang="tsx" code={`<Accordion />`} />
 
-  return (
-    <Accordion
-      type="multiple"
-      value={values}
-      onValueChange={setValues}
-    >
-      <AccordionItem value="item-1">
-        <AccordionTrigger>Section 1</AccordionTrigger>
-        <AccordionContent>
-          Content for section 1.
-        </AccordionContent>
-      </AccordionItem>
-
-      <AccordionItem value="item-2">
-        <AccordionTrigger>Section 2</AccordionTrigger>
-        <AccordionContent>
-          Content for section 2.
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
-  );
-}`} />
-
-### Variants
-
-The accordion supports multiple visual variants:
-
-<DynamicCodeBlock lang="tsx" code={`// Default - with border
-<Accordion variant="default" {...props}>
-  {/* items */}
-</Accordion>
-
-// Bordered - thicker border
-<Accordion variant="bordered" {...props}>
-  {/* items */}
-</Accordion>
-
-// Separated - items visually separated
-<Accordion variant="separated" {...props}>
-  {/* items */}
-</Accordion>
-
-// Filled - muted background
-<Accordion variant="filled" {...props}>
-  {/* items */}
-</Accordion>
-
-// Ghost - no background or border
-<Accordion variant="ghost" {...props}>
-  {/* items */}
-</Accordion>`} />
-
-### Disabled Items
-
-Disable specific accordion items:
-
-<DynamicCodeBlock lang="tsx" code={`<Accordion type="single" value={value} onValueChange={setValue}>
-  <AccordionItem value="item-1">
-    <AccordionTrigger>Active Item</AccordionTrigger>
-    <AccordionContent>This item can be opened.</AccordionContent>
-  </AccordionItem>
-
-  <AccordionItem value="item-2" disabled>
-    <AccordionTrigger>Disabled Item</AccordionTrigger>
-    <AccordionContent>This item cannot be opened.</AccordionContent>
-  </AccordionItem>
-</Accordion>`} />
-
-### Default Open
-
-Set a default open item:
-
-<DynamicCodeBlock lang="tsx" code={`const [value, setValue] = useState<string>('item-1');
-
-<Accordion type="single" value={value} onValueChange={setValue}>
-  <AccordionItem value="item-1">
-    <AccordionTrigger>Open by Default</AccordionTrigger>
-    <AccordionContent>This item is open by default.</AccordionContent>
-  </AccordionItem>
-</Accordion>`} />
-
-### Custom Content
-
-Add any content inside the accordion:
-
-<DynamicCodeBlock lang="tsx" code={`<Accordion type="single" value={value} onValueChange={setValue} collapsible>
-  <AccordionItem value="settings">
-    <AccordionTrigger>Settings</AccordionTrigger>
-    <AccordionContent>
-      <View className="gap-4">
-        <View className="flex-row justify-between items-center">
-          <Text>Notifications</Text>
-          <Switch value={notifications} onValueChange={setNotifications} />
-        </View>
-        <View className="flex-row justify-between items-center">
-          <Text>Dark Mode</Text>
-          <Switch value={darkMode} onValueChange={setDarkMode} />
-        </View>
-        <Button onPress={saveSettings}>Save Changes</Button>
-      </View>
-    </AccordionContent>
-  </AccordionItem>
-</Accordion>`} />
-
-## API Reference
-
-### Accordion
-
-The root component that wraps all accordion items.
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `type` | `'single' \| 'multiple'` | `'single'` | Whether one or multiple items can be open |
-| `value` | `string \| string[]` | — | Controlled value |
-| `onValueChange` | `(value) => void` | — | Callback when value changes |
-| `collapsible` | `boolean` | `false` | Allow closing all items (single mode) |
-| `variant` | `'default' \| 'bordered' \| 'separated' \| 'filled' \| 'ghost'` | `'default'` | Visual variant |
-| `className` | `string` | — | Additional classes |
+| `variant` | `'default'` \| `'bordered'` \| `'separated'` \| `'filled'` \| `'ghost'` | `'default'` | Visual style variant |
 
-### AccordionItem
+---
 
-A single accordion item container.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | Required | Unique identifier |
-| `disabled` | `boolean` | `false` | Whether item is disabled |
-| `className` | `string` | — | Additional classes |
-
-### AccordionTrigger
-
-The clickable header that toggles the content.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Trigger content |
-| `className` | `string` | — | Additional classes |
-
-### AccordionContent
-
-The collapsible content section.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Content to show/hide |
-| `className` | `string` | — | Additional classes |
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/accordion.tsx).

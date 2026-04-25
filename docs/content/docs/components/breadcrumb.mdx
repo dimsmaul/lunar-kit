@@ -1,0 +1,39 @@
+---
+sidebar_position: 1
+title: Breadcrumb
+---
+import BreadcrumbDemo from '@/demo/BreadcrumbDemo'
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+Breadcrumb component for your UI needs.
+
+<BreadcrumbDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add breadcrumb`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { Breadcrumb } from '@lunar-kit/core';
+
+export default function Example() {
+  return <Breadcrumb />;
+}`} />
+
+## Examples
+
+### Basic
+
+<DynamicCodeBlock lang="tsx" code={`<Breadcrumb />`} />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `BreadcrumbItem[]` | — |  (required) |
+| `separator` | `React.ReactNode` | undefined |  |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/breadcrumb.tsx).

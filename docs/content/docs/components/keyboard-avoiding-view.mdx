@@ -1,13 +1,13 @@
 ---
-sidebar_position: 23
-title: Keyboard-avoiding-view
+sidebar_position: 1
+title: KeyboardAvoidingView
 ---
-
+import KeyboardAvoidingViewDemo from '@/demo/KeyboardAvoidingViewDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Extra height to add above the keyboard.
-   * @default 24
+KeyboardAvoidingView component for your UI needs.
 
+<KeyboardAvoidingViewDemo />
 
 ## Installation
 
@@ -15,16 +15,26 @@ Extra height to add above the keyboard.
 
 ## Usage
 
-<DynamicCodeBlock lang="tsx" code={`import { Keyboard-avoiding-view } from '@/components/ui/keyboard-avoiding-view';`} />
+<DynamicCodeBlock lang="tsx" code={`import { KeyboardAvoidingView } from '@lunar-kit/core';
 
-### Basic Usage
+export default function Example() {
+  return <KeyboardAvoidingView />;
+}`} />
 
-<DynamicCodeBlock lang="tsx" code={`<Keyboard-avoiding-view>Default</Keyboard-avoiding-view>`} />
+## Examples
 
-## API Reference
+### Basic
 
-### Keyboard-avoiding-view
+<DynamicCodeBlock lang="tsx" code={`<KeyboardAvoidingView />`} />
+
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
+| `extraScrollHeight` | `number` | undefined |  |
+| `enabled` | `boolean` | undefined |  |
+| `keyboardVerticalOffset` | `number` | undefined |  |
 
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/keyboard-avoiding-view.tsx).

@@ -1,0 +1,41 @@
+---
+sidebar_position: 1
+title: Alert
+---
+import AlertDemo from '@/demo/AlertDemo'
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+Alert component for your UI needs.
+
+<AlertDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add alert`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { Alert } from '@lunar-kit/core';
+
+export default function Example() {
+  return <Alert>Example</Alert>;
+}`} />
+
+## Examples
+
+### Basic
+
+<DynamicCodeBlock lang="tsx" code={`<Alert>Example</Alert>`} />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'default'` \| `'info'` \| `'success'` \| `'warning'` \| `'destructive'` | `'default'` | Visual style variant |
+| `children` | `React.ReactNode` | — |  (required) |
+| `icon` | `React.ReactNode` | undefined |  |
+| `showIcon` | `boolean` | undefined |  |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/alert.tsx).

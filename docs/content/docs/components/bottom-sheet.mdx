@@ -1,11 +1,11 @@
 ---
-sidebar_position: 5
-title: Bottom Sheet
-description: A panel that slides up from the bottom of the screen, commonly used for selections, menus, or additional content.
+sidebar_position: 1
+title: BottomSheet
 ---
-
-import BottomSheetDemo from '@/demo/BottomSheetDemo';
+import BottomSheetDemo from '@/demo/BottomSheetDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+BottomSheet component for your UI needs.
 
 <BottomSheetDemo />
 
@@ -15,255 +15,25 @@ import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
 ## Usage
 
-<DynamicCodeBlock lang="tsx" code={`import {
-  BottomSheet,
-  BottomSheetTrigger,
-  BottomSheetContent,
-  BottomSheetHeader,
-  BottomSheetTitle,
-  BottomSheetBody,
-  BottomSheetFooter,
-  BottomSheetClose,
-  BottomSheetList,
-  BottomSheetDragArea,
-} from '@/components/ui/bottom-sheet';`} />
+<DynamicCodeBlock lang="tsx" code={`import { BottomSheet } from '@lunar-kit/core';
 
-### Basic Usage
+export default function Example() {
+  return <BottomSheet>Example</BottomSheet>;
+}`} />
 
-<DynamicCodeBlock lang="tsx" code={`<BottomSheet>
-  <BottomSheetTrigger>
-    <Button>Open Sheet</Button>
-  </BottomSheetTrigger>
-  
-  <BottomSheetContent>
-    <BottomSheetHeader>
-      <BottomSheetTitle>Sheet Title</BottomSheetTitle>
-    </BottomSheetHeader>
-    
-    <BottomSheetBody>
-      <Text>Your content goes here.</Text>
-    </BottomSheetBody>
-    
-    <BottomSheetFooter>
-      <BottomSheetClose>
-        <Button>Close</Button>
-      </BottomSheetClose>
-    </BottomSheetFooter>
-  </BottomSheetContent>
-</BottomSheet>`} />
+## Examples
 
-### Controlled State
+### Basic
 
-<DynamicCodeBlock lang="tsx" code={`const [open, setOpen] = useState(false);
+<DynamicCodeBlock lang="tsx" code={`<BottomSheet>Example</BottomSheet>`} />
 
-<BottomSheet open={open} onOpenChange={setOpen}>
-  <BottomSheetTrigger>
-    <Button>Open Sheet</Button>
-  </BottomSheetTrigger>
-  
-  <BottomSheetContent>
-    <BottomSheetHeader>
-      <BottomSheetTitle>Controlled Sheet</BottomSheetTitle>
-    </BottomSheetHeader>
-    
-    <BottomSheetBody>
-      <Text>This sheet's state is controlled externally.</Text>
-      <Button onPress={() => setOpen(false)}>Close</Button>
-    </BottomSheetBody>
-  </BottomSheetContent>
-</BottomSheet>`} />
-
-### Snap Points
-
-Define multiple snap points for the sheet:
-
-<DynamicCodeBlock lang="tsx" code={`<BottomSheet snapPoints={['25%', '50%', '90%']}>
-  <BottomSheetTrigger>
-    <Button>Open Sheet</Button>
-  </BottomSheetTrigger>
-  
-  <BottomSheetContent>
-    <BottomSheetHeader>
-      <BottomSheetTitle>Resizable Sheet</BottomSheetTitle>
-    </BottomSheetHeader>
-    
-    <BottomSheetBody>
-      <Text>Drag to resize between snap points.</Text>
-    </BottomSheetBody>
-  </BottomSheetContent>
-</BottomSheet>`} />
-
-### Variants
-
-<DynamicCodeBlock lang="tsx" code={`// Default
-<BottomSheet variant=\"default\">
-  {/* ... */}
-</BottomSheet>
-
-// Filled
-<BottomSheet variant=\"filled\">
-  {/* ... */}
-</BottomSheet>`} />
-
-### With List
-
-Display a selectable list:
-
-<DynamicCodeBlock lang="tsx" code={`const options = [
-  { label: 'Option 1', value: '1' },
-  { label: 'Option 2', value: '2' },
-  { label: 'Option 3', value: '3' },
-];
-
-<BottomSheet>
-  <BottomSheetTrigger>
-    <Button>Select Option</Button>
-  </BottomSheetTrigger>
-  
-  <BottomSheetContent>
-    <BottomSheetHeader>
-      <BottomSheetTitle>Choose an Option</BottomSheetTitle>
-    </BottomSheetHeader>
-    
-    <BottomSheetList
-      data={options}
-      variant=\"select\"
-      selectedValue={selected}
-      onSelect={(item) => setSelected(item.value)}
-      getItemValue={(item) => item.value}
-    />
-  </BottomSheetContent>
-</BottomSheet>`} />
-
-### Multiple Selection List
-
-<DynamicCodeBlock lang="tsx" code={`<BottomSheetList
-  data={options}
-  variant=\"multiple\"
-  selectedValues={selectedValues}
-  onSelect={(items) => setSelectedValues(items.map(i => i.value))}
-  getItemValue={(item) => item.value}
-/>`} />
-
-### Scrollable Content
-
-<DynamicCodeBlock lang="tsx" code={`<BottomSheet snapPoints={['70%']}>
-  <BottomSheetTrigger>
-    <Button>Open Sheet</Button>
-  </BottomSheetTrigger>
-  
-  <BottomSheetContent>
-    <BottomSheetHeader>
-      <BottomSheetTitle>Long Content</BottomSheetTitle>
-    </BottomSheetHeader>
-    
-    <BottomSheetBody scrollable>
-      {/* Long scrollable content */}
-      {items.map((item) => (
-        <View key={item.id} className=\"py-4 border-b border-border\">
-          <Text>{item.name}</Text>
-        </View>
-      ))}
-    </BottomSheetBody>
-  </BottomSheetContent>
-</BottomSheet>`} />
-
-## API Reference
-
-### BottomSheet
-
-Root component.
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `open` | `boolean` | — | Controlled open state |
-| `onOpenChange` | `(open: boolean) => void` | — | Callback when state changes |
-| `snapPoints` | `string[]` | `['50%']` | Height snap points |
-| `defaultSnapPoint` | `number` | `0` | Initial snap point index |
-| `variant` | `'default' \| 'filled'` | `'default'` | Visual variant |
+| `variant` | `'default'` \| `'filled'` | `'default'` | Visual style variant |
+| `children` | `React.ReactNode` | — |  (required) |
 
-### BottomSheetTrigger
+---
 
-Button that opens the sheet.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Trigger element |
-
-### BottomSheetContent
-
-Content container.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Sheet content |
-| `className` | `string` | — | Additional classes |
-
-### BottomSheetHeader
-
-Header section.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Header content |
-| `className` | `string` | — | Additional classes |
-
-### BottomSheetTitle
-
-Title text.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Title text |
-| `className` | `string` | — | Additional classes |
-
-### BottomSheetBody
-
-Main content area.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Body content |
-| `scrollable` | `boolean` | `false` | Enable scrolling |
-| `className` | `string` | — | Additional classes |
-
-### BottomSheetFooter
-
-Footer section.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Footer content |
-| `className` | `string` | — | Additional classes |
-
-### BottomSheetClose
-
-Closes the sheet when pressed.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Close trigger |
-
-### BottomSheetList
-
-Selectable list component.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `data` | `T[]` | Required | List data |
-| `variant` | `'list' \| 'select' \| 'multiple'` | `'list'` | List type |
-| `selectedValue` | `any` | — | Selected value (select) |
-| `selectedValues` | `any[]` | — | Selected values (multiple) |
-| `onSelect` | `(selected) => void` | — | Selection callback |
-| `getItemValue` | `(item) => any` | — | Value extractor |
-| `renderItem` | `ListRenderItem` | — | Custom render function |
-| `keyExtractor` | `(item, index) => string` | — | Key extractor |
-
-### BottomSheetDragArea
-
-An area that can be dragged to move or close the bottom sheet.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | — | Optional custom handle content |
-| `className` | `string` | — | Additional classes |
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/bottom-sheet.tsx).

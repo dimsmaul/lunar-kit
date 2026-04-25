@@ -1,176 +1,40 @@
 ---
-sidebar_position: 15
+sidebar_position: 1
 title: Radio
 ---
-
-import RadioDemo from '@/demo/RadioDemo';
+import RadioDemo from '@/demo/RadioDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-A radio button component for selecting one option from a set.
+Radio component for your UI needs.
 
 <RadioDemo />
 
 ## Installation
 
-<DynamicCodeBlock lang="bash" code={`lunar add radio
-# For radio groups
-lunar add radio-group`} />
+<DynamicCodeBlock lang="bash" code={`lunar add radio`} />
 
 ## Usage
 
-### Radio (Standalone)
+<DynamicCodeBlock lang="tsx" code={`import { Radio } from '@lunar-kit/core';
 
-<DynamicCodeBlock lang="tsx" code={`import { Radio } from '@/components/ui/radio';
+export default function Example() {
+  return <Radio />;
+}`} />
 
-const [checked, setChecked] = useState(false);
+## Examples
 
-<Radio checked={checked} onCheckedChange={setChecked}>
-  <Text>Option</Text>
-</Radio>`} />
+### Basic
 
-### RadioGroup
+<DynamicCodeBlock lang="tsx" code={`<Radio />`} />
 
-<DynamicCodeBlock lang="tsx" code={`import {
-  RadioGroup,
-  RadioGroupItem,
-  RadioGroupLabel,
-  RadioGroupDescription,
-} from '@/components/ui/radio-group';
-
-const [value, setValue] = useState('option1');
-
-<RadioGroup value={value} onValueChange={setValue}>
-  <RadioGroupItem value="option1">
-    <RadioGroupLabel>Option 1</RadioGroupLabel>
-  </RadioGroupItem>
-  <RadioGroupItem value="option2">
-    <RadioGroupLabel>Option 2</RadioGroupLabel>
-  </RadioGroupItem>
-  <RadioGroupItem value="option3">
-    <RadioGroupLabel>Option 3</RadioGroupLabel>
-  </RadioGroupItem>
-</RadioGroup>`} />
-
-### Sizes
-
-<DynamicCodeBlock lang="tsx" code={`<RadioGroup value={value} onValueChange={setValue} size="sm">
-  {/* Small radio buttons */}
-</RadioGroup>
-
-<RadioGroup value={value} onValueChange={setValue} size="md">
-  {/* Medium (default) */}
-</RadioGroup>
-
-<RadioGroup value={value} onValueChange={setValue} size="lg">
-  {/* Large radio buttons */}
-</RadioGroup>`} />
-
-### Orientation
-
-<DynamicCodeBlock lang="tsx" code={`// Vertical (default)
-<RadioGroup orientation="vertical" value={value} onValueChange={setValue}>
-  {/* Items stacked vertically */}
-</RadioGroup>
-
-// Horizontal
-<RadioGroup orientation="horizontal" value={value} onValueChange={setValue}>
-  {/* Items in a row */}
-</RadioGroup>`} />
-
-### With Description
-
-<DynamicCodeBlock lang="tsx" code={`<RadioGroup value={value} onValueChange={setValue}>
-  <RadioGroupItem value="free">
-    <View>
-      <RadioGroupLabel>Free Plan</RadioGroupLabel>
-      <RadioGroupDescription>
-        Basic features for personal use
-      </RadioGroupDescription>
-    </View>
-  </RadioGroupItem>
-  
-  <RadioGroupItem value="pro">
-    <View>
-      <RadioGroupLabel>Pro Plan</RadioGroupLabel>
-      <RadioGroupDescription>
-        Advanced features for professionals
-      </RadioGroupDescription>
-    </View>
-  </RadioGroupItem>
-</RadioGroup>`} />
-
-### Disabled State
-
-<DynamicCodeBlock lang="tsx" code={`// Disable entire group
-<RadioGroup value={value} onValueChange={setValue} disabled>
-  {/* All items disabled */}
-</RadioGroup>
-
-// Disable specific item
-<RadioGroup value={value} onValueChange={setValue}>
-  <RadioGroupItem value="option1">
-    <RadioGroupLabel>Available</RadioGroupLabel>
-  </RadioGroupItem>
-  <RadioGroupItem value="option2" disabled>
-    <RadioGroupLabel>Unavailable</RadioGroupLabel>
-  </RadioGroupItem>
-</RadioGroup>`} />
-
-## API Reference
-
-### Radio
-
-Standalone radio button.
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `checked` | `boolean` | `false` | Whether checked |
-| `onCheckedChange` | `(checked: boolean) => void` | — | Change callback |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Radio size |
-| `disabled` | `boolean` | `false` | Disable the radio |
-| `value` | `string` | — | Value identifier |
-| `children` | `ReactNode` | — | Label content |
-| `className` | `string` | — | Additional classes |
+| `size` | `'sm'` \| `'md'` \| `'lg'` | `'md'` | — |
+| `checked` | `'true'` \| `'false'` | `'false'` | — |
+| `disabled` | `'true'` \| `'false'` | `'false'` | — |
 
-### RadioGroup
+---
 
-Group container for radio items.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | — | Selected value |
-| `onValueChange` | `(value: string) => void` | — | Change callback |
-| `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | Layout direction |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size for all items |
-| `disabled` | `boolean` | `false` | Disable all items |
-| `children` | `ReactNode` | Required | RadioGroupItem children |
-| `className` | `string` | — | Additional classes |
-
-### RadioGroupItem
-
-Individual radio option.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | Required | Option value |
-| `disabled` | `boolean` | `false` | Disable this item |
-| `children` | `ReactNode` | — | Label content |
-| `className` | `string` | — | Additional classes |
-
-### RadioGroupLabel
-
-Label text for a radio item.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Label text |
-| `className` | `string` | — | Additional classes |
-
-### RadioGroupDescription
-
-Description text for a radio item.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | Required | Description text |
-| `className` | `string` | — | Additional classes |
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/radio.tsx).

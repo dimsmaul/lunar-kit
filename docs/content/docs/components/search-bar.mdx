@@ -1,0 +1,44 @@
+---
+sidebar_position: 1
+title: SearchBar
+---
+import SearchBarDemo from '@/demo/SearchBarDemo'
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+
+SearchBar component for your UI needs.
+
+<SearchBarDemo />
+
+## Installation
+
+<DynamicCodeBlock lang="bash" code={`lunar add search-bar`} />
+
+## Usage
+
+<DynamicCodeBlock lang="tsx" code={`import { SearchBar } from '@lunar-kit/core';
+
+export default function Example() {
+  return <SearchBar />;
+}`} />
+
+## Examples
+
+### Basic
+
+<DynamicCodeBlock lang="tsx" code={`<SearchBar />`} />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | undefined |  |
+| `defaultValue` | `string` | undefined |  |
+| `placeholder` | `string` | undefined |  |
+| `onValueChange` | `(value: string) => void` | undefined |  |
+| `onDebouncedValueChange` | `(value: string) => void` | undefined |  |
+| `debounceDelay` | `number` | undefined |  |
+| `disabled` | `boolean` | undefined |  |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/search-bar.tsx).

@@ -1,12 +1,11 @@
 ---
-sidebar_position: 3
+sidebar_position: 1
 title: Badge
 ---
-
 import BadgeDemo from '@/demo/BadgeDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Displays a badge or a label for status indication.
+Badge component for your UI needs.
 
 <BadgeDemo />
 
@@ -16,36 +15,27 @@ Displays a badge or a label for status indication.
 
 ## Usage
 
-<DynamicCodeBlock lang="tsx" code={`import { Badge } from '@/components/ui/badge';`} />
+<DynamicCodeBlock lang="tsx" code={`import { Badge } from '@lunar-kit/core';
 
-### Basic Usage
+export default function Example() {
+  return <Badge>Example</Badge>;
+}`} />
 
-<DynamicCodeBlock lang="tsx" code={`<Badge>Badge</Badge>`} />
+## Examples
 
-### Variants
+### Basic
 
-<DynamicCodeBlock lang="tsx" code={`<Badge variant="default">Default</Badge>
-<Badge variant="secondary">Secondary</Badge>
-<Badge variant="success">Success</Badge>
-<Badge variant="warning">Warning</Badge>
-<Badge variant="destructive">Destructive</Badge>
-<Badge variant="outline">Outline</Badge>
-<Badge variant="muted">Muted</Badge>`} />
+<DynamicCodeBlock lang="tsx" code={`<Badge>Example</Badge>`} />
 
-### Sizes
-
-<DynamicCodeBlock lang="tsx" code={`<Badge size="sm">Small</Badge>
-<Badge size="md">Medium</Badge>  {/* Default */}
-<Badge size="lg">Large</Badge>`} />
-
-## API Reference
-
-### Badge
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `children` | `string` | Required | Badge text |
-| `variant` | `'default' \| 'secondary' \| 'success' \| 'warning' \| 'destructive' \| 'outline' \| 'muted'` | `'default'` | Visual variant |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Badge size |
-| `className` | `string` | — | Additional classes for container |
-| `textClassName` | `string` | — | Additional classes for text |
+| `variant` | `'default'` \| `'secondary'` \| `'success'` \| `'warning'` \| `'destructive'` \| `'outline'` \| `'muted'` | `'default'` | Visual style variant |
+| `size` | `'sm'` \| `'md'` \| `'lg'` | `'md'` | — |
+| `children` | `string` | — |  (required) |
+| `textClassName` | `string` | undefined |  |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/badge.tsx).

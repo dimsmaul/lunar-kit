@@ -1,15 +1,11 @@
 ---
-sidebar_position: 14
+sidebar_position: 1
 title: Input
-description: A text input component with variants and adornments
 ---
-
-import InputDemo from '@/demo/InputDemo';
+import InputDemo from '@/demo/InputDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-# Input
-
-A text input field for collecting user input.
+Input component for your UI needs.
 
 <InputDemo />
 
@@ -19,89 +15,30 @@ A text input field for collecting user input.
 
 ## Usage
 
-<DynamicCodeBlock lang="tsx" code={`import { Input } from '@/components/ui/input';`} />
+<DynamicCodeBlock lang="tsx" code={`import { Input } from '@lunar-kit/core';
 
-### Basic Usage
+export default function Example() {
+  return <Input />;
+}`} />
 
-<DynamicCodeBlock lang="tsx" code={`const [value, setValue] = useState('');
+## Examples
 
-<Input
-  value={value}
-  onChangeText={setValue}
-  placeholder="Enter your name"
-/>`} />
+### Basic
 
-### Variants
+<DynamicCodeBlock lang="tsx" code={`<Input />`} />
 
-<DynamicCodeBlock lang="tsx" code={`// Outline (default)
-<Input variant="outline" placeholder="Outline variant" />
-
-// Underline
-<Input variant="underline" placeholder="Underline variant" />`} />
-
-### Sizes
-
-<DynamicCodeBlock lang="tsx" code={`<Input size="sm" placeholder="Small" />
-<Input size="md" placeholder="Medium (default)" />
-<Input size="lg" placeholder="Large" />`} />
-
-### With Prefix/Suffix
-
-<DynamicCodeBlock lang="tsx" code={`import { Mail, Eye, Search, DollarSign } from 'lucide-react-native';
-
-// Prefix icon
-<Input
-  placeholder="Email"
-  prefix={<Mail size={18} color="#6b7280" />}
-/>
-
-// Suffix icon
-<Input
-  placeholder="Password"
-  secureTextEntry
-  suffix={<Eye size={18} color="#6b7280" />}
-/>
-
-// Both
-<Input
-  placeholder="Search..."
-  prefix={<Search size={18} color="#6b7280" />}
-  suffix={<Text className="text-muted-foreground text-sm">⌘K</Text>}
-/>
-
-// With text prefix
-<Input
-  placeholder="0.00"
-  prefix={<DollarSign size={18} color="#6b7280" />}
-/>`} />
-
-### Error State
-
-<DynamicCodeBlock lang="tsx" code={`<Input
-  placeholder="Email"
-  error
-  value={email}
-  onChangeText={setEmail}
-/>`} />
-
-### Disabled State
-
-<DynamicCodeBlock lang="tsx" code={`<Input
-  placeholder="Disabled input"
-  editable={false}
-  value="Cannot edit this"
-/>`} />
-
-## API Reference
-
-### Input
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `variant` | `'outline' \| 'underline'` | `'outline'` | Visual variant |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Input size |
-| `prefix` | `ReactNode` | — | Left side adornment |
-| `suffix` | `ReactNode` | — | Right side adornment |
-| `error` | `boolean` | `false` | Show error state |
-| `containerClassName` | `string` | — | Classes for container |
-| `inputClassName` | `string` | — | Classes for input |
+| `variant` | `'outline' | 'underline'` | undefined |  |
+| `size` | `'sm' | 'md' | 'lg'` | undefined |  |
+| `prefix` | `React.ReactNode` | undefined |  |
+| `suffix` | `React.ReactNode` | undefined |  |
+| `error` | `boolean` | undefined |  |
+| `containerClassName` | `string` | undefined |  |
+| `inputClassName` | `string` | undefined |  |
+
+---
+
+Check [source](https://github.com/dimsmaul/lunar-kit/tree/main/packages/core/src/components/ui/input.tsx).
