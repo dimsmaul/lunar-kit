@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
     "react-native-reanimated",
     "react-native-svg",
     "react-native-gesture-handler",
+    "react-native-safe-area-context",
+    "@lunar-primitive/adaptive-modal",
+    "@lunar-primitive/bottom-sheet",
     "lucide-react-native",
   ],
   turbopack: {
@@ -20,6 +23,8 @@ const nextConfig: NextConfig = {
       "react-native": "react-native-web",
       "react-native/Libraries/Renderer/shims/ReactFabric": "react-native-web",
       "react-native/Libraries/Utilities/codegenNativeComponent": "react-native-web",
+      "react-native/Libraries/EventEmitter/EventEmitter": "react-native-web",
+      "react-native/Libraries/NativeModules": "react-native-web",
     },
     resolveExtensions: [
       ".web.js",

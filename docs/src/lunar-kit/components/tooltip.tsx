@@ -383,7 +383,7 @@ export function TooltipContent({
   // ✅ Web
   if (Platform.OS === 'web') {
     return (
-      <AdaptiveModal visible={visible} onRequestClose={() => onOpenChange(false)}>
+      <AdaptiveModal visible={visible} onDismiss={() => onOpenChange(false)}>
         {/* Backdrop transparan */}
         <Pressable
           style={StyleSheet.absoluteFillObject}

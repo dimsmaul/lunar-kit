@@ -334,7 +334,7 @@ export function DropdownMenuContent({
     <AdaptiveModal
       visible={visible}
       statusBarTranslucent
-      onRequestClose={() => onOpenChange(false)}
+      onDismiss={() => onOpenChange(false)}
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
         <Pressable
@@ -622,7 +622,7 @@ export function DropdownMenuSubContent({
     <AdaptiveModal
       visible={visible}
       statusBarTranslucent
-      onRequestClose={() => onOpenChange(false)}
+      onDismiss={() => onOpenChange(false)}
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
         <Pressable

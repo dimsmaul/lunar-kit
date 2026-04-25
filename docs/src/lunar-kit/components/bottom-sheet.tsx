@@ -375,7 +375,7 @@ export function BottomSheetContent({
       <AdaptiveModal
         visible={visible}
         statusBarTranslucent
-        onRequestClose={handleClose}
+        onDismiss={handleClose}
       >
         <GestureHandlerRootView style={{ flex: 1 }}>
           <View style={{ flex: 1 }}>
