@@ -43,7 +43,7 @@ async function main() {
   packages.forEach((pkg, i) => console.log(`  ${i + 1}. ${pkg}`));
 
   const pkgIdx = await question('\nSelect package (number): ');
-  const selectedPackage = packages[parseInt(pkgIdx) - 1];
+  const selectedPackage = packages[Number.parseInt(pkgIdx) - 1];
 
   if (!selectedPackage) {
     console.error('Invalid selection');
@@ -58,7 +58,7 @@ async function main() {
 
   const bumpIdx = await question('\nSelect type (number): ');
   const bumpTypes = ['major', 'minor', 'patch'];
-  const bumpType = bumpTypes[parseInt(bumpIdx) - 1];
+  const bumpType = bumpTypes[Number.parseInt(bumpIdx) - 1];
 
   if (!bumpType) {
     console.error('Invalid selection');

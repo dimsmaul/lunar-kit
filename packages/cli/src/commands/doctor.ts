@@ -2,7 +2,7 @@ import fs from 'fs-extra';
 import path from 'node:path';
 import chalk from 'chalk';
 import ora from 'ora';
-import { execSync } from 'node:child_process';
+import { execFileNoThrow } from '../utils/execFileNoThrow.js';
 
 interface DoctorCheck {
   name: string;
@@ -21,7 +21,7 @@ interface CheckResult {
 async function checkNodeVersion(): Promise<CheckResult> {
   const requiredVersion = 18;
   const currentVersion = process.version;
-  const majorVersion = parseInt(currentVersion.slice(1).split('.')[0]);
+  const majorVersion = Number.parseInt(currentVersion.slice(1).split('.')[0]);
 
   if (majorVersion < requiredVersion) {
     return {
@@ -45,12 +45,10 @@ async function checkPackageManager(): Promise<CheckResult> {
   let detected: string | null = null;
 
   for (const pm of packageManagers) {
-    try {
-      execSync(`${pm} --version`, { stdio: 'ignore' });
+    const result = await execFileNoThrow(pm, ['--version']);
+    if (result.success) {
       detected = pm;
       break;
-    } catch {
-      // Not installed
     }
   }
 
@@ -62,18 +60,19 @@ async function checkPackageManager(): Promise<CheckResult> {
     };
   }
 
-  try {
-    const version = execSync(`${detected} --version`).toString().trim();
+  const versionResult = await execFileNoThrow(detected, ['--version']);
+  if (versionResult.success) {
+    const version = versionResult.stdout.trim();
     return {
       status: 'success',
       message: `${detected} ${version}`,
     };
-  } catch {
-    return {
-      status: 'success',
-      message: detected,
-    };
   }
+
+  return {
+    status: 'success',
+    message: detected,
+  };
 }
 
 /**
