@@ -1,6 +1,6 @@
 {
   "name": "@lunar-primitive/bottom-sheet",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Bottom sheet primitive for Lunar Kit - handles gesture, snap points, and animations",
   "author": "Dimas Maulana Ahmad",
   "license": "MIT",
