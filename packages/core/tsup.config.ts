@@ -1,6 +1,7 @@
 import { defineConfig } from 'tsup';
 import path from 'path';
 import alias from 'esbuild-plugin-alias';
+import { cp } from 'fs/promises';
 
 export default defineConfig({
   entry: ['src/index.ts', 'src/templates.ts', 'src/cli-utils.ts'],
@@ -35,5 +36,9 @@ export default defineConfig({
         '@': path.resolve(__dirname, './src'),
       })
     ];
+  },
+  async onSuccess() {
+    // Copy registry files to dist for CLI access
+    await cp(path.join(__dirname, 'src', 'registry'), path.join(__dirname, 'dist', 'registry'), { recursive: true });
   },
 });

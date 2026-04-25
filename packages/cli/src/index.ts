@@ -37,6 +37,8 @@ import {
 } from './commands/test.js';
 import { runDoctor } from './commands/doctor.js';
 import { runInstall } from './commands/install.js';
+import { listComponents, listModules } from './commands/list.js';
+import { getConfig } from './commands/get.js';
 
 // ============================================
 // Help Display Functions
@@ -119,7 +121,7 @@ const program = new Command();
 program
   .name('lunar')
   .description('CLI for Lunar Kit - Universal React Native UI components')
-  .version('0.1.0');
+  .version('0.1.20');
 
 // Init
 program
@@ -374,6 +376,46 @@ program
     await runInstall(packages, options);
   });
 
+// List command
+const list = program
+  .command('list')
+  .description('List project components, modules, and more');
+
+list
+  .command('components')
+  .description('List available UI components')
+  .option('--json', 'Output in JSON format')
+  .action(async (options: any) => {
+    // In Commander.js, when there are no positional arguments:
+    // - First param is the parsed options object
+    return listComponents(options || {});
+  });
+
+list
+  .command('modules')
+  .description('List modules in your project')
+  .option('--json', 'Output in JSON format')
+  .action(async (options: any) => {
+    // In Commander.js, when there are no positional arguments:
+    // - First param is the parsed options object
+    return listModules(options || {});
+  });
+
+// Get command
+const get = program
+  .command('get')
+  .description('Get configuration and project information');
+
+get
+  .command('config')
+  .description('Get current kit.config.json')
+  .option('--json', 'Output in JSON format')
+  .action(async (options: any) => {
+    // In Commander.js, when there are no positional arguments:
+    // - First param is the parsed options object
+    return getConfig(options || {});
+  });
+
   program.configureHelp({
   formatHelp: () => {
     return `
@@ -383,6 +425,8 @@ ${chalk.bold('Commands:')}
   ${chalk.green('init')}                                          Initialize Lunar Kit in your project
   ${chalk.green('add')} [subcommand]                              Add a component or feature
   ${chalk.green('add help')}                                      Show add subcommand table
+  ${chalk.green('list')}                                          List components and modules
+  ${chalk.green('get')}                                           Get configuration information
   ${chalk.green('doctor')}                                        Check your Lunar Kit setup
   ${chalk.green('install| i')} [packages]                         Install packages
   ${chalk.green('upgrade')}                                       Upgrade Lunar Kit packages to latest version

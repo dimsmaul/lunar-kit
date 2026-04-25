@@ -222,8 +222,8 @@ bun build              # One-time build
 - [x] setup publish for primitives/*
 - [x] update CI/CD usages
 - [x] setup autodeploy web docs, because i will setup monorepo, if read changeset will deploy at vercel
-- [ ] update usage adaptive modal, getting from primitives adaptive modal
-- [ ] learn all existing component, and getting where component need primitives code
+- [x] update usage adaptive modal, getting from primitives adaptive modal
+- [x] learn all existing component, and getting where component need primitives code
 - [ ] Auto-generate component docs from JSDoc/props
 - [ ] Sync component changes to docs automatically
 - [ ] Add more component examples

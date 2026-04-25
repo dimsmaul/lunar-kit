@@ -2,46 +2,47 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 interface VersionParts {
+  version: number;
   major: number;
   minor: number;
-  patch: number;
 }
 
 function parseVersion(version: string): VersionParts {
   const parts = version.replace(/^v/, '').split('.');
   return {
-    major: Number.parseInt(parts[0]) || 0,
-    minor: Number.parseInt(parts[1]) || 0,
-    patch: Number.parseInt(parts[2]) || 0,
+    version: Number.parseInt(parts[0]) || 0,
+    major: Number.parseInt(parts[1]) || 0,
+    minor: Number.parseInt(parts[2]) || 0,
   };
 }
 
 function formatVersion(parts: VersionParts, isBeta?: boolean): string {
-  const base = `${parts.major}.${parts.minor}.${parts.patch}`;
+  const base = `${parts.version}.${parts.major}.${parts.minor}`;
   if (isBeta) {
     return `${base}-beta.0`;
   }
   return base;
 }
 
-function bumpVersion(version: string, type: 'major' | 'minor' | 'patch', isBeta?: boolean): string {
+function bumpVersion(version: string, type: 'version' | 'major' | 'minor' | 'patch', isBeta?: boolean): string {
   const parts = parseVersion(version);
-  
+
   switch (type) {
+    case 'version':
+      parts.version++;
+      parts.major = 0;
+      parts.minor = 0;
+      break;
     case 'major':
       parts.major++;
       parts.minor = 0;
-      parts.patch = 0;
       break;
     case 'minor':
-      parts.minor++;
-      parts.patch = 0;
-      break;
     case 'patch':
-      parts.patch++;
+      parts.minor++;
       break;
   }
-  
+
   return formatVersion(parts, isBeta);
 }
 
@@ -68,7 +69,7 @@ function updateDependencies(pkgPath: string, pkg: string, newVersion: string) {
 }
 
 async function main() {
-  const type = (process.argv[2] || 'patch') as 'major' | 'minor' | 'patch';
+  const type = (process.argv[2] || 'patch') as 'version' | 'major' | 'minor' | 'patch';
   const isBeta = process.argv[3] === 'beta';
 
   // Package dependencies map

@@ -1,231 +1,219 @@
 ---
-sidebar_position: 4
-title: CLI
-description: Use the Lunar Kit CLI to manage components and modules in your project
+sidebar_position: 1
+title: CLI Reference
 ---
 
-import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-The Lunar Kit CLI (`lunar`) helps you add and manage components, modules, and localization in your React Native project.
+Lunar Kit provides a powerful CLI tool for scaffolding, managing components, and generating code. This guide covers all available commands.
 
 ## Installation
 
-<Tabs items={['pnpm', 'npm', 'yarn', 'bun']}>
-  <Tab value="pnpm">
-    <DynamicCodeBlock lang="bash" code={`# Global installation (recommended)
-pnpm add -g @lunar-kit/cli
+Install the CLI globally or use `npx`:
 
-# Or use dlx without installing
-pnpm dlx @lunar-kit/cli [command]`} />
-  </Tab>
-  <Tab value="npm">
-    <DynamicCodeBlock lang="bash" code={`# Global installation (recommended)
-npm install -g @lunar-kit/cli
+<DynamicCodeBlock lang="bash" code={`npm install -g @lunar-kit/cli
+# or
+npx @lunar-kit/cli <command>`} />
 
-# Or use npx without installing
-npx -y @lunar-kit/cli [command]`} />
-  </Tab>
-  <Tab value="yarn">
-    <DynamicCodeBlock lang="bash" code={`# Global installation (recommended)
-yarn global add @lunar-kit/cli
+## Core Commands
 
-# Or use dlx without installing
-yarn dlx @lunar-kit/cli [command]`} />
-  </Tab>
-  <Tab value="bun">
-    <DynamicCodeBlock lang="bash" code={`# Global installation (recommended)
-bun add -g @lunar-kit/cli
+### `lunar init`
 
-# Or use bunx without installing
-bunx @lunar-kit/cli [command]`} />
-  </Tab>
-</Tabs>
-
-## Available Commands
-
-| Command | Description |
-|---------|-------------|
-| lunar init | Initialize Lunar Kit in your project |
-| lunar add | Add a UI component or locale to your project |
-| lunar generate (g) | Generate a Lunar Kit element (module, component, etc.) |
-
----
-
-## init
-
-Initialize Lunar Kit in your existing React Native project.
+Initialize Lunar Kit in your project.
 
 <DynamicCodeBlock lang="bash" code={`lunar init`} />
 
-### What it does
+Sets up:
+- Configuration file (`kit.config.json`)
+- Directory structure
+- Initial dependencies
 
-1. Creates src/components/ui directory
-2. Sets up lib/utils.ts with helper functions
-3. Installs required dependencies (clsx, tailwind-merge)
-4. Creates kit.config.json configuration file
+### `lunar doctor`
 
-### Interactive Prompts
+Check your Lunar Kit setup and configuration.
 
-<DynamicCodeBlock lang="text" code={`🌙 Initializing Lunar Kit...
+<DynamicCodeBlock lang="bash" code={`lunar doctor`} />
 
-? Would you like to use TypeScript? › Yes
-? Which package manager do you use? › pnpm / npm / yarn / bun`} />
+Verifies:
+- Node.js version
+- Package manager availability
+- Lunar Kit project detection
+- Core packages installation
+- Required dependencies
+
+### `lunar install | lunar i`
+
+Install packages with progress bar.
+
+<DynamicCodeBlock lang="bash" code={`lunar install dayjs axios
+lunar i -D @types/node
+lunar i react-native-reanimated`} />
+
+Supports:
+- Multiple packages
+- Dev dependencies (`-D` flag)
+- Any npm package
+
+### `lunar upgrade`
+
+Update Lunar Kit packages to latest version.
+
+<DynamicCodeBlock lang="bash" code={`lunar upgrade`} />
+
+### `lunar migrate`
+
+Run breaking change migrations between versions.
+
+<DynamicCodeBlock lang="bash" code={`lunar migrate`} />
 
 ---
 
-## add
+## Add Command
 
-Add components from the Lunar Kit registry or setup localization entries.
+### `lunar add`
 
-<DynamicCodeBlock lang="bash" code={`lunar add <component>`} />
+Add components or features to your project.
 
-### UI Components
+<DynamicCodeBlock lang="bash" code={`lunar add <component>
+lunar add <subcommand>`} />
 
-<DynamicCodeBlock lang="bash" code={`# Add a single component
+#### Subcommands
+
+| Subcommand | Description |
+|------------|-------------|
+| `locale` | Add a translation entry to all locale files |
+| `locale update` | Bulk-add translations for a specific locale |
+| `<component>` | Add a UI component (button, dialog, card, etc.) |
+
+#### Examples
+
+<DynamicCodeBlock lang="bash" code={`# Add UI components
 lunar add button
+lunar add dialog
+lunar add card
+lunar add input
 
-# Add multiple components
-lunar add button card dialog input
-
-# Add all available components
-lunar add --all`} />
-
-### Localization
-
-Add a translation entry to all locale files:
-
-<DynamicCodeBlock lang="bash" code={`lunar add locale`} />
+# Add localization
+lunar add locale
+lunar add locale update`} />
 
 ---
 
-## generate (gen, g)
+## Generate Command
 
-Generate a Lunar Kit element using schematics. This powerful command allows you to scaffold modules, components, stores, hooks, and localization files.
+### `lunar generate | lunar g`
 
-<DynamicCodeBlock lang="bash" code={`lunar generate [options] <schematic> [path]
-# or
-lunar g [options] <schematic> [path]`} />
+Generate code modules, services, components, and more.
 
-### Available Schematics
+<DynamicCodeBlock lang="bash" code={`lunar g <schematic> [path]`} />
 
-#### Module
+#### Module Generation
 
 | Schematic | Alias | Description |
 |-----------|-------|-------------|
-| mod | mod | Generate a module |
-| tabs | tabs | Generate a tabs module |
+| `mod` | `mod` | Generate a module |
+| `tabs` | `tabs` | Generate a tabs module |
 
-<DynamicCodeBlock lang="bash" code={`# Generate a module
-lunar g mod auth/login
+<DynamicCodeBlock lang="bash" code={`lunar g mod auth/login
+lunar g tabs settings`} />
 
-# Generate a tabs module
-lunar g tabs shop`} />
-
-#### Module-Scoped
-
-Generate elements within a specific module:
+#### Module-Scoped Generation
 
 | Schematic | Alias | Description |
 |-----------|-------|-------------|
-| mod:view | mod:vi | Generate a view in module |
-| mod:component | mod:co | Generate a component in module |
-| mod:store | mod:st | Generate a store in module |
-| mod:hook | mod:ho | Generate a hook in module |
+| `mod:view` | `mod:vi` | Generate a view in module |
+| `mod:component` | `mod:co` | Generate a component in module |
+| `mod:store` | `mod:st` | Generate a store in module |
+| `mod:hook` | `mod:ho` | Generate a hook in module |
+| `mod:api` | `mod:ap` | Generate API layer in module |
+| `mod:type` | `mod:tp` | Generate TypeScript types in module |
+| `mod:test` | `mod:ts` | Generate test file in module |
 
-<DynamicCodeBlock lang="bash" code={`# Generate a view inside a module
-lunar g mod:vi auth/login-screen
+<DynamicCodeBlock lang="bash" code={`lunar g mod:vi auth/login-screen
+lunar g mod:api auth/auth-api
+lunar g mod:st auth/auth-store
+lunar g mod:ho auth/use-auth
+lunar g mod:type auth/user
+lunar g mod:test auth/auth.test`} />
 
-# Generate a component inside a module
-lunar g mod:co auth/LoginForm`} />
-
-#### Global
-
-Create elements in the global src/ directory (e.g. src/components/, src/hooks/, src/stores/):
-
-| Schematic | Alias | Description |
-|-----------|-------|-------------|
-| component | co | Generate a global component |
-| hook | ho | Generate a global hook |
-| store | st | Generate a global store |
-
-<DynamicCodeBlock lang="bash" code={`# Create a global component
-lunar g component Header
-
-# Create a global hook
-lunar g hook useAuth`} />
-
-#### Localization
-
-Manage translation files:
+#### Global Generation
 
 | Schematic | Alias | Description |
 |-----------|-------|-------------|
-| locale | lo | Generate a new locale file |
+| `component` | `co` | Generate a global component |
+| `hook` | `ho` | Generate a global hook |
+| `store` | `st` | Generate a global store |
+| `service` | `sv` | Generate global service |
+| `type` | `ty` | Generate global TypeScript types |
+| `config` | `cf` | Generate config file |
+| `test` | `te` | Generate global test helper/setup |
 
-<DynamicCodeBlock lang="bash" code={`# Generate a new locale file (e.g., zh, id)
-lunar g locale zh`} />
+<DynamicCodeBlock lang="bash" code={`lunar g component Button
+lunar g hook useAuth
+lunar g store authStore
+lunar g service api
+lunar g type User
+lunar g config env
+lunar g test setup`} />
+
+#### Navigation Generation
+
+| Schematic | Alias | Description |
+|-----------|-------|-------------|
+| `nav:stack` | `n:stack` | Generate stack navigator |
+| `nav:tab` | `n:tab` | Generate tab navigator |
+| `nav:drawer` | `n:drawer` | Generate drawer navigator |
+
+<DynamicCodeBlock lang="bash" code={`lunar g nav:stack RootNavigator
+lunar g nav:tab BottomTabs
+lunar g nav:drawer MainDrawer`} />
+
+#### Localization Generation
+
+| Schematic | Alias | Description |
+|-----------|-------|-------------|
+| `locale` | `lo` | Generate a new locale file |
+
+<DynamicCodeBlock lang="bash" code={`lunar g locale zh
+lunar g locale fr
+lunar g locale es`} />
 
 ---
 
-## Configuration
+## Quick Reference
 
-Lunar Kit stores configuration in kit.config.json at the root of your project:
+### Most Common Commands
 
-<DynamicCodeBlock lang="json" code={`{
-  "typescript": true,
-  "componentsPath": "src/components",
-  "packageManager": "pnpm"
-}`} />
-
-### Options
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| typescript | true | Use TypeScript for components |
-| componentsPath | src/components | Where to store components |
-| packageManager | pnpm | Package manager to use |
-
----
-
-## Workflow Examples
-
-### Starting a New Feature
-
-<DynamicCodeBlock lang="bash" code={`# 1. Create a module for the feature
-lunar g mod checkout
-
-# 2. Add required UI components
-lunar add button card input form
-
-# 3. Create custom components inside the module
-lunar g mod:co checkout CheckoutForm
-lunar g mod:co checkout OrderSummary`} />
-
-### Adding Components to Existing Project
-
-<DynamicCodeBlock lang="bash" code={`# 1. Initialize Lunar Kit
+<DynamicCodeBlock lang="bash" code={`# Setup
 lunar init
 
-# 2. Add commonly used components
-lunar add button text card input
+# Check setup
+lunar doctor
 
-# 3. Add more as needed
-lunar add dialog bottom-sheet tabs`} />
+# Add a component
+lunar add button
+
+# Generate a new module
+lunar g mod features/dashboard
+
+# Install a package
+lunar i axios`} />
+
+### Generate Full-Featured Module
+
+<DynamicCodeBlock lang="bash" code={`# Generate auth module with all files
+lunar g mod auth/login
+lunar g mod:vi auth/login-screen
+lunar g mod:api auth/auth-api
+lunar g mod:st auth/auth-store
+lunar g mod:ho auth/use-auth
+lunar g mod:type auth/credentials`} />
 
 ---
 
-## Output Examples
+## Tips & Tricks
 
-When using the generate schema for modules and components, the CLI will log its progress and actions:
-
-<DynamicCodeBlock lang="bash" code={`$ lunar g mod:vi auth/login-screen
-
-🌙 Generating view auth/login-screen...
-✓ Created view: src/modules/auth/screens/login-screen.tsx
-✓ Created view index: src/modules/auth/screens/index.ts
-✓ Updated module exports: src/modules/auth/screens/index.ts`} />
-
----
-
-Now explore the [Components](/docs/components/button) documentation to learn how to use each component!
+- Use aliases for faster typing: `lunar g mod:vi` instead of `lunar g mod:view`
+- Chain commands: `lunar add button && lunar add dialog`
+- Check help anytime: `lunar add help`, `lunar g help`
+- Install dev dependencies with `-D`: `lunar i -D @types/node`

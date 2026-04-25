@@ -1,0 +1,11 @@
+{
+  "title": "Ciph Documentation",
+  "pages": [
+    "---Getting Started---",
+    "...getting-started",
+    "---Components---",
+    "...components",
+    "---About---",
+    "...about"
+  ]
+}

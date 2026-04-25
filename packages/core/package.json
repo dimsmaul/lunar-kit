@@ -28,7 +28,6 @@
   },
   "files": [
     "dist",
-    "src/registry",
     "src/components",
     "src/providers",
     "src/hooks",

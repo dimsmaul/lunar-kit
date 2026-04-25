@@ -22,7 +22,9 @@
     "build": "bun run build:core && bun run build:cli && bun run build:create && bun run build:primitives",
     "bump:patch": "bun scripts/bump-versions.ts patch",
     "bump:minor": "bun scripts/bump-versions.ts minor",
-    "bump:major": "bun scripts/bump-versions.ts major"
+    "bump:major": "bun scripts/bump-versions.ts major",
+    "docs:generate": "bun scripts/generate-component-docs.ts",
+    "registry:sync": "bun scripts/registry-sync.ts"
   },
   "keywords": [
     "react-native",
@@ -34,5 +36,8 @@
   "license": "MIT",
   "devDependencies": {
     "@changesets/cli": "^2.27.10"
+  },
+  "dependencies": {
+    "fs-extra": "^11.3.4"
   }
 }

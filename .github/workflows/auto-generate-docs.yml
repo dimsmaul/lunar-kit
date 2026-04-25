@@ -1,0 +1,64 @@
+name: Auto-Generate Component Docs
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - 'packages/core/src/components/ui/**'
+      - 'scripts/generate-component-docs.ts'
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - 'packages/core/src/components/ui/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Generate component docs
+        run: bun scripts/generate-component-docs.ts
+
+      - name: Check if docs/registry changed
+        id: changes
+        run: |
+          if git diff --quiet docs/content/docs/components/ packages/core/src/registry/ui/; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit & push changes
+        if: steps.changes.outputs.has_changes == 'true' && github.event_name == 'push'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/content/docs/components/ packages/core/src/registry/ui/
+          git commit -m "chore: auto-generate component docs and registry from JSDoc"
+          git push
+
+      - name: Comment on PR
+        if: steps.changes.outputs.has_changes == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '📚 Auto-Generated Docs: Component docs regenerated from JSDoc'
+            })

@@ -27,11 +27,21 @@ jobs:
         id: version
         run: |
           COMMIT_MSG=$(git log -1 --pretty=%B)
-          if [[ $COMMIT_MSG =~ release:\ (major|minor|patch) ]]; then
-            TYPE="${BASH_REMATCH[1]}"
-            echo "type=$TYPE" >> $GITHUB_OUTPUT
+          if [[ "$COMMIT_MSG" =~ release:\ (version|major|minor|patch) ]]; then
+            BUMP_TYPE="${BASH_REMATCH[1]}"
+            # Map user semantic to script variables:
+            # release: version → bump first digit (v0.1.0 → v1.0.0)
+            # release: major → bump second digit (v0.0.20 → v0.1.0)
+            # release: minor → bump third digit (v0.1.0 → v0.1.1)
+            case "$BUMP_TYPE" in
+              version) TYPE="version" ;;
+              major) TYPE="major" ;;
+              minor|patch) TYPE="minor" ;;
+              *) TYPE="patch" ;;
+            esac
+            echo "type=$TYPE" >> "$GITHUB_OUTPUT"
           else
-            echo "type=patch" >> $GITHUB_OUTPUT
+            echo "type=patch" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Bump versions

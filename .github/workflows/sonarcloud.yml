@@ -31,5 +31,6 @@ jobs:
             -Dsonar.projectKey=lunar-kit
             -Dsonar.organization=eularix
             -Dsonar.exclusions=**/**/example/**,**/docs/**,**/docs-v2/**
+            -Dsonar.coverage.exclusions=**/**/example/**,**/docs/**,**/docs-v2/**
             -Dsonar.sonar.sources=.
             -Dsonar.pullRequest.provider=github
