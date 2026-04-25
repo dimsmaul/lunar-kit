@@ -5,7 +5,7 @@ title: Toast
 import ToastDemo from '@/demo/ToastDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Toast component for your UI needs.
+Toast is a function-based notification system. Call `toast()` with a message to show notifications.
 
 <ToastDemo />
 
@@ -15,22 +15,74 @@ Toast component for your UI needs.
 
 ## Usage
 
-<DynamicCodeBlock lang="tsx" code={`import { Toast } from '@lunar-kit/core';
+Toast is called as a function, typically in button `onPress` handlers or other interactions:
+
+<DynamicCodeBlock lang="tsx" code={`import { Button, toast } from '@lunar-kit/core';
 
 export default function Example() {
-  return <Toast />;
+  return (
+    <Button
+      onPress={() => toast({
+        title: 'Success',
+        description: 'Operation completed'
+      })}
+    >
+      Show Toast
+    </Button>
+  );
 }`} />
 
 ## Examples
 
-### Basic
+### Basic Toast
 
-<DynamicCodeBlock lang="tsx" code={`<Toast />`} />
+<DynamicCodeBlock lang="tsx" code={`toast({
+  title: 'Hello',
+  description: 'This is a message'
+})`} />
 
-## Props
+### Toast Variants
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
+<DynamicCodeBlock lang="tsx" code={`// Success
+toast.success('Success!', 'Operation completed')
+
+// Error
+toast.error('Error!', 'Something went wrong')
+
+// Warning
+toast.warning('Warning!', 'Please check your input')
+
+// Info
+toast.info('Info', 'Here is some information')`} />
+
+### With Position
+
+<DynamicCodeBlock lang="tsx" code={`toast({
+  title: 'Message',
+  position: 'top' // 'top' | 'bottom'
+})
+
+toast({
+  title: 'Message',
+  position: 'bottom',
+  direction: 'left' // 'left' | 'right' | 'top' | 'bottom'
+})`} />
+
+## API
+
+**toast(config)** - Show default toast
+- `title?: string` - Toast title
+- `description?: string` - Toast description
+- `position?: 'top' | 'bottom'` - Position on screen
+- `direction?: 'left' | 'right' | 'top' | 'bottom'` - Entry direction
+
+**toast.success(title, description, config)** - Success variant
+
+**toast.error(title, description, config)** - Error variant
+
+**toast.warning(title, description, config)** - Warning variant
+
+**toast.info(title, description, config)** - Info variant
 
 ---
 

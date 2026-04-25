@@ -5,7 +5,7 @@ title: Toaster
 import ToasterDemo from '@/demo/ToasterDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Toaster component for your UI needs.
+Toaster is a container component that renders all active toast notifications. Place it in your root layout to display toasts anywhere in your app.
 
 <ToasterDemo />
 
@@ -13,24 +13,43 @@ Toaster component for your UI needs.
 
 <DynamicCodeBlock lang="bash" code={`lunar add toaster`} />
 
-## Usage
+## Setup
+
+Add `<Toaster />` to your root layout or main app component:
 
 <DynamicCodeBlock lang="tsx" code={`import { Toaster } from '@lunar-kit/core';
 
-export default function Example() {
-  return <Toaster />;
+export default function RootLayout({ children }) {
+  return (
+    <>
+      {children}
+      <Toaster />
+    </>
+  );
 }`} />
 
-## Examples
+## Usage
 
-### Basic
+Once Toaster is placed in your root layout, use `toast()` function anywhere in your app:
 
-<DynamicCodeBlock lang="tsx" code={`<Toaster />`} />
+<DynamicCodeBlock lang="tsx" code={`import { Button, toast } from '@lunar-kit/core';
 
-## Props
+export function MyComponent() {
+  return (
+    <Button
+      onPress={() => toast.success('Success!', 'Done')}
+    >
+      Show Toast
+    </Button>
+  );
+}`} />
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
+## How It Works
+
+1. `<Toaster />` listens to the toast store
+2. Call `toast()` from any component
+3. Toaster automatically renders and removes toasts
+4. Toasts display at top or bottom with animations
 
 ---
 

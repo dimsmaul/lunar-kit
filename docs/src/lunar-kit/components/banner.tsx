@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { View, Pressable, type ViewProps } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../lib/utils';
+import { cn } from '@/lib/utils';
 import { Text } from './text';
 import { X, Info, AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
@@ -123,7 +123,7 @@ export function Banner({
                     </Text>
                 )}
                 {description && (
-                    <Text size="sm" className={cn(textColor)}>
+                    <Text className={cn(textColor)}>
                         {description}
                     </Text>
                 )}

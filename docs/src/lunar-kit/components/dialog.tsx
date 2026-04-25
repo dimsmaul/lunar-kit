@@ -1,9 +1,53 @@
-import '@/lib/react-native-polyfill';
+// components/ui/dialog.tsx
 import * as React from 'react';
-import { View, Pressable, Animated, Platform } from 'react-native';
-import { cn } from '../lib/utils';
+import { View, Pressable, Animated, StyleSheet } from 'react-native';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 import { Text } from './text';
 import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
+
+// ─── CVA variants ─────────────────────────────────────────────────────────────
+
+const dialogContentVariants = cva(
+  'bg-background rounded-2xl border border-border shadow-2xl overflow-hidden',
+  {
+    variants: {
+      size: {
+        sm: 'web:max-w-sm',
+        md: 'web:max-w-md',
+        lg: 'web:max-w-lg',
+        full: 'web:max-w-full',
+      },
+    },
+    defaultVariants: {
+      size: 'md',
+    },
+  }
+);
+
+const dialogHeaderVariants = cva('mb-4', {
+  variants: {
+    align: {
+      start: 'items-start',
+      center: 'items-center',
+    },
+  },
+  defaultVariants: { align: 'start' },
+});
+
+const dialogFooterVariants = cva('flex-row gap-2 mt-6', {
+  variants: {
+    justify: {
+      end: 'justify-end',
+      start: 'justify-start',
+      center: 'justify-center',
+      between: 'justify-between',
+    },
+  },
+  defaultVariants: { justify: 'end' },
+});
+
+// ─── Interfaces ───────────────────────────────────────────────────────────────
 
 interface DialogProps {
   open?: boolean;
@@ -11,12 +55,19 @@ interface DialogProps {
   children: React.ReactNode;
 }
 
-interface DialogContentProps {
+interface DialogContentProps extends VariantProps<typeof dialogContentVariants> {
+  children: React.ReactNode;
+  className?: string;
+  /** Whether tapping the backdrop closes the dialog. @default true */
+  closeOnBackdropPress?: boolean;
+}
+
+interface DialogHeaderProps extends VariantProps<typeof dialogHeaderVariants> {
   children: React.ReactNode;
   className?: string;
 }
 
-interface DialogHeaderProps {
+interface DialogFooterProps extends VariantProps<typeof dialogFooterVariants> {
   children: React.ReactNode;
   className?: string;
 }
@@ -31,10 +82,7 @@ interface DialogDescriptionProps {
   className?: string;
 }
 
-interface DialogFooterProps {
-  children: React.ReactNode;
-  className?: string;
-}
+// ─── Context ──────────────────────────────────────────────────────────────────
 
 const DialogContext = React.createContext<{
   open: boolean;
@@ -49,11 +97,9 @@ function useDialog() {
   return context;
 }
 
-export function Dialog({
-  open: controlledOpen,
-  onOpenChange: controlledOnOpenChange,
-  children,
-}: DialogProps) {
+// ─── Dialog Root ──────────────────────────────────────────────────────────────
+
+export function Dialog({ open: controlledOpen, onOpenChange: controlledOnOpenChange, children }: DialogProps) {
   const [internalOpen, setInternalOpen] = React.useState(false);
 
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
@@ -65,6 +111,8 @@ export function Dialog({
     </DialogContext.Provider>
   );
 }
+
+// ─── Dialog Trigger ───────────────────────────────────────────────────────────
 
 export function DialogTrigger({ children }: { children: React.ReactNode }) {
   const { onOpenChange } = useDialog();
@@ -82,35 +130,19 @@ export function DialogTrigger({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function DialogContent({ children, className }: DialogContentProps) {
+// ─── Dialog Content ───────────────────────────────────────────────────────────
+
+export function DialogContent({ children, className, size, closeOnBackdropPress = true }: DialogContentProps) {
   const { open, onOpenChange } = useDialog();
+
   const [visible, setVisible] = React.useState(false);
 
-  // Untuk web: pakai CSS class transition
-  const [animateIn, setAnimateIn] = React.useState(false);
+  const scaleAnim = React.useRef(new Animated.Value(0.95)).current;
+  const opacityAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
     if (open) {
       setVisible(true);
-      // Delay sedikit agar CSS transition ter-trigger setelah mount
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => setAnimateIn(true));
-      });
-    } else {
-      setAnimateIn(false);
-      const timer = setTimeout(() => setVisible(false), 200);
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
-
-  // Native: pakai Animated seperti semula
-  const scaleAnim = React.useRef(new Animated.Value(0.9)).current;
-  const opacityAnim = React.useRef(new Animated.Value(0)).current;
-
-  React.useEffect(() => {
-    if (Platform.OS === 'web') return;
-
-    if (open) {
       Animated.parallel([
         Animated.spring(scaleAnim, {
           toValue: 1,
@@ -127,7 +159,7 @@ export function DialogContent({ children, className }: DialogContentProps) {
     } else {
       Animated.parallel([
         Animated.timing(scaleAnim, {
-          toValue: 0.9,
+          toValue: 0.95,
           duration: 150,
           useNativeDriver: true,
         }),
@@ -136,93 +168,60 @@ export function DialogContent({ children, className }: DialogContentProps) {
           duration: 150,
           useNativeDriver: true,
         }),
-      ]).start(() => setVisible(false));
+      ]).start(() => {
+        setVisible(false);
+      });
     }
   }, [open]);
 
-  if (!visible) return null;
-
-  // ✅ Web: render pakai View biasa + CSS transition via style
-  if (Platform.OS === 'web') {
-    return (
-      <AdaptiveModal visible={visible} onDismiss={() => onOpenChange(false)}>
-        {/* Backdrop */}
+  return (
+    <AdaptiveModal
+      visible={visible}
+      onDismiss={() => onOpenChange(false)}
+      closeOnBackdropPress={closeOnBackdropPress}
+      backdropColor="transparent"
+      animationType="none"
+    >
+      {/* Full-screen root with backdrop */}
+      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}>
+        {/* Backdrop dismissal layer */}
         <Pressable
           onPress={() => onOpenChange(false)}
-          style={{
-            position: 'absolute' as any,
-            inset: 0,
-            backgroundColor: `rgba(0,0,0,${animateIn ? 0.5 : 0})`,
-            transition: 'background-color 200ms ease',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 16,
-          } as any}
-        >
-          {/* Dialog box */}
-          <View
-            style={{
-              opacity: animateIn ? 1 : 0,
-              transform: [{ scale: animateIn ? 1 : 0.95 }],
-              transition: 'opacity 200ms ease, transform 200ms ease',
-              width: '100%',
-              maxWidth: 448,
-            } as any}
-          >
-            <Pressable
-              onPress={(e) => e.stopPropagation()}
-              className={cn(
-                'bg-background rounded-lg p-6 shadow-lg border border-border',
-                className,
-              )}
-            >
-              {children}
-            </Pressable>
-          </View>
-        </Pressable>
-      </AdaptiveModal>
-    );
-  }
-
-  // ✅ Native: pakai Animated seperti semula
-  return (
-    <AdaptiveModal visible={visible} onDismiss={() => onOpenChange(false)}>
-      <Pressable
-        onPress={() => onOpenChange(false)}
-        className="flex-1 bg-black/50 dark:bg-black/70 items-center justify-center p-4"
-      >
-        <Animated.View
-          style={{
-            transform: [{ scale: scaleAnim }],
-            opacity: opacityAnim,
-            width: '100%',
-            maxWidth: 448,
-          }}
+          style={StyleSheet.absoluteFillObject}
+        />
+        {/* Centering wrapper with screen margin */}
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 }}
+          pointerEvents="box-none"
         >
           <Pressable
             onPress={(e) => e.stopPropagation()}
-            className={cn(
-              'bg-background rounded-lg p-6 shadow-lg border border-border',
-              className,
-            )}
+            className={cn('w-full', dialogContentVariants({ size }), className)}
           >
-            {children}
+            <Animated.View
+              style={{ transform: [{ scale: scaleAnim }], opacity: opacityAnim }}
+              className="p-6"
+            >
+              {children}
+            </Animated.View>
           </Pressable>
-        </Animated.View>
-      </Pressable>
+        </View>
+      </View>
     </AdaptiveModal>
   );
 }
 
+// ─── Dialog Header ────────────────────────────────────────────────────────────
 
-export function DialogHeader({ children, className }: DialogHeaderProps) {
+export function DialogHeader({ children, className, align }: DialogHeaderProps) {
   return (
-    <View className={cn('mb-4', className)}>
+    <View className={cn(dialogHeaderVariants({ align }), className)}>
       {children}
     </View>
   );
 }
+
+// ─── Dialog Title ─────────────────────────────────────────────────────────────
 
 export function DialogTitle({ children, className }: DialogTitleProps) {
   return (
@@ -232,21 +231,27 @@ export function DialogTitle({ children, className }: DialogTitleProps) {
   );
 }
 
+// ─── Dialog Description ───────────────────────────────────────────────────────
+
 export function DialogDescription({ children, className }: DialogDescriptionProps) {
   return (
-    <Text size="sm" className={cn('text-muted-foreground mt-2', className)}>
+    <Text className={cn('text-muted-foreground mt-2', className)}>
       {children}
     </Text>
   );
 }
 
-export function DialogFooter({ children, className }: DialogFooterProps) {
+// ─── Dialog Footer ────────────────────────────────────────────────────────────
+
+export function DialogFooter({ children, className, justify }: DialogFooterProps) {
   return (
-    <View className={cn('flex-row justify-end gap-2 mt-6', className)}>
+    <View className={cn(dialogFooterVariants({ justify }), className)}>
       {children}
     </View>
   );
 }
+
+// ─── Dialog Close ─────────────────────────────────────────────────────────────
 
 export function DialogClose({ children }: { children: React.ReactNode }) {
   const { onOpenChange } = useDialog();
@@ -263,345 +268,3 @@ export function DialogClose({ children }: { children: React.ReactNode }) {
     </Pressable>
   );
 }
-
-// // components/ui/dialog.tsx
-// // import * as React from 'react';
-// // import { Modal, View, Pressable, Animated } from 'react-native';
-// // import { cn } from '../lib/utils';
-// // import { Text } from './text';
-
-// // interface DialogProps {
-// //   open?: boolean;
-// //   onOpenChange?: (open: boolean) => void;
-// //   children: React.ReactNode;
-// // }
-
-// // interface DialogContentProps {
-// //   children: React.ReactNode;
-// //   className?: string;
-// // }
-
-// // interface DialogHeaderProps {
-// //   children: React.ReactNode;
-// //   className?: string;
-// // }
-
-// // interface DialogTitleProps {
-// //   children: React.ReactNode;
-// //   className?: string;
-// // }
-
-// // interface DialogDescriptionProps {
-// //   children: React.ReactNode;
-// //   className?: string;
-// // }
-
-// // interface DialogFooterProps {
-// //   children: React.ReactNode;
-// //   className?: string;
-// // }
-
-// // const DialogContext = React.createContext<{
-// //   open: boolean;
-// //   onOpenChange: (open: boolean) => void;
-// // } | null>(null);
-
-// // function useDialog() {
-// //   const context = React.useContext(DialogContext);
-// //   if (!context) {
-// //     throw new Error('Dialog components must be used within Dialog');
-// //   }
-// //   return context;
-// // }
-
-// // export function Dialog({ open: controlledOpen, onOpenChange: controlledOnOpenChange, children }: DialogProps) {
-// //   const [internalOpen, setInternalOpen] = React.useState(false);
-
-// //   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
-// //   const onOpenChange = controlledOnOpenChange || setInternalOpen;
-
-// //   return (
-// //     <DialogContext.Provider value={{ open, onOpenChange }}>
-// //       {children}
-// //     </DialogContext.Provider>
-// //   );
-// // }
-
-// // export function DialogTrigger({ children }: { children: React.ReactNode }) {
-// //   const { onOpenChange } = useDialog();
-
-// //   if (React.isValidElement(children)) {
-// //     return React.cloneElement(children as React.ReactElement<any>, {
-// //       onPress: () => onOpenChange(true),
-// //     });
-// //   }
-
-// //   return (
-// //     <Pressable onPress={() => onOpenChange(true)}>
-// //       {children}
-// //     </Pressable>
-// //   );
-// // }
-
-// // export function DialogContent({ children, className }: DialogContentProps) {
-// //   const { open, onOpenChange } = useDialog();
-
-// //   const [visible, setVisible] = React.useState(false);
-
-// //   const scaleAnim = React.useRef(new Animated.Value(0.9)).current;
-// //   const opacityAnim = React.useRef(new Animated.Value(0)).current;
-
-// //   React.useEffect(() => {
-// //     if (open) {
-// //       setVisible(true);
-
-// //       Animated.parallel([
-// //         Animated.spring(scaleAnim, {
-// //           toValue: 1,
-// //           useNativeDriver: true,
-// //           tension: 80,
-// //           friction: 10,
-// //         }),
-// //         Animated.timing(opacityAnim, {
-// //           toValue: 1,
-// //           duration: 200,
-// //           useNativeDriver: true,
-// //         }),
-// //       ]).start();
-// //     } else {
-// //       Animated.parallel([
-// //         Animated.timing(scaleAnim, {
-// //           toValue: 0.9,
-// //           duration: 150,
-// //           useNativeDriver: true,
-// //         }),
-// //         Animated.timing(opacityAnim, {
-// //           toValue: 0,
-// //           duration: 150,
-// //           useNativeDriver: true,
-// //         }),
-// //       ]).start(() => {
-// //         setVisible(false);
-// //       });
-// //     }
-// //   }, [open]);
-
-// //   if (!visible) return null;
-
-// //   return (
-// //     <Modal
-// //       visible={visible}
-// //       transparent
-// //       animationType="none"
-// //       onDismiss={() => onOpenChange(false)}
-// //     >
-// //       <Pressable
-// //         onPress={() => onOpenChange(false)}
-// //         className="flex-1 bg-black/50 dark:bg-black/70 items-center justify-center p-4"
-// //       >
-// //         <Animated.View
-// //           style={{
-// //             transform: [{ scale: scaleAnim }],
-// //             opacity: opacityAnim,
-// //           }}
-// //           className="w-full max-w-md"
-// //         >
-// //           <Pressable
-// //             onPress={(e) => e.stopPropagation()}
-// //             className={cn(
-// //               'bg-background rounded-lg p-6 shadow-lg web:min-w-[400px] border border-border',
-// //               className
-// //             )}
-// //           >
-// //             {children}
-// //           </Pressable>
-// //         </Animated.View>
-// //       </Pressable>
-// //     </Modal>
-// //   );
-// // }
-
-// // export function DialogHeader({ children, className }: DialogHeaderProps) {
-// //   return (
-// //     <View className={cn('mb-4', className)}>
-// //       {children}
-// //     </View>
-// //   );
-// // }
-
-// // export function DialogTitle({ children, className }: DialogTitleProps) {
-// //   return (
-// //     <Text size="xl" variant="title" className={cn(className)}>
-// //       {children}
-// //     </Text>
-// //   );
-// // }
-
-// // export function DialogDescription({ children, className }: DialogDescriptionProps) {
-// //   return (
-// //     <Text size="sm" className={cn('text-muted-foreground mt-2', className)}>
-// //       {children}
-// //     </Text>
-// //   );
-// // }
-
-// // export function DialogFooter({ children, className }: DialogFooterProps) {
-// //   return (
-// //     <View className={cn('flex-row justify-end gap-2 mt-6', className)}>
-// //       {children}
-// //     </View>
-// //   );
-// // }
-
-// // export function DialogClose({ children }: { children: React.ReactNode }) {
-// //   const { onOpenChange } = useDialog();
-
-// //   if (React.isValidElement(children)) {
-// //     return React.cloneElement(children as React.ReactElement<any>, {
-// //       onPress: () => onOpenChange(false),
-// //     });
-// //   }
-
-// //   return (
-// //     <Pressable onPress={() => onOpenChange(false)}>
-// //       {children}
-// //     </Pressable>
-// //   );
-// // }
-// import * as React from 'react';
-// import { Modal, View, Text, Pressable } from 'react-native';
-// import { cn } from '../lib/utils';
-
-// interface DialogProps {
-//   open: boolean;
-//   onOpenChange: (open: boolean) => void;
-//   children: React.ReactNode;
-// }
-
-// interface DialogContentProps {
-//   children: React.ReactNode;
-//   className?: string;
-// }
-
-// interface DialogHeaderProps {
-//   children: React.ReactNode;
-//   className?: string;
-// }
-
-// interface DialogTitleProps {
-//   children: React.ReactNode;
-//   className?: string;
-// }
-
-// interface DialogDescriptionProps {
-//   children: React.ReactNode;
-//   className?: string;
-// }
-
-// interface DialogFooterProps {
-//   children: React.ReactNode;
-//   className?: string;
-// }
-
-// const DialogContext = React.createContext<{
-//   open: boolean;
-//   onOpenChange: (open: boolean) => void;
-// } | null>(null);
-
-// function useDialog() {
-//   const context = React.useContext(DialogContext);
-//   if (!context) {
-//     throw new Error('Dialog components must be used within Dialog');
-//   }
-//   return context;
-// }
-
-// export function Dialog({ open, onOpenChange, children }: DialogProps) {
-//   return (
-//     <DialogContext.Provider value={{ open, onOpenChange }}>
-//       {children}
-//     </DialogContext.Provider>
-//   );
-// }
-
-// export function DialogTrigger({ children }: { children: React.ReactNode }) {
-//   const { onOpenChange } = useDialog();
-  
-//   return (
-//     <Pressable onPress={() => onOpenChange(true)}>
-//       {children}
-//     </Pressable>
-//   );
-// }
-
-// export function DialogContent({ children, className }: DialogContentProps) {
-//   const { open, onOpenChange } = useDialog();
-
-//   return (
-//     <Modal
-//       visible={open}
-//       transparent
-//       animationType="fade"
-//       onDismiss={() => onOpenChange(false)}
-//     >
-//       {/* Backdrop */}
-//       <Pressable
-//         onPress={() => onOpenChange(false)}
-//         className="flex-1 bg-black/50 items-center justify-center p-4"
-//       >
-//         {/* Dialog Panel */}
-//         <Pressable
-//           onPress={(e) => e.stopPropagation()}
-//           className={cn(
-//             'bg-white rounded-lg w-full max-w-md p-6 shadow-lg',
-//             className
-//           )}
-//         >
-//           {children}
-//         </Pressable>
-//       </Pressable>
-//     </Modal>
-//   );
-// }
-
-// export function DialogHeader({ children, className }: DialogHeaderProps) {
-//   return (
-//     <View className={cn('mb-4', className)}>
-//       {children}
-//     </View>
-//   );
-// }
-
-// export function DialogTitle({ children, className }: DialogTitleProps) {
-//   return (
-//     <Text className={cn('text-xl font-semibold text-slate-900', className)}>
-//       {children}
-//     </Text>
-//   );
-// }
-
-// export function DialogDescription({ children, className }: DialogDescriptionProps) {
-//   return (
-//     <Text className={cn('text-sm text-slate-500 mt-2', className)}>
-//       {children}
-//     </Text>
-//   );
-// }
-
-// export function DialogFooter({ children, className }: DialogFooterProps) {
-//   return (
-//     <View className={cn('flex-row justify-end gap-2 mt-6', className)}>
-//       {children}
-//     </View>
-//   );
-// }
-
-// export function DialogClose({ children }: { children: React.ReactNode }) {
-//   const { onOpenChange } = useDialog();
-  
-//   return (
-//     <Pressable onPress={() => onOpenChange(false)}>
-//       {children}
-//     </Pressable>
-//   );
-// }

@@ -1,4 +1,3 @@
-import '@/lib/react-native-polyfill';
 import * as React from 'react';
 import {
   View,
@@ -8,9 +7,9 @@ import {
   StyleSheet,
   useWindowDimensions,
   Platform,
-  Modal,
   StatusBar,
 } from 'react-native';
+import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -19,10 +18,9 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../lib/utils';
+import { cn } from '@/lib/utils';
 import { Text } from './text';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 
 
 const dropdownContentVariants = cva(
@@ -261,18 +259,15 @@ export function DropdownMenuContent({
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
   const opacity = useSharedValue(0);
-  const scale = useSharedValue(0.95);
   const [visible, setVisible] = React.useState(false);
   const [contentSize, setContentSize] = React.useState({ width: 0, height: 0 });
 
   React.useEffect(() => {
     if (open) {
       setVisible(true);
-      opacity.value = withTiming(1, { duration: 120 });
-      scale.value = withSpring(1, { damping: 15, stiffness: 150 });
+      opacity.value = withTiming(1, { duration: 100 });
     } else {
-      opacity.value = withTiming(0, { duration: 120 });
-      scale.value = withTiming(0.98, { duration: 120 }, (finished) => {
+      opacity.value = withTiming(0, { duration: 100 }, (finished) => {
         if (finished) runOnJS(setVisible)(false);
       });
     }
@@ -280,7 +275,6 @@ export function DropdownMenuContent({
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
-    transform: [{ scale: scale.value }],
   }));
 
   if (!visible || !triggerLayout) return null;
@@ -333,8 +327,11 @@ export function DropdownMenuContent({
   return (
     <AdaptiveModal
       visible={visible}
-      statusBarTranslucent
       onDismiss={() => onOpenChange(false)}
+      backdropColor="transparent"
+      closeOnBackdropPress={false}
+      animationType="none"
+      statusBarTranslucent
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
         <Pressable
@@ -526,6 +523,7 @@ export function DropdownMenuSub({ children, trigger, leftIcon, rightIcon }: Drop
     });
   };
 
+
   return (
     <DropdownMenuSubContext.Provider value={value}>
       {/* Trigger row — tampil sebagai item di dalam parent dropdown */}
@@ -540,16 +538,16 @@ export function DropdownMenuSub({ children, trigger, leftIcon, rightIcon }: Drop
         {leftIcon && <View className="w-5 items-center">{renderIcon(leftIcon)}</View>}
         <View className="flex-1">
           {typeof trigger === 'string' ? (
-            <Text size="sm" className="text-foreground">{trigger}</Text>
+            <Text className="text-foreground">{trigger}</Text>
           ) : (
             trigger
           )}
         </View>
+        {rightIcon && <View className="w-5 items-center">{renderIcon(rightIcon)}</View>}
         {/* Chevron kanan sebagai indikator ada sub-menu */}
         <View className="w-5 items-center">
-          <Text size="sm" className="text-muted-foreground">›</Text>
+          <Text className="text-muted-foreground">›</Text>
         </View>
-        {rightIcon && <View className="w-5 items-center">{renderIcon(rightIcon)}</View>}
       </Pressable>
 
       {children}
@@ -570,18 +568,15 @@ export function DropdownMenuSubContent({
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
   const opacity = useSharedValue(0);
-  const scale = useSharedValue(0.95);
   const [visible, setVisible] = React.useState(false);
   const [contentSize, setContentSize] = React.useState({ width: 0, height: 0 });
 
   React.useEffect(() => {
     if (open) {
       setVisible(true);
-      opacity.value = withTiming(1, { duration: 120 });
-      scale.value = withSpring(1, { damping: 15, stiffness: 150 });
+      opacity.value = withTiming(1, { duration: 100 });
     } else {
-      opacity.value = withTiming(0, { duration: 120 });
-      scale.value = withTiming(0.98, { duration: 120 }, (finished) => {
+      opacity.value = withTiming(0, { duration: 100 }, (finished) => {
         if (finished) runOnJS(setVisible)(false);
       });
     }
@@ -589,7 +584,6 @@ export function DropdownMenuSubContent({
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
-    transform: [{ scale: scale.value }],
   }));
 
   if (!visible || !triggerLayout) return null;
@@ -621,8 +615,11 @@ export function DropdownMenuSubContent({
   return (
     <AdaptiveModal
       visible={visible}
-      statusBarTranslucent
       onDismiss={() => onOpenChange(false)}
+      backdropColor="transparent"
+      closeOnBackdropPress={false}
+      animationType="none"
+      statusBarTranslucent
     >
       <View style={{ flex: 1 }} pointerEvents="box-none">
         <Pressable

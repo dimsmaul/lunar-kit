@@ -9,7 +9,13 @@ const BreadcrumbDemo = () => {
   return (
     <Demonstration components={
       <View>
-        <Breadcrumb />
+        <Breadcrumb 
+            items={[
+              { label: 'Home', onPress: () => toast.info('Home') },
+              { label: 'Products', onPress: () => toast.info('Products') },
+              { label: 'Details' }
+            ]}
+          />
       </View>
     } code={`import { Breadcrumb } from '@/components/ui/breadcrumb'
 

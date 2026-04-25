@@ -2,12 +2,11 @@
 import * as React from 'react';
 import { View, Pressable, Animated, LayoutChangeEvent, Platform } from 'react-native';
 import { cva } from 'class-variance-authority';
-import { cn } from '../lib/utils';
+import { cn } from '@/lib/utils';
 import { Text } from './text';
 
 const isWeb = Platform.OS === 'web';
 
-// ─── CVA ─────────────────────────────────────────────────────────────────────
 
 const tabsListVariants = cva('relative flex-row items-center', {
     variants: {
@@ -43,7 +42,6 @@ const triggerTextVariants = cva('', {
     defaultVariants: { active: false },
 });
 
-// ─── Types & Context ──────────────────────────────────────────────────────────
 
 interface TabLayout { x: number; width: number; height: number }
 
@@ -73,7 +71,6 @@ const useTabsListContext = () => {
     return ctx;
 };
 
-// ─── Props ────────────────────────────────────────────────────────────────────
 
 export interface TabsProps {
     value: string;
@@ -98,10 +95,8 @@ export interface TabsContentProps {
     className?: string;
 }
 
-// ─── Pill Indicator ───────────────────────────────────────────────────────────
 
 function PillIndicator({ layout }: { layout: TabLayout }) {
-    // Web: CSS transition — tidak pakai Animated sama sekali
     if (isWeb) {
         return (
             <View
@@ -110,14 +105,13 @@ function PillIndicator({ layout }: { layout: TabLayout }) {
                     left: layout.x,
                     width: layout.width,
                     height: layout.height,
-                    // @ts-ignore — CSS transition hanya valid di web
+                    // @ts-ignore
                     transition: 'left 0.2s ease, width 0.2s ease, height 0.2s ease',
                 }}
             />
         );
     }
 
-    // Native: Animated.timing
     return <NativePillIndicator layout={layout} />;
 }
 
@@ -150,10 +144,8 @@ function NativePillIndicator({ layout }: { layout: TabLayout }) {
     );
 }
 
-// ─── Underline Indicator ──────────────────────────────────────────────────────
 
 function UnderlineIndicator({ isActive }: { isActive: boolean }) {
-    // Web: CSS transition opacity
     if (isWeb) {
         return (
             <View
@@ -167,7 +159,6 @@ function UnderlineIndicator({ isActive }: { isActive: boolean }) {
         );
     }
 
-    // Native: Animated.timing opacity
     return <NativeUnderlineIndicator isActive={isActive} />;
 }
 
@@ -175,10 +166,10 @@ function NativeUnderlineIndicator({ isActive }: { isActive: boolean }) {
     const opacity = React.useRef(new Animated.Value(isActive ? 1 : 0)).current;
 
     React.useEffect(() => {
+        // @ts-ignore
         Animated.timing(opacity, {
             toValue: isActive ? 1 : 0,
             duration: 200,
-            useNativeDriver: true, // opacity boleh pakai native driver
         }).start();
     }, [isActive]);
 
@@ -190,7 +181,6 @@ function NativeUnderlineIndicator({ isActive }: { isActive: boolean }) {
     );
 }
 
-// ─── Tabs Root ────────────────────────────────────────────────────────────────
 
 export function Tabs({ value, onValueChange, children, variant = 'underline', className }: TabsProps) {
     return (
@@ -200,7 +190,6 @@ export function Tabs({ value, onValueChange, children, variant = 'underline', cl
     );
 }
 
-// ─── TabsList ─────────────────────────────────────────────────────────────────
 
 export function TabsList({ children, className }: TabsListProps) {
     const { value, onValueChange, variant } = useTabsContext();
@@ -228,7 +217,6 @@ export function TabsList({ children, className }: TabsListProps) {
     );
 }
 
-// ─── TabsTrigger ──────────────────────────────────────────────────────────────
 
 export function TabsTrigger({ value: triggerValue, children, className, disabled = false }: TabsTriggerProps) {
     const { value, onValueChange, variant, registerTab } = useTabsListContext();
@@ -250,7 +238,7 @@ export function TabsTrigger({ value: triggerValue, children, className, disabled
             <View className="items-center w-full">
                 <Text
                     size={variant === 'pill' ? 'sm' : 'md'}
-                    variant="body"
+                    variant="label"
                     className={cn(triggerTextVariants({ active: isActive }))}
                 >
                     {children}
@@ -264,7 +252,6 @@ export function TabsTrigger({ value: triggerValue, children, className, disabled
     );
 }
 
-// ─── TabsContent ──────────────────────────────────────────────────────────────
 
 export function TabsContent({ value: contentValue, children, className }: TabsContentProps) {
     const { value } = useTabsContext();

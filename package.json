@@ -24,7 +24,8 @@
     "bump:minor": "bun scripts/bump-versions.ts minor",
     "bump:major": "bun scripts/bump-versions.ts major",
     "docs:generate": "bun scripts/generate-component-docs.ts",
-    "docs:sync": "bun scripts/sync-docs.ts",
+    "docs:sync:core": "bash scripts/sync-core-to-docs.sh",
+    "docs:sync": "bash scripts/sync-core-to-docs.sh && bun scripts/sync-docs.ts",
     "registry:sync": "bun scripts/registry-sync.ts"
   },
   "keywords": [

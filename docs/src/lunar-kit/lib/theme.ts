@@ -7,8 +7,8 @@ const lightThemeVars = {
   '--foreground': '222.2 84% 4.9%',
   '--card': '0 0% 100%',
   '--card-foreground': '222.2 84% 4.9%',
-  '--primary': '221.2 83.2% 53.3%',
-  '--primary-foreground': '210 40% 98%',
+  '--primary': '240 5.9% 10%',
+  '--primary-foreground': '0 0% 98%',
   '--secondary': '210 40% 96.1%',
   '--secondary-foreground': '222.2 47.4% 11.2%',
   '--muted': '210 40% 96.1%',
@@ -19,7 +19,7 @@ const lightThemeVars = {
   '--destructive-foreground': '210 40% 98%',
   '--border': '214.3 31.8% 91.4%',
   '--input': '214.3 31.8% 91.4%',
-  '--ring': '221.2 83.2% 53.3%',
+  '--ring': '240 5.9% 10%',
 };
 
 const darkThemeVars = {
@@ -27,7 +27,7 @@ const darkThemeVars = {
   '--foreground': '210 40% 98%',
   '--card': '222.2 84% 4.9%',
   '--card-foreground': '210 40% 98%',
-  '--primary': '210 40% 98%',
+  '--primary': '60 9.1% 97.8%',
   '--primary-foreground': '222.2 47.4% 11.2%',
   '--secondary': '217.2 32.6% 17.5%',
   '--secondary-foreground': '210 40% 98%',
@@ -39,7 +39,7 @@ const darkThemeVars = {
   '--destructive-foreground': '210 40% 98%',
   '--border': '217.2 32.6% 17.5%',
   '--input': '217.2 32.6% 17.5%',
-  '--ring': '224.3 76.3% 48%',
+  '--ring': '60 9.1% 97.8%',
 };
 
 // Export vars untuk NativeWind

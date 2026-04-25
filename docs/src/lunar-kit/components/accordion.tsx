@@ -1,7 +1,6 @@
 // components/ui/accordion.tsx
-import '@/lib/react-native-polyfill';
 import * as React from 'react';
-import { View, Pressable } from 'react-native';
+import { View, Pressable, LayoutChangeEvent } from 'react-native';
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
@@ -9,9 +8,9 @@ import Animated, {
     Easing,
 } from 'react-native-reanimated';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react-native';
 import { Text } from './text';
-import { cn } from '../lib/utils';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
 type AccordionType = 'single' | 'multiple';
@@ -99,6 +98,7 @@ interface AccordionProps extends VariantProps<typeof accordionVariants> {
     children: React.ReactNode;
     className?: string;
     collapsible?: boolean;
+    variant?: 'default' | 'bordered' | 'separated' | 'filled' | 'ghost';
 }
 
 interface AccordionItemProps {
@@ -286,7 +286,7 @@ export function AccordionContent({ children, className }: AccordionContentProps)
         <Animated.View style={animatedStyle}>
             <Animated.View
                 style={contentWrapperStyle}
-                onLayout={(event) => {
+                onLayout={(event: LayoutChangeEvent) => {
                     const h = event.nativeEvent.layout.height;
                     if (h > 0 && !measured) {
                         setContentHeight(h);

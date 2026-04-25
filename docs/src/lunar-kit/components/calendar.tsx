@@ -1,10 +1,10 @@
 // components/ui/calendar.tsx
 import * as React from 'react';
 import { View, Pressable, ScrollView } from 'react-native';
-import { cn } from '../lib/utils';
+import { cn } from '@/lib/utils';
 import { Text } from './text';
 import dayjs, { Dayjs } from 'dayjs';
-import isBetween from 'dayjs/plugin/isBetween';
+import isBetween from 'dayjs/plugin/isBetween.js';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
 

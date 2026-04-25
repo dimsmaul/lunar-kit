@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Pressable } from 'react-native';
 import { cva } from 'class-variance-authority';
-import { cn } from '../lib/utils';
+import { cn } from '@/lib/utils';
 import { Text } from './text';
 import { Dialog, DialogContent } from './dialog';
 import { Calendar } from './calendar';

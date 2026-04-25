@@ -1,21 +1,51 @@
 'use client'
 
 import Demonstration from '@/components/demontration'
-import { Toast } from '@/lunar-kit/components/toast'
+import { Button, toast } from '@/lunar-kit/components'
 import { View } from 'react-native'
 import React from 'react'
 
 const ToastDemo = () => {
   return (
     <Demonstration components={
-      <View>
-        <Toast />
+      <View className="gap-2">
+        <Button
+          onPress={() => toast({ title: 'Info', description: 'This is an info toast' })}
+          variant="default"
+        >
+          Default Toast
+        </Button>
+        <Button
+          onPress={() => toast.success('Success!', 'Operation completed')}
+          variant="secondary"
+        >
+          Success Toast
+        </Button>
+        <Button
+          onPress={() => toast.error('Error!', 'Something went wrong')}
+          variant="destructive"
+        >
+          Error Toast
+        </Button>
+        <Button
+          onPress={() => toast.warning('Warning!', 'Please check your input')}
+          variant="outline"
+        >
+          Warning Toast
+        </Button>
       </View>
-    } code={`import { Toast } from '@/components/ui/toast'
+    } code={`import { Button, toast } from '@lunar-kit/core'
 
 const ToastPreview = () => {
   return (
-    <Toast />
+    <Button
+      onPress={() => toast({
+        title: 'Hello',
+        description: 'This is a toast message'
+      })}
+    >
+      Show Toast
+    </Button>
   )
 }
 
