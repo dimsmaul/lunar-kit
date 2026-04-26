@@ -5,7 +5,7 @@ title: Progress
 import ProgressDemo from '@/demo/ProgressDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Progress component for your UI needs.
+Progress Bar
 
 <ProgressDemo />
 
@@ -18,21 +18,14 @@ Progress component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { Progress } from '@lunar-kit/core';
 
 export default function Example() {
-  return <Progress />;
+  return (
+    <Progress value={value} />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<Progress />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `number` | undefined |  |
-| `indicatorClassName` | `string` | undefined |  |
+<DynamicCodeBlock lang="tsx" code={`<Progress value={value} />`} />
 
 ---
 

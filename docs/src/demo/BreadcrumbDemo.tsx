@@ -4,9 +4,11 @@ import Demonstration from '@/components/demontration'
 import { Breadcrumb } from '@/lunar-kit/components/breadcrumb'
 import { View } from 'react-native'
 import React from 'react'
+import { useToast } from '@/lunar-kit/hooks'
 
 const BreadcrumbDemo = () => {
-  return (
+  const {toast} = useToast()
+   return (
     <Demonstration components={
       <View>
         <Breadcrumb 
@@ -21,7 +23,13 @@ const BreadcrumbDemo = () => {
 
 const BreadcrumbPreview = () => {
   return (
-    <Breadcrumb />
+     <Breadcrumb 
+        items={[
+          { label: 'Home', onPress: () => toast.info('Home') },
+          { label: 'Products', onPress: () => toast.info('Products') },
+          { label: 'Details' }
+        ]}
+      />
   )
 }
 

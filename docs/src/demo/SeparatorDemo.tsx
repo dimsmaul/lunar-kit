@@ -6,9 +6,10 @@ import { View } from 'react-native'
 import React from 'react'
 
 const SeparatorDemo = () => {
+
   return (
     <Demonstration components={
-      <View>
+      <View className="items-center justify-center p-4 w-full">
         <Separator />
       </View>
     } code={`import { Separator } from '@/components/ui/separator'

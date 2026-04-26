@@ -6,7 +6,7 @@ import {
     LayoutChangeEvent,
     ViewToken,
 } from 'react-native';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 
 export interface CarouselProps<T> {
     data: T[];

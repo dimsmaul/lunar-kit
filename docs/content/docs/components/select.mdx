@@ -5,7 +5,7 @@ title: Select
 import SelectDemo from '@/demo/SelectDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Select component for your UI needs.
+Select
 
 <SelectDemo />
 
@@ -18,19 +18,14 @@ Select component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { Select } from '@lunar-kit/core';
 
 export default function Example() {
-  return <Select />;
+  return (
+    <SelectValue placeholder="Select option" />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<Select />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
+<DynamicCodeBlock lang="tsx" code={`<SelectValue placeholder="Select option" />`} />
 
 ---
 

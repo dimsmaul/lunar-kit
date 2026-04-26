@@ -5,7 +5,7 @@ title: Avatar
 import AvatarDemo from '@/demo/AvatarDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Avatar component for your UI needs.
+Avatar
 
 <AvatarDemo />
 
@@ -18,21 +18,22 @@ Avatar component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { Avatar } from '@lunar-kit/core';
 
 export default function Example() {
-  return <Avatar />;
+  return (
+    <Avatar
+        source={{ uri: 'https://i.pravatar.cc/150?img=1' }}
+        alt="John Doe"
+        size="md"
+      />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<Avatar />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'default'` \| `'primary'` \| `'secondary'` \| `'outline'` | `'default'` | Visual style variant |
-| `size` | `'xs'` \| `'sm'` \| `'md'` \| `'lg'` \| `'xl'` | `'md'` | — |
+<DynamicCodeBlock lang="tsx" code={`<Avatar
+        source={{ uri: 'https://i.pravatar.cc/150?img=1' }}
+        alt="John Doe"
+        size="md"
+      />`} />
 
 ---
 

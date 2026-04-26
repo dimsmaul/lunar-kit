@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, Pressable } from 'react-native';
 import { ChevronRight } from 'lucide-react-native';
 import { Text } from './text';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
 export interface BreadcrumbItem {

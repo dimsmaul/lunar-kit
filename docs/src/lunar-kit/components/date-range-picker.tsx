@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { View, Pressable } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { Text } from './text';
 import { Button } from './button';
 import { Dialog, DialogContent } from './dialog';

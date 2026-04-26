@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { Check } from 'lucide-react-native';
 import { Text } from './text';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
 export interface Step {

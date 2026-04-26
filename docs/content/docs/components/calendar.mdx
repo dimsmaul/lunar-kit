@@ -5,7 +5,7 @@ title: Calendar
 import CalendarDemo from '@/demo/CalendarDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Calendar component for your UI needs.
+Calendar
 
 <CalendarDemo />
 
@@ -18,19 +18,22 @@ Calendar component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { Calendar } from '@lunar-kit/core';
 
 export default function Example() {
-  return <Calendar />;
+  return (
+    <Calendar
+          value={date}
+          onValueChange={setDate}
+          variant="date"
+        />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<Calendar />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
+<DynamicCodeBlock lang="tsx" code={`<Calendar
+          value={date}
+          onValueChange={setDate}
+          variant="date"
+        />`} />
 
 ---
 

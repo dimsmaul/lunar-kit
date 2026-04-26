@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useToastStore } from '../../stores/toast';
+import { useToastStore } from '../stores/toast';
 import { Toast } from './toast';
 
 export function Toaster() {

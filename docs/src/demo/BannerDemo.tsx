@@ -8,16 +8,20 @@ import React from 'react'
 const BannerDemo = () => {
   return (
     <Demonstration components={
-      <View className="gap-2">
-        <Banner variant="default">Example</Banner>
-        <Banner variant="info">Example</Banner>
-        <Banner variant="success">Example</Banner>
+      <View className="items-center justify-center p-4 w-full">
+        <Banner
+          title="Information"
+          description="This is an informational message."
+        />
       </View>
     } code={`import { Banner } from '@/components/ui/banner'
 
 const BannerPreview = () => {
   return (
-    <Banner variant="default">Example</Banner>
+    <Banner
+          title="Information"
+          description="This is an informational message."
+        />
   )
 }
 

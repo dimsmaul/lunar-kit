@@ -5,7 +5,7 @@ title: StepIndicator
 import StepIndicatorDemo from '@/demo/StepIndicatorDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-StepIndicator component for your UI needs.
+Interactive flow
 
 <StepIndicatorDemo />
 
@@ -18,22 +18,20 @@ StepIndicator component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { StepIndicator } from '@lunar-kit/core';
 
 export default function Example() {
-  return <StepIndicator />;
+  return (
+    <StepIndicator 
+            steps={STEPS}
+            currentStep={currentStep}
+          />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<StepIndicator />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `steps` | `Step[]` | — |  (required) |
-| `currentStep` | `number` | — |  (required) |
-| `orientation` | `'horizontal' | 'vertical'` | undefined |  |
+<DynamicCodeBlock lang="tsx" code={`<StepIndicator 
+            steps={STEPS}
+            currentStep={currentStep}
+          />`} />
 
 ---
 

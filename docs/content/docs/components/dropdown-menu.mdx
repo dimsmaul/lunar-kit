@@ -5,7 +5,7 @@ title: DropdownMenu
 import DropdownMenuDemo from '@/demo/DropdownMenuDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-DropdownMenu component for your UI needs.
+DropdownMenu
 
 <DropdownMenuDemo />
 
@@ -18,25 +18,14 @@ DropdownMenu component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { DropdownMenu } from '@lunar-kit/core';
 
 export default function Example() {
-  return <DropdownMenu />;
+  return (
+    <DropdownMenuSeparator />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<DropdownMenu />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'default'` \| `'destructive'` | `'N/A'` | Visual style variant |
-| `size` | `'sm'` \| `'md'` \| `'lg'` | `'md'` | — |
-| `shadow` | `'none'` \| `'sm'` \| `'md'` \| `'lg'` | `'md'` | — |
-| `defaultVariants` | `'variant'` \| `'disabled'` | `'N/A'` | — |
-| `variants` |  | `'N/A'` | — |
-| `disabled` | `'true'` \| `'false'` | `'N/A'` | — |
+<DynamicCodeBlock lang="tsx" code={`<DropdownMenuSeparator />`} />
 
 ---
 

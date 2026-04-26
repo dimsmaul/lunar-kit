@@ -5,7 +5,7 @@ title: Skeleton
 import SkeletonDemo from '@/demo/SkeletonDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Skeleton component for your UI needs.
+Skeleton Shapes
 
 <SkeletonDemo />
 
@@ -18,20 +18,14 @@ Skeleton component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { Skeleton } from '@lunar-kit/core';
 
 export default function Example() {
-  return <Skeleton />;
+  return (
+    <Skeleton className="h-[100px] w-full" />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<Skeleton />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'rect' | 'circle' | 'text'` | undefined |  |
+<DynamicCodeBlock lang="tsx" code={`<Skeleton className="h-[100px] w-full" />`} />
 
 ---
 

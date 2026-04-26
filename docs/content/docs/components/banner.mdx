@@ -5,7 +5,7 @@ title: Banner
 import BannerDemo from '@/demo/BannerDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Banner component for your UI needs.
+Banner
 
 <BannerDemo />
 
@@ -18,27 +18,20 @@ Banner component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { Banner } from '@lunar-kit/core';
 
 export default function Example() {
-  return <Banner>Example</Banner>;
+  return (
+    <Banner
+          title="Information"
+          description="This is an informational message."
+        />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<Banner>Example</Banner>`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'default'` \| `'info'` \| `'success'` \| `'warning'` \| `'destructive'` | `'default'` | Visual style variant |
-| `title` | `string` | undefined |  |
-| `description` | `string` | undefined |  |
-| `children` | `React.ReactNode` | undefined |  |
-| `icon` | `React.ReactNode` | undefined |  |
-| `showIcon` | `boolean` | undefined |  |
-| `dismissible` | `boolean` | undefined |  |
-| `onDismiss` | `() => void` | undefined |  |
+<DynamicCodeBlock lang="tsx" code={`<Banner
+          title="Information"
+          description="This is an informational message."
+        />`} />
 
 ---
 

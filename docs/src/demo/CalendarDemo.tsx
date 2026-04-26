@@ -8,14 +8,20 @@ import React from 'react'
 const CalendarDemo = () => {
   return (
     <Demonstration components={
-      <View>
-        <Calendar />
+      <View className="items-center justify-center p-4 w-full">
+        <Calendar
+          variant="date"
+        />
       </View>
     } code={`import { Calendar } from '@/components/ui/calendar'
 
 const CalendarPreview = () => {
   return (
-    <Calendar />
+    <Calendar
+          value={date}
+          onValueChange={setDate}
+          variant="date"
+        />
   )
 }
 

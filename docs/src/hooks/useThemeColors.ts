@@ -64,6 +64,7 @@ export function useThemeColors() {
 
   useEffect(() => {
     // Initial fetch
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setColors(getThemeColors());
 
     // Observer for class changes on html element (for dark mode toggle)

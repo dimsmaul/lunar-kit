@@ -5,7 +5,7 @@ title: Alert
 import AlertDemo from '@/demo/AlertDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Alert component for your UI needs.
+Alert Variants
 
 <AlertDemo />
 
@@ -18,23 +18,18 @@ Alert component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { Alert } from '@lunar-kit/core';
 
 export default function Example() {
-  return <Alert>Example</Alert>;
+  return (
+    <Alert variant="default">
+          This is a default alert for general information.
+        </Alert>
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<Alert>Example</Alert>`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'default'` \| `'info'` \| `'success'` \| `'warning'` \| `'destructive'` | `'default'` | Visual style variant |
-| `children` | `React.ReactNode` | — |  (required) |
-| `icon` | `React.ReactNode` | undefined |  |
-| `showIcon` | `boolean` | undefined |  |
+<DynamicCodeBlock lang="tsx" code={`<Alert variant="default">
+          This is a default alert for general information.
+        </Alert>`} />
 
 ---
 

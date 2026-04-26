@@ -5,7 +5,7 @@ title: Badge
 import BadgeDemo from '@/demo/BadgeDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Badge component for your UI needs.
+Badge
 
 <BadgeDemo />
 
@@ -18,23 +18,14 @@ Badge component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { Badge } from '@lunar-kit/core';
 
 export default function Example() {
-  return <Badge>Example</Badge>;
+  return (
+    <Badge>New</Badge>
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<Badge>Example</Badge>`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'default'` \| `'secondary'` \| `'success'` \| `'warning'` \| `'destructive'` \| `'outline'` \| `'muted'` | `'default'` | Visual style variant |
-| `size` | `'sm'` \| `'md'` \| `'lg'` | `'md'` | — |
-| `children` | `string` | — |  (required) |
-| `textClassName` | `string` | undefined |  |
+<DynamicCodeBlock lang="tsx" code={`<Badge>New</Badge>`} />
 
 ---
 

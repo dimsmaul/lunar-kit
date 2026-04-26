@@ -6,16 +6,17 @@ import { View } from 'react-native'
 import React from 'react'
 
 const ProgressDemo = () => {
+
   return (
     <Demonstration components={
-      <View>
-        <Progress />
+      <View className="items-center justify-center p-4 w-full">
+        <Progress value={50} />
       </View>
     } code={`import { Progress } from '@/components/ui/progress'
 
 const ProgressPreview = () => {
   return (
-    <Progress />
+    <Progress value={value} />
   )
 }
 

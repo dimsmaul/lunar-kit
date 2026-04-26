@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { Text } from './text';
 import { Button } from './button';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 
 export interface EmptyStateProps {
     title: string;

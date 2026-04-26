@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { View, type ViewProps } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { Text } from './text';
 import { Info, AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';

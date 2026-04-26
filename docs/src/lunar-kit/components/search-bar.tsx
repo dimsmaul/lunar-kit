@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { View, Pressable, Platform, TextInput } from 'react-native';
 import { Search, X } from 'lucide-react-native';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
 export interface SearchBarProps {

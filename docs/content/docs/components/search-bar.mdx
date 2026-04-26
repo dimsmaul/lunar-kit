@@ -5,7 +5,7 @@ title: SearchBar
 import SearchBarDemo from '@/demo/SearchBarDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-SearchBar component for your UI needs.
+Standard Search
 
 <SearchBarDemo />
 
@@ -18,26 +18,22 @@ SearchBar component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { SearchBar } from '@lunar-kit/core';
 
 export default function Example() {
-  return <SearchBar />;
+  return (
+    <SearchBar 
+            value={value}
+            onValueChange={setValue}
+            placeholder="Search files..."
+          />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<SearchBar />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | undefined |  |
-| `defaultValue` | `string` | undefined |  |
-| `placeholder` | `string` | undefined |  |
-| `onValueChange` | `(value: string) => void` | undefined |  |
-| `onDebouncedValueChange` | `(value: string) => void` | undefined |  |
-| `debounceDelay` | `number` | undefined |  |
-| `disabled` | `boolean` | undefined |  |
+<DynamicCodeBlock lang="tsx" code={`<SearchBar 
+            value={value}
+            onValueChange={setValue}
+            placeholder="Search files..."
+          />`} />
 
 ---
 

@@ -8,7 +8,7 @@ import Animated, {
     runOnJS,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 
 export interface SliderProps {
     value?: number;

@@ -5,7 +5,7 @@ title: DatePicker
 import DatePickerDemo from '@/demo/DatePickerDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-DatePicker component for your UI needs.
+DatePicker
 
 <DatePickerDemo />
 
@@ -18,21 +18,14 @@ DatePicker component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { DatePicker } from '@lunar-kit/core';
 
 export default function Example() {
-  return <DatePicker />;
+  return (
+    <DatePickerValue placeholder="Select date" />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<DatePicker />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'default'` \| `'outline'` \| `'filled'` | `'default'` | Visual style variant |
-| `size` | `'sm'` \| `'md'` \| `'lg'` | `'md'` | — |
+<DynamicCodeBlock lang="tsx" code={`<DatePickerValue placeholder="Select date" />`} />
 
 ---
 

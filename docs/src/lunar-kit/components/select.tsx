@@ -1,7 +1,7 @@
 // components/ui/select.tsx
 import * as React from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { Text } from './text';
 import { Dialog, DialogContent } from './dialog';
 import { useThemeColors } from '@/hooks/useThemeColors';

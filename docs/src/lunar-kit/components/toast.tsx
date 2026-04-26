@@ -5,14 +5,13 @@ import Animated, {
     useAnimatedStyle,
     withTiming,
     runOnJS,
-    withSpring
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { cn } from '@/lib/utils';
 import { Text } from './text';
-import { useToastStore, type Toast as ToastType } from '../../stores/toast';
+import { useToastStore, type Toast as ToastType } from '../stores/toast';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Info, AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react-native';
+import { cn } from '../lib/utils';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.3;
@@ -152,3 +151,5 @@ export function Toast({
         </GestureDetector>
     );
 }
+
+export { toast } from '../stores/toast';

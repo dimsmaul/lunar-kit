@@ -5,7 +5,7 @@ title: Separator
 import SeparatorDemo from '@/demo/SeparatorDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Separator component for your UI needs.
+Horizontal Separator
 
 <SeparatorDemo />
 
@@ -18,21 +18,14 @@ Separator component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { Separator } from '@lunar-kit/core';
 
 export default function Example() {
-  return <Separator />;
+  return (
+    <Separator />
+  );
 }`} />
 
-## Examples
-
-### Basic
+## Example
 
 <DynamicCodeBlock lang="tsx" code={`<Separator />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `orientation` | `'horizontal' | 'vertical'` | undefined |  |
-| `decorative` | `boolean` | undefined |  |
 
 ---
 

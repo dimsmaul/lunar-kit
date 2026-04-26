@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { View, TextInput, Pressable } from 'react-native';
 import { Text } from './text';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 
 export interface InputOTPProps {
     value?: string;

@@ -1,7 +1,7 @@
 // components/ui/input.tsx
 import React, { forwardRef, useState } from 'react';
 import { View, TextInput, Platform, type TextInputProps } from 'react-native';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
 export interface InputProps extends TextInputProps {

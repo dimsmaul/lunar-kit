@@ -57,11 +57,20 @@ const AccordionDemo = () => {
           </AccordionItem>
         </Accordion>
       </View>
-    } code={`import { Accordion } from '@/components/ui/accordion'
+    } code={`import { Accordion, AccordionItem, AccordionTrigger, AccordionTriggerText, AccordionContent, AccordionContentText } from '@/components/ui/accordion'
 
 const AccordionPreview = () => {
   return (
-    <Accordion variant="default" />
+    <Accordion type="single" collapsible>
+      <AccordionItem value="item-1">
+        <AccordionTrigger>
+          <AccordionTriggerText>Question</AccordionTriggerText>
+        </AccordionTrigger>
+        <AccordionContent>
+          <AccordionContentText>Answer here</AccordionContentText>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   )
 }
 

@@ -5,7 +5,7 @@ title: Button
 import ButtonDemo from '@/demo/ButtonDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Button component for your UI needs.
+Button
 
 <ButtonDemo />
 
@@ -18,27 +18,14 @@ Button component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { Button } from '@lunar-kit/core';
 
 export default function Example() {
-  return <Button>Example</Button>;
+  return (
+    <Button variant='default'>Default</Button>
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<Button>Example</Button>`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'default'` \| `'destructive'` \| `'outline'` \| `'secondary'` \| `'ghost'` \| `'link'` | `'default'` | Visual style variant |
-| `size` | `'default'` \| `'sm'` \| `'lg'` \| `'icon'` | `'default'` | — |
-| `disabled` | `'true'` \| `'false'` | `'false'` | — |
-| `children` | `React.ReactNode` | — |  (required) |
-| `textClassName` | `string` | undefined |  |
-| `loading` | `boolean` | undefined |  |
-| `leftIcon` | `React.ReactNode` | undefined |  |
-| `rightIcon` | `React.ReactNode` | undefined |  |
+<DynamicCodeBlock lang="tsx" code={`<Button variant='default'>Default</Button>`} />
 
 ---
 

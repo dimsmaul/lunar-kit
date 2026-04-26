@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useColorScheme } from 'nativewind';
-import { lightThemeColors, darkThemeColors } from '@/lib/theme';
+import { darkThemeColors, lightThemeColors } from '../lib/theme';
 
 export function useThemeColors() {
   const { colorScheme } = useColorScheme();

@@ -6,7 +6,7 @@ import Animated, {
     useAnimatedStyle, 
     withSpring,
 } from 'react-native-reanimated';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 
 export interface ProgressProps extends ViewProps {
     value?: number; // 0 to 100

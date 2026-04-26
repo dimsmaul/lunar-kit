@@ -5,7 +5,7 @@ title: SelectSheet
 import SelectSheetDemo from '@/demo/SelectSheetDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-SelectSheet component for your UI needs.
+SelectSheet
 
 <SelectSheetDemo />
 
@@ -18,19 +18,40 @@ SelectSheet component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { SelectSheet } from '@lunar-kit/core';
 
 export default function Example() {
-  return <SelectSheet />;
+  return (
+    <SelectSheet
+            label="Country"
+            placeholder="Select a country..."
+            options={[
+              { label: 'Indonesia', value: 'id' },
+              { label: 'United States', value: 'us' },
+              { label: 'United Kingdom', value: 'uk' },
+              { label: 'Japan', value: 'jp' },
+              { label: 'Singapore', value: 'sg' },
+            ]}
+            value={countryValue} // CHANGE THIS
+            onValueChange={setCountryValue} // CHANGE THIS
+            searchable
+          />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<SelectSheet />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
+<DynamicCodeBlock lang="tsx" code={`<SelectSheet
+            label="Country"
+            placeholder="Select a country..."
+            options={[
+              { label: 'Indonesia', value: 'id' },
+              { label: 'United States', value: 'us' },
+              { label: 'United Kingdom', value: 'uk' },
+              { label: 'Japan', value: 'jp' },
+              { label: 'Singapore', value: 'sg' },
+            ]}
+            value={countryValue} // CHANGE THIS
+            onValueChange={setCountryValue} // CHANGE THIS
+            searchable
+          />`} />
 
 ---
 

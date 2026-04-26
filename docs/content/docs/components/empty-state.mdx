@@ -5,7 +5,7 @@ title: EmptyState
 import EmptyStateDemo from '@/demo/EmptyStateDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-EmptyState component for your UI needs.
+EmptyState
 
 <EmptyStateDemo />
 
@@ -18,24 +18,20 @@ EmptyState component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { EmptyState } from '@lunar-kit/core';
 
 export default function Example() {
-  return <EmptyState />;
+  return (
+    <EmptyState
+            title="No messages yet"
+            description="Your inbox is empty. Start a conversation with someone!"
+            illustration={<Inbox size={48} color="#94a3b8" />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<EmptyState />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | — |  (required) |
-| `description` | `string` | undefined |  |
-| `illustration` | `React.ReactNode` | undefined |  |
-| `actionLabel` | `string` | undefined |  |
-| `onActionPress` | `() => void` | undefined |  |
+<DynamicCodeBlock lang="tsx" code={`<EmptyState
+            title="No messages yet"
+            description="Your inbox is empty. Start a conversation with someone!"
+            illustration={<Inbox size={48} color="#94a3b8" />`} />
 
 ---
 

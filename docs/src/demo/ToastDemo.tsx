@@ -1,11 +1,13 @@
 'use client'
 
 import Demonstration from '@/components/demontration'
-import { Button, toast } from '@/lunar-kit/components'
+import { Button } from '@/lunar-kit/components'
 import { View } from 'react-native'
 import React from 'react'
+import { useToast } from '@/lunar-kit/hooks'
 
 const ToastDemo = () => {
+  const {toast} = useToast()
   return (
     <Demonstration components={
       <View className="gap-2">

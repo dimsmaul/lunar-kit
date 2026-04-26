@@ -1,7 +1,7 @@
 // components/ui/textarea.tsx
 import * as React from 'react';
 import { TextInput, View } from 'react-native';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { Text } from './text';
 import { useThemeColors } from '@/hooks/useThemeColors';
 

@@ -6,7 +6,7 @@ import Animated, {
     withRepeat, 
     withTiming, 
 } from 'react-native-reanimated';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { ViewProps } from 'react-native';
 
 export interface SkeletonProps extends ViewProps {

@@ -5,7 +5,7 @@ title: Switch
 import SwitchDemo from '@/demo/SwitchDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-Switch component for your UI needs.
+Switch Toggle
 
 <SwitchDemo />
 
@@ -18,24 +18,20 @@ Switch component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { Switch } from '@lunar-kit/core';
 
 export default function Example() {
-  return <Switch />;
+  return (
+    <Switch
+            checked={airplaneMode}
+            onCheckedChange={setAirplaneMode}
+          />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<Switch />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `checked` | `boolean` | undefined |  |
-| `defaultChecked` | `boolean` | undefined |  |
-| `onCheckedChange` | `(checked: boolean) => void` | undefined |  |
-| `disabled` | `boolean` | undefined |  |
-| `thumbClassName` | `string` | undefined |  |
+<DynamicCodeBlock lang="tsx" code={`<Switch
+            checked={airplaneMode}
+            onCheckedChange={setAirplaneMode}
+          />`} />
 
 ---
 

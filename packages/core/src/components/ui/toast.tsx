@@ -152,3 +152,5 @@ export function Toast({
         </GestureDetector>
     );
 }
+
+export { toast } from '../../stores/toast';

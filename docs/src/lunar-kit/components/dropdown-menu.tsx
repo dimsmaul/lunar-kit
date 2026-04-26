@@ -18,7 +18,7 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { Text } from './text';
 import { useThemeColors } from '@/hooks/useThemeColors';
 

@@ -5,7 +5,7 @@ title: DateRangePicker
 import DateRangePickerDemo from '@/demo/DateRangePickerDemo'
 import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 
-DateRangePicker component for your UI needs.
+DateRangePicker
 
 <DateRangePickerDemo />
 
@@ -18,21 +18,14 @@ DateRangePicker component for your UI needs.
 <DynamicCodeBlock lang="tsx" code={`import { DateRangePicker } from '@lunar-kit/core';
 
 export default function Example() {
-  return <DateRangePicker />;
+  return (
+    <DateRangePickerValue placeholder="Select date range" />
+  );
 }`} />
 
-## Examples
+## Example
 
-### Basic
-
-<DynamicCodeBlock lang="tsx" code={`<DateRangePicker />`} />
-
-## Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'default'` \| `'outline'` \| `'filled'` | `'default'` | Visual style variant |
-| `size` | `'sm'` \| `'md'` \| `'lg'` | `'md'` | — |
+<DynamicCodeBlock lang="tsx" code={`<DateRangePickerValue placeholder="Select date range" />`} />
 
 ---
 

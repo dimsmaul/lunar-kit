@@ -6,18 +6,25 @@ import { View } from 'react-native'
 import React from 'react'
 
 const AvatarDemo = () => {
+
   return (
     <Demonstration components={
-      <View className="gap-2">
-        <Avatar variant="default" />
-        <Avatar variant="primary" />
-        <Avatar variant="secondary" />
+      <View className="items-center justify-center p-4 w-full">
+        <Avatar
+        source={{ uri: 'https://i.pravatar.cc/150?img=1' }}
+        alt="John Doe"
+        size="md"
+      />
       </View>
     } code={`import { Avatar } from '@/components/ui/avatar'
 
 const AvatarPreview = () => {
   return (
-    <Avatar variant="default" />
+    <Avatar
+        source={{ uri: 'https://i.pravatar.cc/150?img=1' }}
+        alt="John Doe"
+        size="md"
+      />
   )
 }
 

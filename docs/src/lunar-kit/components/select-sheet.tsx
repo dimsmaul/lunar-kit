@@ -1,7 +1,7 @@
 // components/ui/select-sheet.tsx
 import * as React from 'react';
 import { View, Pressable, ActivityIndicator } from 'react-native';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { Text } from './text';
 import { Input } from './input';
 import { ChevronDown } from 'lucide-react-native';

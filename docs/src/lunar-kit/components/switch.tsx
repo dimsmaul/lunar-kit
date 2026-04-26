@@ -7,7 +7,7 @@ import Animated, {
     withSpring,
     interpolateColor,
 } from 'react-native-reanimated';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
 export interface SwitchProps extends Omit<ViewProps, 'children'> {

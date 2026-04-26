@@ -6,16 +6,17 @@ import { View } from 'react-native'
 import React from 'react'
 
 const SkeletonDemo = () => {
+
   return (
     <Demonstration components={
-      <View>
-        <Skeleton />
+      <View className="items-center justify-center p-4 w-full">
+        <Skeleton className="h-[100px] w-full" />
       </View>
     } code={`import { Skeleton } from '@/components/ui/skeleton'
 
 const SkeletonPreview = () => {
   return (
-    <Skeleton />
+    <Skeleton className="h-[100px] w-full" />
   )
 }
 

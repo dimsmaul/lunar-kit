@@ -4,18 +4,27 @@ import Demonstration from '@/components/demontration'
 import { Switch } from '@/lunar-kit/components/switch'
 import { View } from 'react-native'
 import React from 'react'
+import { Text, useToolbar } from '@lunar-kit/core'
 
 const SwitchDemo = () => {
+  const [state, setState] = React.useState<any>();
+
   return (
     <Demonstration components={
-      <View>
-        <Switch />
+      <View className="items-center justify-center p-4 w-full">
+        <Switch
+            checked={airplaneMode}
+            onCheckedChange={setAirplaneMode}
+          />
       </View>
     } code={`import { Switch } from '@/components/ui/switch'
 
 const SwitchPreview = () => {
   return (
-    <Switch />
+    <Switch
+            checked={airplaneMode}
+            onCheckedChange={setAirplaneMode}
+          />
   )
 }
 

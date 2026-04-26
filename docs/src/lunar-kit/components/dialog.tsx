@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { View, Pressable, Animated, StyleSheet } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 import { Text } from './text';
 import { AdaptiveModal } from '@lunar-primitive/adaptive-modal';
 
